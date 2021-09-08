@@ -6,10 +6,8 @@ import axios from "axios";
 import { Button, ButtonGroup } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import { Paper, Box } from "@material-ui/core";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { Exclamation } from "./Icon"
 
-const Coffee = () => <FontAwesomeIcon icon={faCoffee} />
 
 const ToDoApp = ({ toDoItems, emptyItem, errors = {} }) => {
   const [newItem, setNewItem] = useState(emptyItem);

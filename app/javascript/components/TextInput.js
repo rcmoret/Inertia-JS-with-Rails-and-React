@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Exclamation } from "./Icons"
 
 const TextInput = props => {
   console.log(props.value)
@@ -9,7 +10,7 @@ const TextInput = props => {
 
   } else {
     return (
-      <div>
+      <div className='p-2 rounded'>
         <Label {...props} />
         <Input onChange={props.onChange} value={props.value} />
       </div>
@@ -18,14 +19,18 @@ const TextInput = props => {
 };
 
 const ErrorInput = props => (
-  <div className='border-solid border-red-400 border-2 bg-gray-400'>
+  <div className='border-solid border-red-400 border-2 bg-gray-200 p-2'>
     <Label {...props} />
     <Input onChange={props.onChange} value={props.value}/>
-    <ul>
+    <div className='mt-2'>
       {props.errors.map((err, index) => (
-        <li key={index}>{err}</li>
+        <span key={index} className='text-red-700' >
+          <Exclamation className='text-red-700' />
+          {' '}
+          {err}
+        </span>
       ))}
-    </ul>
+    </div>
   </div>
 )
 
@@ -39,7 +44,7 @@ const Label = props => {
   }
 }
 const Input = props => (
-  <input type='text' onChange={props.onChange} value={props.value} />
+  <input className='border-solid border-gray-500 border-2 rounded' type='text' onChange={props.onChange} value={props.value} />
 )
 
 export default TextInput;
