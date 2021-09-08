@@ -6,10 +6,13 @@ import axios from "axios";
 import { Button, ButtonGroup } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import { Paper, Box } from "@material-ui/core";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+
+const Coffee = () => <FontAwesomeIcon icon={faCoffee} />
 
 const ToDoApp = ({ toDoItems, emptyItem, errors = {} }) => {
   const [newItem, setNewItem] = useState(emptyItem);
-  console.log(newItem)
 
   const addItem = (event) => {
     event.preventDefault();
