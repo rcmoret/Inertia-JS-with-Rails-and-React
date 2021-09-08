@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Exclamation } from "./Icons"
 
 const TextInput = props => {
-  console.log(props.value)
   if (props.errors.length > 0) {
     return (
       <ErrorInput {...props} />
@@ -19,7 +18,7 @@ const TextInput = props => {
 };
 
 const ErrorInput = props => (
-  <div className='border-solid border-red-400 border-2 bg-gray-200 p-2'>
+  <div className='rounded border-solid border-red-400 border-2 bg-gray-200 p-2'>
     <Label {...props} />
     <Input onChange={props.onChange} value={props.value}/>
     <div className='mt-2'>

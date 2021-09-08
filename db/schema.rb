@@ -16,9 +16,12 @@ ActiveRecord::Schema.define(version: 2021_09_08_104817) do
   enable_extension "plpgsql"
 
   create_table "artists", force: :cascade do |t|
-    t.string "name", limit: 400, null: false
+    t.string "name", limit: 4000, null: false
+    t.string "slug", limit: 250, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_artists_on_name", unique: true
+    t.index ["slug"], name: "index_artists_on_slug", unique: true
   end
 
   create_table "collection_types", force: :cascade do |t|
@@ -30,10 +33,13 @@ ActiveRecord::Schema.define(version: 2021_09_08_104817) do
   create_table "collections", force: :cascade do |t|
     t.bigint "collection_type_id"
     t.string "name", limit: 4000, null: false
+    t.string "slug", limit: 250, null: false
     t.integer "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["collection_type_id"], name: "index_collections_on_collection_type_id"
+    t.index ["name"], name: "index_collections_on_name", unique: true
+    t.index ["slug"], name: "index_collections_on_slug", unique: true
   end
 
   create_table "songs", force: :cascade do |t|
