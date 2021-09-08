@@ -18,7 +18,7 @@ const TextInput = props => {
 };
 
 const ErrorInput = props => (
-  <div>
+  <div className='border-solid border-red-400 border-2 bg-gray-400'>
     <Label {...props} />
     <Input onChange={props.onChange} value={props.value}/>
     <ul>
