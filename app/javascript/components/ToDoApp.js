@@ -41,7 +41,7 @@ const ToDoApp = ({ toDoItems, emptyItem, errors = {} }) => {
 
   return (
     <div>
-      <h1>Getting Things Done</h1>
+      <h1>All (my) Music</h1>
       <form onSubmit={addItem}>
         <TextInput
           errors={errors.description || []}

@@ -10,10 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_045756) do
+ActiveRecord::Schema.define(version: 2021_09_08_104817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "artists", force: :cascade do |t|
+    t.string "name", limit: 400, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "collection_types", force: :cascade do |t|
+    t.string "name", limit: 400, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "collections", force: :cascade do |t|
+    t.bigint "collection_type_id"
+    t.string "name", limit: 4000, null: false
+    t.integer "year"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["collection_type_id"], name: "index_collections_on_collection_type_id"
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.bigint "artist_id"
+    t.bigint "collection_id"
+    t.string "name", limit: 4000, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["artist_id"], name: "index_songs_on_artist_id"
+    t.index ["collection_id"], name: "index_songs_on_collection_id"
+  end
 
   create_table "to_dos", force: :cascade do |t|
     t.text "description"
