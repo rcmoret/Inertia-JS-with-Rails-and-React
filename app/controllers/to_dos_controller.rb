@@ -2,7 +2,7 @@ class ToDosController < ApplicationController
   before_action :set_to_do, only: %i[show edit update destroy]
 
   def index
-    render inertia: "ToDoApp", props: { toDoItems: ToDo.all }
+    render inertia: "ToDoApp", props: { toDoItems: ToDo.all, emptyItem: { description: '' } }
   end
 
   def create
@@ -11,7 +11,7 @@ class ToDosController < ApplicationController
     if to_do.save
       redirect_to to_dos_path, notice: "To do was successfully created."
     else
-      render inertia: "ToDoApp", props: { toDoItems: ToDo.all, errors: true }
+      render inertia: "ToDoApp", props: { toDoItems: ToDo.all, errors: to_do.errors }
     end
   end
 

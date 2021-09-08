@@ -1,27 +1,28 @@
 import React, { useState } from "react";
 import ToDoList from "./ToDoList";
+import TextInput from "./TextInput";
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
-import { Container } from "@material-ui/core";
 import { Button, ButtonGroup } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import { Paper, Box } from "@material-ui/core";
 
-const ToDoApp = ({ toDoItems, errors = {} }) => {
-  const [newItem, setNewItem] = useState("");
+const ToDoApp = ({ toDoItems, emptyItem, errors = {} }) => {
+  const [newItem, setNewItem] = useState(emptyItem);
+  console.log(newItem)
 
-  function handleInput(event) {
-    setNewItem(event.target.value);
-  }
-
-  function addItem(event) {
+  const addItem = (event) => {
     event.preventDefault();
     Inertia.post("/to_dos", {
-      to_do: { description: newItem, completed: false },
+      to_do: { ...newItem, completed: false },
     });
 
-    setNewItem("");
+    setNewItem({ description: '' });
   }
+
+  const onChange = event => (
+    setNewItem({ description: event.target.value })
+  )
 
   async function clearCompleted(event) {
     event.preventDefault();
@@ -36,17 +37,15 @@ const ToDoApp = ({ toDoItems, errors = {} }) => {
   }
 
   return (
-    <Container maxWidth="sm">
-      <h1 style={{ marginBottom: "2rem" }}>Getting Things Done</h1>
+    <div>
+      <h1>Getting Things Done</h1>
       <form onSubmit={addItem}>
-        <TextField
-          error={errors === true}
-          helperText={errors === true ? "Cannot be blank" : ""}
+        <TextInput
+          errors={errors.description || []}
+          name='description'
           label="New To Do Item"
-          variant="outlined"
-          fullWidth
-          onChange={handleInput}
-          value={newItem}
+          onChange={onChange}
+          value={newItem.description}
         />
         <Box display="flex" flexDirection="row-reverse">
           <ButtonGroup variant="contained" style={{ marginTop: "1rem" }}>
@@ -65,7 +64,7 @@ const ToDoApp = ({ toDoItems, errors = {} }) => {
           <ToDoList toDoItems={toDoItems} />
         </Paper>
       )}
-    </Container>
+    </div>
   );
 };
 
