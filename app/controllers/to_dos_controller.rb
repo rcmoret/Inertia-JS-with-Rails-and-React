@@ -1,14 +1,10 @@
 class ToDosController < ApplicationController
   before_action :set_to_do, only: %i[show edit update destroy]
 
-  # GET /to_dos
-  # GET /to_dos.json
   def index
     render inertia: "ToDoApp", props: { toDoItems: ToDo.all }
   end
 
-  # POST /to_dos
-  # POST /to_dos.json
   def create
     to_do = ToDo.new(to_do_params)
 
@@ -27,8 +23,6 @@ class ToDosController < ApplicationController
     end
   end
 
-  # DELETE /to_dos/1
-  # DELETE /to_dos/1.json
   def destroy
     @to_do.destroy
     head :no_content
