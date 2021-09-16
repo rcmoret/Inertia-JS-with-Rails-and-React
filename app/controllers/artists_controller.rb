@@ -1,6 +1,4 @@
 class ArtistsController < ApplicationController
-  before_action :set_to_do, only: %i[show edit update destroy]
-
   def index
     render inertia: "ArtistsApp", props: { artists: artists, newArtist: empty_artist, errors: {}, clearNew: true  }
   end
