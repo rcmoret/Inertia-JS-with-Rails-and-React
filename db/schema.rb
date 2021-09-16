@@ -10,53 +10,118 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_104817) do
+ActiveRecord::Schema.define(version: 2021_09_10_182007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "artists", force: :cascade do |t|
-    t.string "name", limit: 4000, null: false
-    t.string "slug", limit: 250, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["name"], name: "index_artists_on_name", unique: true
-    t.index ["slug"], name: "index_artists_on_slug", unique: true
+  create_table "accounts", force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "cash_flow", default: true
+    t.integer "priority", null: false
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug", limit: 30
   end
 
-  create_table "collection_types", force: :cascade do |t|
-    t.string "name", limit: 400, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+  create_table "budget_categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "default_amount", null: false
+    t.boolean "monthly", default: true, null: false
+    t.boolean "expense", default: true, null: false
+    t.boolean "accrual", default: false, null: false
+    t.datetime "archived_at"
+    t.bigint "icon_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
+    t.index ["slug"], name: "index_budget_categories_on_slug", unique: true
   end
 
-  create_table "collections", force: :cascade do |t|
-    t.bigint "collection_type_id"
-    t.string "name", limit: 4000, null: false
-    t.string "slug", limit: 250, null: false
-    t.integer "year"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["collection_type_id"], name: "index_collections_on_collection_type_id"
-    t.index ["name"], name: "index_collections_on_name", unique: true
-    t.index ["slug"], name: "index_collections_on_slug", unique: true
+  create_table "budget_category_maturity_intervals", force: :cascade do |t|
+    t.integer "budget_interval_id", null: false
+    t.integer "budget_category_id", null: false
+    t.index ["budget_category_id", "budget_interval_id"], name: "index_category_interval_uniqueness", unique: true
   end
 
-  create_table "songs", force: :cascade do |t|
-    t.bigint "artist_id"
-    t.bigint "collection_id"
-    t.string "name", limit: 4000, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["artist_id"], name: "index_songs_on_artist_id"
-    t.index ["collection_id"], name: "index_songs_on_collection_id"
+  create_table "budget_intervals", force: :cascade do |t|
+    t.integer "month", null: false
+    t.integer "year", null: false
+    t.datetime "set_up_completed_at"
+    t.datetime "close_out_completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
-  create_table "to_dos", force: :cascade do |t|
-    t.text "description"
-    t.boolean "completed"
+  create_table "budget_item_event_types", force: :cascade do |t|
+    t.string "name", limit: 50, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_budget_item_event_types_on_name", unique: true
+  end
+
+  create_table "budget_item_events", force: :cascade do |t|
+    t.bigint "budget_item_id"
+    t.bigint "budget_item_event_type_id"
+    t.integer "amount", null: false
+    t.json "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["budget_item_event_type_id"], name: "index_budget_item_events_on_budget_item_event_type_id"
+    t.index ["budget_item_id"], name: "index_budget_item_events_on_budget_item_id"
+  end
+
+  create_table "budget_items", force: :cascade do |t|
+    t.bigint "budget_category_id", null: false
+    t.bigint "budget_interval_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["budget_category_id"], name: "index_budget_items_on_budget_category_id"
+    t.index ["budget_interval_id"], name: "index_budget_items_on_budget_interval_id"
+  end
+
+  create_table "icons", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.string "class_name", limit: 100, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "transaction_details", force: :cascade do |t|
+    t.bigint "transaction_entry_id", null: false
+    t.bigint "budget_item_id"
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_item_id"], name: "index_transaction_details_on_budget_item_id"
+    t.index ["transaction_entry_id"], name: "index_transaction_details_on_transaction_entry_id"
+  end
+
+  create_table "transaction_entries", force: :cascade do |t|
+    t.string "description", limit: 255
+    t.string "check_number", limit: 12
+    t.date "clearance_date"
+    t.bigint "account_id", null: false
+    t.text "notes"
+    t.boolean "budget_exclusion", default: false, null: false
+    t.bigint "transfer_id"
+    t.string "receipt", limit: 255
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transaction_entries_on_account_id"
+    t.index ["transfer_id"], name: "index_transaction_entries_on_transfer_id"
+  end
+
+  create_table "transfers", force: :cascade do |t|
+    t.integer "to_transaction_id"
+    t.integer "from_transaction_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -71,4 +136,13 @@ ActiveRecord::Schema.define(version: 2021_09_08_104817) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "budget_categories", "icons"
+  add_foreign_key "budget_category_maturity_intervals", "budget_categories"
+  add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
+  add_foreign_key "budget_items", "budget_categories"
+  add_foreign_key "budget_items", "budget_intervals"
+  add_foreign_key "transaction_details", "budget_items"
+  add_foreign_key "transaction_details", "transaction_entries"
+  add_foreign_key "transaction_entries", "accounts"
+  add_foreign_key "transaction_entries", "transfers"
 end
