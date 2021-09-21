@@ -13,7 +13,7 @@ module Types
     end
 
     def accounts(include_inactive: false)
-      AccountsQuery.execute(include_inactive: include_inactive)
+      Queries::AccountsQuery.execute(include_inactive: include_inactive)
     end
 
     field :account, AccountType, null: false do
@@ -23,7 +23,7 @@ module Types
 
     def account(id:)
       Account.find(id).then do |acct|
-        AccountPresenter.new(acct)
+        Presenters::AccountPresenter.new(acct)
       end
     end
 
@@ -33,7 +33,7 @@ module Types
 
     def categories
       ::Budget::Category.all.map do |category|
-        ::Budget::CategoryPresenter.new(category)
+        Presenters::Budget::CategoryPresenter.new(category)
       end
     end
 
@@ -44,7 +44,7 @@ module Types
 
     def category(id:)
       ::Budget::Category.find(id).then do |budget_category|
-        BudgetCategoryPresenter.new(budget_cateory)
+        Presenters::BudgetCategoryPresenter.new(budget_cateory)
       end
     end
 
@@ -56,7 +56,7 @@ module Types
 
     def interval(month: Time.current.month, year: Time.current.year)
       ::Budget::Interval.for(month: month, year: year).then do |budget_interval|
-        IntervalPresenter.new(budget_interval)
+        Presenters::Budget::IntervalPresenter.new(budget_interval)
       end
     end
   end

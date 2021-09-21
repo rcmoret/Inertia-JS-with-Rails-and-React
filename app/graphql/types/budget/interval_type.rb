@@ -7,7 +7,9 @@ module Types
       field :is_closed_out, Boolean, 'Has the interval been closed at the end of the month?', null: false
       field :total_days, Integer, 'Total number of days in the interval', null: false
       field :days_remaining, Integer, 'Days remaining in the interval (total if not current)', null: false
-      field :items, [ItemType], '...', null: false
+      field :items, [ItemType], '...', null: false do
+        argument :include_deleted, Boolean, required: false
+      end
       # field :transaction_entries, [TransactionEntryType], 'Transactions for the interval', null: false do
       #   argument :account_id, Integer, required: true
       # end
