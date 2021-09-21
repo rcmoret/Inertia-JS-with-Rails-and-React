@@ -9,9 +9,16 @@
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_pack_tag 'application' %>
     <%= javascript_pack_tag 'index' %>
+    <script src="https://kit.fontawesome.com/50bb231d0e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Questrial">
+    <style>
+      html {
+        font-family: Questrial, Arial;
+      }
+    </style>
   </head>
 
-  <body style="padding: 0.5rem 1.0rem;">
+  <body>
     <%= yield %>
     <% if user_signed_in? %>
       <hr />
