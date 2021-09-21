@@ -8,6 +8,7 @@ module Budget
 
       APPLICABLE_EVENT_TYPES = [
         ITEM_DELETE,
+        SETUP_ITEM_DELETE,
       ].freeze
 
       def self.applicable_event_types

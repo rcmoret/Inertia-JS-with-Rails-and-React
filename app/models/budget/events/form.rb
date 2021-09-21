@@ -8,10 +8,7 @@ module Budget
       validate :all_valid_event_types
 
       def initialize(events_data)
-        @events_data = events_data
-                       .symbolize_keys
-                       .fetch(:events, [{}])
-                       .map(&:symbolize_keys)
+        @events_data = events_data.symbolize_keys.fetch(:events, [{}])
       end
 
       def save

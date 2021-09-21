@@ -15,6 +15,7 @@ module Budget
       ROLLOVER_ITEM_CREATE = 'rollover_item_create',
       SETUP_ITEM_ADJUST = 'setup_item_adjust',
       SETUP_ITEM_CREATE = 'setup_item_create',
+      SETUP_ITEM_DELETE = 'setup_item_delete',
     ].freeze
   end
 end
