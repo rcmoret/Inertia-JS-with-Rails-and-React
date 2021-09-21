@@ -2,14 +2,15 @@ import { v4 as uuid } from 'uuid';
 import MoneyFormatter, { decimalToInt } from '../lib/MoneyFormatter';
 
 const SetupForm = (props) => {
-  const { month, year } = props
+  const { baseInterval, targetInterval } = props
+  const { month, year } = targetInterval
   const categories = categoriesReducer(props.categories)
-  const existingItems = props.existingItems.map(item => existingItem(item))
-  const newItems = props.newItems.map(item => {
-    const defaultAmount = categories.find(c => parseInt(c.id) === item.budgetCategoryId).defaultAmount
+  const newItems = baseInterval.items.map(item => {
+    const defaultAmount = categories.find(c => c.id === item.budgetCategoryId).defaultAmount
     return newItem({...item, defaultAmount: defaultAmount, month: month, year: year })
   })
-  const removedItems = props.removedItems.map(item => removedItem(item))
+  const existingItems = targetInterval.items.map(item => existingItem(item))
+  const removedItems = []
 
   const collections = { existingItems, newItems, removedItems }
   const amount = amountReducer(collections)
@@ -188,10 +189,9 @@ export const categoryFilterFn = (category, dayToDayItemIds) => (
 )
 
 const categoriesReducer = collection => (
-  collection.map(category => {
-    const id = parseInt(category.id)
-    return { ...category, id: id, value: id, label: category.name }
-  })
+  collection.map(category => (
+    { ...category, value: category.id, label: category.name }
+  ))
 )
 
 export const eventsReducer = collections => {
