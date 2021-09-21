@@ -3,10 +3,14 @@
 module Budget
   class SetUpController < ApplicationController
     include GraphQuery
-    skip_before_action :authenticate_user!
 
     def new
-      render inertia: "BudgetSetupApp", props: graph_data
+      render inertia: "BudgetSetupApp", props: props
+    end
+
+    def create
+      form = Budget::Events::Form.new(events: events_params)
+      form.save
     end
 
     private
@@ -39,6 +43,16 @@ module Budget
       params.fetch(:year, today.year).to_i
     end
 
+    def events_params
+      params.require(:events).map do |event_params|
+        event_params.permit(:id, :amount, :event_type, :month, :year, :budget_category_id, :data)
+      end
+    end
+
+    def namespace
+      'budget'
+    end
+
     def query
       <<~GQL
         {
@@ -56,7 +70,8 @@ module Budget
             year
             items {
               name
-              amount
+              budgetCategoryId
+              budgeted: amount
               spent
               month
               year
@@ -70,9 +85,10 @@ module Budget
             month
             year
             items {
+              id
               name
+              budgetCategoryId
               amount
-              spent
               month
               year
               iconClassName
