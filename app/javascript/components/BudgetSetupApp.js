@@ -7,9 +7,9 @@ import Button from "./shared/Button";
 import CategorySelect from "./Setup/CategorySelect"
 import Icon from "./shared/Icons";
 import ItemGroup, { ExistingItemForm, NewItemForm } from "./Setup/ItemGroup"
-
-const sectionClassName = 'w-1/2 border-b-2 border-solid border-gray-700 pb-2 mb-4'
-const sortFn = (a, b) => a.name < b.name ? -1 : 1
+import { sortByName as sortFn } from "../lib/Functions"
+import { SetUpStyles as styles } from "../styles"
+import StyledDiv from "./shared/StyledDiv"
 
 const BudgetSetupApp = (props) => {
   const { baseInterval, targetInterval, errors } = props
@@ -28,23 +28,24 @@ const BudgetSetupApp = (props) => {
     const body = JSON.stringify(eventsReducer(formObject))
     Inertia.post('/budget/set-up', body)
   }
+  const formClassName = Object.values(styles.form).join(' ')
 
   return (
-    <div className='pl-4'>
-      <div className='pb-1 w-1/2 sticky top-0 bg-white h-16 z-50'>
-        <div className='p-4 bg-blue-200 flex justify-between rounded shadow-lg' >
+    <StyledDiv padding='pl-4'>
+      <StyledDiv {...styles.headerWrapper}>
+        <StyledDiv {...styles.headerBanner}>
           <div>
             <h1 className='text-2xl'>Setting Up {targetInterval.month}-{targetInterval.year}</h1>
           </div>
-          <div className='text-xl'>Balance: {MoneyFormatter(formObject.amount, { plainText: false })}</div>
-        </div>
-      </div>
-      <form className='bg-white z-10' onSubmit={onSubmit}>
+          <StyledDiv fontSize='text-xl'>Balance: {MoneyFormatter(formObject.amount, { plainText: false })}</StyledDiv>
+        </StyledDiv>
+      </StyledDiv>
+      <form className={formClassName} onSubmit={onSubmit}>
         <ItemGroup name='Existing Items' ItemForm={ExistingItemForm} collection={existingItems} dispatch={dispatch} />
         <ItemGroup name='Accruals' ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
         <ItemGroup name='Revenues' ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
         <ItemGroup name='Expenses' ItemForm={NewItemForm} collection={expenses} dispatch={dispatch} />
-        <div className={`${sectionClassName} flex justify-between`}>
+        <StyledDiv {...styles.section} flex='flex' flexJustify='justify-between' classes={['mt-4']}>
           <CategorySelect
             categories={categories}
             month={targetInterval.month}
@@ -53,13 +54,13 @@ const BudgetSetupApp = (props) => {
             year={targetInterval.year}
           />
           <div>
-            <Button bgColor='bg-green-600' hoverBgColor='hover:bg-green-700' onSubmit={onSubmit}>
+            <Button {...styles.submitButton} onSubmit={onSubmit}>
               Create Budget
             </Button>
           </div>
-        </div>
+        </StyledDiv>
       </form>
-    </div>
+    </StyledDiv>
   );
 };
 

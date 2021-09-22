@@ -2,11 +2,9 @@ import React from "react";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import MoneyFormatter from "../../lib/MoneyFormatter";
+import StyledDiv from "../shared/StyledDiv"
+import { SetUpStyles as styles } from "../../styles"
 import TextInput from "../shared/TextInput"
-
-const sectionClassName = 'w-1/2 border-b-2 border-solid border-gray-700 pb-2 mb-4'
-const lineClassName = 'p-2 mb-1 odd:bg-gray-200 even:bg-white flex justify-between rounded shadow-md'
-const inputClassName = 'border-solid border-gray-400 border-2 rounded text-right'
 
 const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   if (collection.length === 0) {
@@ -14,40 +12,41 @@ const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   } else {
     const style = { top: '68px' }
     return (
-      <div className={sectionClassName}>
-        <div className='text-lg z-30 underline w-100 pl-2 bg-white sticky border-b-2 border-solid border-gray-700 mb-2' style={style}>
+      <StyledDiv {...styles.section}>
+        <StyledDiv {...styles.sectionTitle} style={style}>
           {name}
-        </div>
+        </StyledDiv>
         <div>
           {collection.map(item => (
             <ItemForm key={item.id} item={item} dispatch={dispatch} />
           ))}
         </div>
-      </div>
+      </StyledDiv>
     )
   }
 };
 
 const ItemWrapper = props => {
   const { children, item, inputChange, removeItem } = props
+  const inputClassName = Object.values(styles.input).join(' ')
 
   return (
-    <div className={lineClassName}>
-      <div className='w-1/3'>
+    <StyledDiv {...styles.line}>
+      <StyledDiv width='w-1/3'>
         {item.name}{' '}<i className={item.iconClassName} />
-      </div>
+      </StyledDiv>
       {children}
-      <div className='flex justify-between w-1/4'>
-        <div className='text-right'>
+      <StyledDiv flex='flex' flexJustify='justify-between' width='w-1/4'>
+        <StyledDiv textAlign='text-right'>
           $ <TextInput onChange={inputChange} className={inputClassName} value={item.displayAmount} />
-        </div>
-        <div className='w-4'>
+        </StyledDiv>
+        <StyledDiv width='w-4'>
           <Link onClick={removeItem}>
             <Icon className='fas fa-times' />
           </Link>
-        </div>
-      </div>
-    </div>
+        </StyledDiv>
+      </StyledDiv>
+    </StyledDiv>
   )
 }
 

@@ -2,8 +2,7 @@ import React from "react";
 import Select from "react-select"
 import Button from "../shared/Button";
 import Icon from "../shared/Icons";
-
-const sortFn = (a, b) => a.name < b.name ? -1 : 1
+import { sortByName as sortFn } from "../../lib/Functions"
 
 const CategorySelect = props => {
   const { categories, dispatch, month, selectedCategoryId, year } = props
