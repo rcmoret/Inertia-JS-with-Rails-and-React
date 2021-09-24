@@ -3,9 +3,6 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
   end
   devise_for :users
-  resources :polls
-  resources :to_dos
-  resources :artists
   post "/graphql", to: "graphql#execute"
   namespace :budget do
     get 'set-up', to: 'set_up#new'
