@@ -3,6 +3,7 @@
 module Budget
   class Item < ActiveRecord::Base
     include Budget::Shared
+    include Presentable
 
     validates_uniqueness_of :budget_category_id,
                             scope: :budget_interval_id,
@@ -39,5 +40,15 @@ module Budget
       events.sum(:amount)
     end
     NonDeleteableError = Class.new(StandardError)
+
+    private
+
+    def presenter_class
+      if monthly?
+        Presenters::Budget::MonthlyItemPresenter
+      else
+        Presenters::Budget::DayToDayItemPresenter
+      end
+    end
   end
 end

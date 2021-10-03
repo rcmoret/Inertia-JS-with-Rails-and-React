@@ -19,10 +19,16 @@ module Presenters
         items_query = item_views
         items_query = items_query.active unless include_deleted
 
-        items_query.map do |item|
-          Budget::ItemPresenter.new(item)
-        end
+        items_query.map(&:as_presenter)
       end
+
+      def discretionary
+        Account.available_cash + items.map(&:remaining).reduce(:+)
+      end
+
+      # def transaction_entries(account_id:)
+      #   Account.
+      # end
     end
   end
 end

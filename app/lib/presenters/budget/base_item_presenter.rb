@@ -2,7 +2,7 @@
 
 module Presenters
   module Budget
-    class ItemPresenter < SimpleDelegator
+    class BaseItemPresenter < SimpleDelegator
       def name
         attributes.fetch(:name) { category.name }
       end
@@ -41,6 +41,14 @@ module Presenters
         attributes.fetch(:expense?) { category.expense? }
       end
       alias_method :is_expense, :expense?
+
+      def transaction_detail_count
+        attributes.fetch(:transaction_count) { transation_details.count }
+      end
+
+      def difference
+        amount - spent
+      end
 
       private
 

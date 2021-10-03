@@ -3,6 +3,7 @@
 module Budget
   class ItemView < ActiveRecord::Base
     include Budget::Shared
+    include Presentable
 
     self.primary_key = :id
 
@@ -17,6 +18,16 @@ module Budget
 
     def readonly?
       true
+    end
+
+    private
+
+    def presenter_class
+      if monthly?
+        Presenters::Budget::MonthlyItemPresenter
+      else
+        Presenters::Budget::DayToDayItemPresenter
+      end
     end
   end
 end
