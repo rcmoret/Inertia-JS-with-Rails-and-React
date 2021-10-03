@@ -5,24 +5,25 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Questrial">
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_pack_tag 'application' %>
     <%= javascript_pack_tag 'index' %>
     <script src="https://kit.fontawesome.com/50bb231d0e.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Questrial">
     <style>
-      html {
-        font-family: Questrial, Arial;
-      }
+      html { font-family: Questrial, Arial; }
     </style>
   </head>
 
   <body>
     <%= yield %>
     <% if user_signed_in? %>
-      <hr />
-      <%= link_to 'Sign Out', destroy_user_session_path, method: :delete %>
+      <div class='rounded bg-blue-800 p-2 w-8/12 text-right underline'>
+        <div class='bg-white text-blue-800 pt-1 pb-1 pr-3 rounded'>
+          <%= link_to 'Sign Out', destroy_user_session_path, method: :delete %>
+        </div>
+      </div>
     <% end %>
   </body>
 </html>

@@ -2,7 +2,6 @@ import React from "react";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import MoneyFormatter from "../../lib/MoneyFormatter";
-import StyledDiv from "../shared/StyledDiv"
 import { SetUp as styles } from "../../styles"
 import TextInput from "../shared/TextInput"
 
@@ -32,7 +31,7 @@ const ItemWrapper = props => {
   const inputClassName = Object.values(styles.input).join(' ')
 
   return (
-    <div className='bg-gray-300 bg-white-even rounded overflow-hidden'>
+    <div className='odd:bg-gray-300 even:bg-white rounded overflow-hidden'>
       <div className='flex justify-between mb-1 p-2 rounded shadow-sm'>
         <div className='w-1/3'>
           {item.name}{' '}<i className={item.iconClassName} />
