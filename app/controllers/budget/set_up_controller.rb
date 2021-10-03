@@ -10,10 +10,18 @@ module Budget
 
     def create
       form = Budget::Events::Form.new(events: events_params)
-      form.save
+      if form.save
+        interval.update(set_up_completed_at: Time.current)
+      else
+        render inertia: 'BudgetSetupApp', props: props.merge(errors: form.errors)
+      end
     end
 
     private
+
+    def interval
+      Budget::Interval.for(month: target_interval_month, year: target_interval_year)
+    end
 
     def today
       Time.current
@@ -45,7 +53,7 @@ module Budget
 
     def events_params
       params.require(:events).map do |event_params|
-        event_params.permit(:id, :amount, :event_type, :month, :year, :budget_category_id, :data)
+        event_params.permit(:budget_item_id, :amount, :event_type, :month, :year, :budget_category_id, :data)
       end
     end
 

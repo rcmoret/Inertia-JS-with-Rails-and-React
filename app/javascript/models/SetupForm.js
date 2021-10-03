@@ -13,11 +13,11 @@ const SetupForm = (props) => {
   const removedItems = []
 
   const collections = { existingItems, newItems, removedItems }
-  const amount = amountReducer(collections)
+  const balance = balanceReducer(collections)
 
   return {
     ...collections,
-    amount: amount,
+    balance: balance,
     categories: categories,
     selectedCategoryId: null,
   }
@@ -28,7 +28,7 @@ export const Reducer = (event, state, payload) => {
 
   return {
     ...newCollections,
-    amount: amountReducer(newCollections),
+    balance: balanceReducer(newCollections),
   }
 }
 
@@ -43,7 +43,6 @@ const collectionsReducer = (event, state, payload) => {
     case "categorySelect":
       return categorySelect(state, payload)
     case "removeNewItem":
-      console.log(payload)
       return removeNewItem(state, payload)
     case "removeExistingItem":
       return removeExistingItem(state, payload)
@@ -52,7 +51,7 @@ const collectionsReducer = (event, state, payload) => {
   }
 }
 
-const amountReducer = ({ newItems, existingItems }) => {
+const balanceReducer = ({ newItems, existingItems }) => {
   return (
     [...newItems, ...existingItems].reduce((sum, item) => sum + item.amount, 0)
   )
@@ -68,22 +67,21 @@ const existingItem = item => {
   const amount = decimalToInt(props.displayAmount)
   const eventAttributes = {
     amount: amount,
-    id: props.id,
-    amount: amount,
+    budgetItemId: props.budgetItemId,
     eventType: 'setup_item_adjust',
-    data: JSON.stringify({ hello: 'world' }),
+    data: null,
   };
 
   return {
     ...props,
-    eventAttributes: eventAttributes,
+    eventAttributes,
     amount: amount,
   }
 }
 
 const newItemDefaults = item => {
   const baseAttributes = {
-    id: uuid(),
+    budgetItemId: uuid(),
     displayAmount: '',
     radioStatus: null,
   }
@@ -115,9 +113,9 @@ const newItem = item => {
 
 const removedItem = item => {
   const eventAttributes = {
-    id: item.id,
+    budgetItemId: item.budgetItemId,
     eventType: 'setup_item_delete',
-    data: JSON.stringify({ hello: 'world' }),
+    data: null,
   }
 
   return {
@@ -130,7 +128,7 @@ const addItem = (state, payload) => {
   const item = newItem({
     month: payload.month,
     year: payload.year,
-    budgetCategoryId: payload.id,
+    budgetCategoryId: payload.budgetItemId,
     name: payload.name,
     defaultAmount: payload.defaultAmount,
     spent: 0,
@@ -150,15 +148,15 @@ const addItem = (state, payload) => {
 
 const removeNewItem = (state, payload) => ({
   ...state,
-  newItems: state.newItems.filter(item => item.id !== payload.id)
+  newItems: state.newItems.filter(item => item.budgetItemId !== payload.budgetItemId)
 });
 
 const removeExistingItem = (state, payload) => ({
   ...state,
-  existingItems: state.existingItems.filter(item => payload.id !== item.id),
+  existingItems: state.existingItems.filter(item => payload.budgetItem !== item.budgetItemId),
   removedItems: [
     ...state.removedItems,
-    removedItem({ id: payload.id }),
+    removedItem({ budgetItemId: payload.budgetItemId }),
   ],
 });
 
@@ -166,7 +164,7 @@ const adjustExistingItem = (state, payload) => {
   return {
     ...state,
     existingItems: state.existingItems.map(item => (
-      payload.id === item.id ? existingItem({ ...item, ...payload }) : item
+      payload.budgetItemId === item.budgetItemId ? existingItem({ ...item, ...payload }) : item
     ))
   }
 };
@@ -175,7 +173,7 @@ const adjustNewItem = (state, payload) => (
   {
     ...state,
     newItems: state.newItems.map(item => (
-      payload.id === item.id ? newItem({ ...item, ...payload }) : item
+      payload.budgetItemId === item.budgetItemId ? newItem({ ...item, ...payload }) : item
     ))
   }
 );

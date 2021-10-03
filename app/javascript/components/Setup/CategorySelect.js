@@ -7,7 +7,7 @@ import { sortByName as sortFn } from "../../lib/Functions"
 const CategorySelect = props => {
   const { categories, dispatch, month, selectedCategoryId, year } = props
   const nullOption = { value: null, label: "" }
-  const value = categories.find(option => option.value === selectedCategoryId) || nullOption
+  const value = categories.find(option => option.value === selectedCategoryId)
   const onChange = event => { dispatch('categorySelect', { value: event.value }) }
   const onClick = event => {
     event.preventDefault();
