@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // import { Inertia } from "@inertiajs/inertia";
 import FinalizeForm, { itemReducer, Reducer } from "../models/FinalizeForm";
-import { Finalize as styles } from "../styles"
 import DateFormatter from "../lib/DateFormatter"
 import MoneyFormatter, { decimalToInt } from "../lib/MoneyFormatter";
 import { sortByName as sortFn } from "../lib/Functions"
@@ -58,8 +57,8 @@ const BudgetFinalizeApp = props => {
 
   return (
     <div>
-      <div className='flex justify-between mb-1 h-5/6 rounded'>
-        <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-800 w-8/12 rounded h-v90 overflow-scroll'>
+      <div className='flex justify-between mb-1 rounded'>
+        <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-8/12 rounded h-v90 overflow-scroll'>
           <form className='z-10' onSubmit={onSubmit}>
             <div className={flexItemSectionClassName}>
               <div>Apply to:</div>
@@ -77,20 +76,26 @@ const BudgetFinalizeApp = props => {
             </div>
           </form>
         </div>
-        <div className='w-4/12 p-2 mb-4 rounded z-50'>
-          <div className='bg-blue-800 p-2 rounded'>
+        <div className='w-3/10 mb-4 rounded z-50'>
+          <div className='bg-blue-900 p-2 rounded'>
             <div className='bg-white p-4 rounded shadow-lg'>
-              <div className='border-b-2 border-blue-800 border-solid flex justify-between text-2xl'>
+              <div className='border-b-2 border-blue-900 border-solid flex justify-between text-2xl'>
                 <div>Finalize</div>
                 <div>{dateString}</div>
               </div>
               <div className='w-full text-xl flex space-between flex-wrap'>
                 <div className='w-1/2'>Disrectionary:</div>
-                <div className='w-1/2 text-right'>{MoneyFormatter(discretionary, { decorate: true })}</div>
+                <div className='w-1/2 text-right'>
+                  <AmountSpan amount={discretionary * -1} />
+                </div>
                 <div className='w-1/2'>Extra From Items:</div>
-                <div className='w-1/2 text-right'>{MoneyFormatter(extraBalance, { decorate: true })}</div>
+                <div className='w-1/2 text-right'>
+                  <AmountSpan amount={extraBalance * -1} />
+                </div>
                 <div className='w-1/2'>Total toward <span className="underline">{rolloverItemName}</span></div>
-                <div className='w-1/2 text-right'>{MoneyFormatter(totalExtra, { decorate: true })}</div>
+                <div className='w-1/2 text-right'>
+                  <AmountSpan amount={totalExtra * -1} />
+                </div>
               </div>
             </div>
           </div>
@@ -127,8 +132,8 @@ const ItemGroup = ({ name, collection, dispatch }) => {
   } else {
     return (
       <div className={sectionClassName}>
-        <div className='text-xl mb-1 overflow-hidden rounded underline w-full z-30'>
-          <div className='bg-gradient-to-r from-green-600 to-green-300 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
+        <div className='text-xl mb-1 overflow-hidden rounded underline w-full'>
+          <div className='bg-gradient-to-r from-green-500 to-green-200 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
         </div>
         {collection.map(item => (
           <ItemForm key={item.budgetItemId} {...item} dispatch={dispatch} />
@@ -207,8 +212,6 @@ const RolloverAmount = props => {
     itemStatus,
     remaining,
   } = props
-  const inputStyle = { ...styles.input, width: 'w-4/5' }
-  const inputClassName = Object.values(inputStyle).join(' ')
   const inputChange = event =>
     dispatch('updateRolloverAmount',
       {
@@ -265,7 +268,7 @@ const RolloverAmount = props => {
       </div>
       <div className='text-right w-5/12'>
         <div>
-          $ <TextInput onChange={inputChange} className={inputClassName} value={displayAmount} />
+          $ <TextInput onChange={inputChange} className='text-right rounded w-4/5 border border-gray-400 border-solid' value={displayAmount} />
         </div>
       </div>
     </div>

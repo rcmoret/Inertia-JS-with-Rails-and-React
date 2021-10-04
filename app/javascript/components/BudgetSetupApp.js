@@ -45,7 +45,7 @@ const BudgetSetupApp = (props) => {
   return (
     <div>
       <div className='flex justify-between mb-1 h-5/6 rounded'>
-        <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-800 w-8/12 rounded h-v90 overflow-scroll'>
+        <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-8/12 rounded h-v90 overflow-scroll'>
           <form className='z-10' onSubmit={onSubmit}>
             <div className={flexItemSectionClassName}>
               <CategorySelect
@@ -70,9 +70,9 @@ const BudgetSetupApp = (props) => {
           </form>
         </div>
         <div className='w-3/12 p-2 mb-4 rounded z-50'>
-          <div className='bg-blue-800 p-2 rounded'>
+          <div className='bg-blue-900 p-2 rounded'>
             <div className='bg-white p-4 rounded shadow-lg'>
-              <div className='border-b-2 border-blue-800 border-solid'>
+              <div className='border-b-2 border-blue-900 border-solid'>
                 <h1 className='text-2xl'>Set up: {dateString}</h1>
               </div>
               <div className='flex justify-between text-xl'>

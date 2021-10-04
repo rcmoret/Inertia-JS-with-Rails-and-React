@@ -10,3 +10,7 @@ body {
 .h-v90 {
   height: 80vh;
 }
+
+.w-3\/10 {
+  width: 30%;
+}
