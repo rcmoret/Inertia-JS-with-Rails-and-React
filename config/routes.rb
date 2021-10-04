@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   namespace :budget do
     get 'set-up', to: 'set_up#new'
     post 'set-up', to: 'set_up#create'
+    get 'finalize', to: 'finalize#new'
+    post 'finalize', to: 'finalize#complete'
   end
   get '/budget(/:month/:year)', to: 'budget#index'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

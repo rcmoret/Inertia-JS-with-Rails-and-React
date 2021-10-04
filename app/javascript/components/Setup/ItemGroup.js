@@ -31,7 +31,7 @@ const ItemWrapper = props => {
   const inputClassName = Object.values(styles.input).join(' ')
 
   return (
-    <div className='odd:bg-gray-300 even:bg-white rounded overflow-hidden'>
+    <div className='odd:bg-gray-200 even:bg-white rounded overflow-hidden'>
       <div className='flex justify-between mb-1 p-2 rounded shadow-sm'>
         <div className='w-1/3'>
           {item.name}{' '}<i className={item.iconClassName} />
