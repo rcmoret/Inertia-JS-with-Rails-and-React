@@ -140,6 +140,7 @@ it("returns false for the same day", () => {
 // end of day from a date string
 it("returns a date object", () => {
   const actual = endOfDayFromDateString("2020-02-29")
-  const offset = today("dateObject").getTimezoneOffset() / 60
+  // const offset = today("dateObject").getTimezoneOffset() / 60
+  const offset = 6
   expect(actual).toEqual(new Date(`2020-02-29 23:59:59Z-${offset}`))
 })
