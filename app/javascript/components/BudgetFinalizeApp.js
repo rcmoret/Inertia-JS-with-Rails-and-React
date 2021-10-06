@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import { Inertia } from "@inertiajs/inertia";
-import FinalizeForm, { itemReducer, Reducer } from "../models/FinalizeForm";
+import FinalizeForm, { itemReducer } from "../models/FinalizeForm";
+import { reducer } from "../FinalizeReducer"
 import DateFormatter from "../lib/DateFormatter"
 import MoneyFormatter, { decimalToInt } from "../lib/MoneyFormatter";
 import { sortByName as sortFn } from "../lib/Functions"
@@ -41,7 +42,7 @@ const BudgetFinalizeApp = props => {
   const accruals = reviewItems.filter(item => item.isAccrual).sort(sortFn)
   const dayToDayItems = reviewItems.filter(item => !item.isAccrual && !item.isMonthly).sort(sortFn)
   const monthlyItems = reviewItems.filter(item => !item.isAccrual && item.isMonthly).sort(sortFn)
-  const dispatch = (event, payload) => { setFormObject(Reducer(event, formObject, payload)) }
+  const dispatch = (event, payload) => { setFormObject(reducer(event, formObject, payload)) }
   const flexItemSectionClassName = [...sectionClasses, 'flex', 'justify-between'].join(' ')
   const dateString = DateFormatter({ ...baseInterval, day: 1, format: 'shortMonthYear' })
   const onSubmit = event => {
@@ -256,7 +257,8 @@ const RolloverAmount = props => {
           name={budgetItemId}
           onChange={selectNone}
           remaining={remaining}
-        /> <QuickSelectButton
+        />
+        <QuickSelectButton
           amount={partialAmount}
           checked={itemStatus === 'rolloverPartial'}
           label='Partial'
