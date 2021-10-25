@@ -55,6 +55,7 @@ const BudgetFinalizeApp = props => {
     console.log(body)
     // Inertia.post('/budget/finalize', body)
   }
+  document.title = `Finalize ${dateString}`
 
   return (
     <div>

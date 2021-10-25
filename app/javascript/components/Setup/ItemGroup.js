@@ -2,7 +2,6 @@ import React from "react";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import MoneyFormatter from "../../lib/MoneyFormatter";
-import { SetUp as styles } from "../../styles"
 import TextInput from "../shared/TextInput"
 
 import { sectionClassName } from '../BudgetSetupApp'
@@ -28,7 +27,7 @@ const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
 
 const ItemWrapper = props => {
   const { children, item, inputChange, removeItem } = props
-  const inputClassName = Object.values(styles.input).join(' ')
+  const inputClassName = 'text-right rounded w-4/5 border border-gray-400 border-solid'
 
   return (
     <div className='odd:bg-gray-200 even:bg-white rounded overflow-hidden'>

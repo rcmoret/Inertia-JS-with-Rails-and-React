@@ -41,6 +41,7 @@ const BudgetSetupApp = (props) => {
     // Inertia.post('/budget/set-up', body)
   }
   const dateString = DateFormatter({ ...targetInterval, day: 1, format: 'shortMonthYear' })
+  document.title = `Set up ${dateString}`
 
   return (
     <div>
