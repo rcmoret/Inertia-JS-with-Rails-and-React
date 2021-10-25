@@ -1,8 +1,8 @@
-import MoneyFormatter from "../lib/MoneyFormatter";
-import { sortByName as sortFn } from "../lib/Functions"
-import { extraBalanceReducer } from "../reducers/FinalizeReducer"
+import MoneyFormatter from "../../lib/MoneyFormatter";
+import { sortByName as sortFn } from "../../lib/Functions"
+import { extraBalanceReducer } from "./Reducer"
 
-const FinalizeForm = (props) => {
+const Form = (props) => {
   const { baseInterval, targetInterval } = props
   const categories = props.categories.map(category => ({...category, label: category.name, value: category.id })).sort(sortFn)
   const discretionary = baseInterval.discretionary * -1
@@ -121,4 +121,4 @@ const eventForm = (targetInterval, item) => {
   }
 }
 
-export default FinalizeForm;
+export default Form;

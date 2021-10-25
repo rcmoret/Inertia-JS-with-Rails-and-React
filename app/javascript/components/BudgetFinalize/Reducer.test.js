@@ -172,3 +172,4 @@ it("returns an updated item/collection when updating rollover amount", () => {
   expect(actual).toEqual(state)
 });
 
+// extraBalanceReducer - test this directly

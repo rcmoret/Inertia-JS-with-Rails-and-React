@@ -11,6 +11,13 @@ export const reducer = (event, state, payload) => {
   }
 }
 
+export const extraBalanceReducer = (discretionary, reviewItems) => {
+  const extraBalance = reviewItems.reduce((sum, item) => (sum + item.extra), 0)
+  const totalExtra = extraBalance + discretionary
+
+  return { discretionary, extraBalance, totalExtra }
+}
+
 const updateRolloverItem = (state, payload) => {
   return {
     ...state,
@@ -87,13 +94,6 @@ const updatedCollection = (state, item) => {
     },
     reviewItems,
   }
-}
-
-export const extraBalanceReducer = (discretionary, reviewItems) => {
-  const extraBalance = reviewItems.reduce((sum, item) => (sum + item.extra), 0)
-  const totalExtra = extraBalance + discretionary
-
-  return { discretionary, extraBalance, totalExtra }
 }
 
 export default reducer;
