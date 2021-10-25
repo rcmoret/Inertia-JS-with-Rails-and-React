@@ -7,7 +7,7 @@ export const reducer = (event, state, payload) => {
     case "updateSelectedItem":
       return updateSelectedItem(state, payload)
     default:
-     return null
+     return state
   }
 }
 

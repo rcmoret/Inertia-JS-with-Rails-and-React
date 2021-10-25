@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import { Inertia } from "@inertiajs/inertia";
 import FinalizeForm, { itemReducer } from "../models/FinalizeForm";
-import { reducer } from "../FinalizeReducer"
+import { reducer } from "../reducers/FinalizeReducer"
 import DateFormatter from "../lib/DateFormatter"
 import MoneyFormatter, { decimalToInt } from "../lib/MoneyFormatter";
 import { sortByName as sortFn } from "../lib/Functions"
