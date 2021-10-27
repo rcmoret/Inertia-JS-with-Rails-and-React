@@ -38,22 +38,22 @@ const ItemWrapper = props => {
 
   return (
     <StripedRow>
-      <div className='flex justify-between mb-1 p-2 rounded w-full'>
-        <div className='w-1/3'>
-          {item.name}{' '}<i className={item.iconClassName} />
+      <Cell styling={{width: 'w-1/3'}}>
+        {item.name}
+        {" "}
+        <i className={item.iconClassName} />
+      </Cell>
+      {children}
+      <Cell styling={{width: 'w-1/4'}}>
+        <div className='text-right'>
+          $ <TextInput onChange={inputChange} className={inputClassName} value={item.displayAmount} />
         </div>
-        {children}
-        <div className='flex justify-between w-1/4'>
-          <div className='text-right'>
-            $ <TextInput onChange={inputChange} className={inputClassName} value={item.displayAmount} />
-          </div>
-          <div className='w-4'>
-            <Link onClick={removeItem}>
-              <Icon className='fas fa-times' />
-            </Link>
-          </div>
+        <div className='w-4'>
+          <Link onClick={removeItem}>
+            <Icon className='fas fa-times' />
+          </Link>
         </div>
-      </div>
+      </Cell>
     </StripedRow>
   )
 }
