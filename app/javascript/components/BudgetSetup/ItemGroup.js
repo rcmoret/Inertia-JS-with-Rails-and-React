@@ -1,26 +1,23 @@
 import React from "react";
+import MoneyFormatter from "../../lib/MoneyFormatter";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
-import MoneyFormatter from "../../lib/MoneyFormatter";
+import Section from "../shared/Section"
 import TextInput from "../shared/TextInput"
-
-import { sectionClassName } from '../BudgetSetupApp'
 
 const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   if (collection.length === 0) {
     return null
   } else {
     return (
-      <div className={sectionClassName}>
+      <Section>
         <div className='text-xl mb-1 overflow-hidden rounded underline w-full z-30'>
           <div className='bg-gradient-to-r from-green-600 to-green-300 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
         </div>
-        <div>
-          {collection.map(item => (
-            <ItemForm key={item.budgetItemId} item={item} dispatch={dispatch} />
-          ))}
-        </div>
-      </div>
+        {collection.map(item => (
+          <ItemForm key={item.budgetItemId} item={item} dispatch={dispatch} />
+        ))}
+      </Section>
     )
   }
 };
@@ -30,7 +27,7 @@ const ItemWrapper = props => {
   const inputClassName = 'text-right rounded w-4/5 border border-gray-400 border-solid'
 
   return (
-    <div className='odd:bg-gray-200 even:bg-white rounded overflow-hidden'>
+    <div className='odd:bg-gray-200 even:bg-white rounded overflow-hidden w-full'>
       <div className='flex justify-between mb-1 p-2 rounded shadow-sm'>
         <div className='w-1/3'>
           {item.name}{' '}<i className={item.iconClassName} />

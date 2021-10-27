@@ -24,7 +24,6 @@ const BudgetSetupApp = (props) => {
   const existingItems = formObject.existingItems.sort(sortFn)
   const dayToDayItemIds = [...existingItems, ...formObject.newItems].filter(item => !item.isMonthly).map(item => item.budgetCategoryId)
   const categories = formObject.categories.filter(category => categoryFilterFn(category, dayToDayItemIds))
-  const flexItemSectionClassName = [...sectionClasses, 'flex', 'justify-between', 'flex-row-reverse'].join(' ')
   const onSubmit = ev => {
     ev.preventDefault();
     // const body = JSON.stringify(eventsReducer(formObject))
@@ -33,6 +32,7 @@ const BudgetSetupApp = (props) => {
     // Inertia.post('/budget/set-up', body)
   }
   const dateString = DateFormatter({ ...targetInterval, day: 1, format: 'shortMonthYear' })
+  const sectionStyle = { flexAlign: 'flex-row-reverse' }
   document.title = `Set up ${dateString}`
 
   return (
@@ -40,7 +40,7 @@ const BudgetSetupApp = (props) => {
       <div className='flex justify-between mb-1 h-5/6 rounded'>
         <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-8/12 rounded h-v90 overflow-scroll'>
           <form className='z-10' onSubmit={onSubmit}>
-            <div className={flexItemSectionClassName}>
+            <Section styling={sectionStyle}>
               <CategorySelect
                 categories={categories}
                 dispatch={dispatch}
@@ -48,7 +48,7 @@ const BudgetSetupApp = (props) => {
                 selectedCategoryId={selectedCategoryId}
                 year={targetInterval.year}
               />
-            </div>
+            </Section>
             <ItemGroup name='Existing Items' ItemForm={ExistingItemForm} collection={existingItems} dispatch={dispatch} />
             <ItemGroup name='Accruals' ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
             <ItemGroup name='Revenues' ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />

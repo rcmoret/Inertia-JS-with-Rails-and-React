@@ -13,14 +13,14 @@ export default ({ name, collection, dispatch }) => {
     return null
   } else {
     return (
-      <div className={sectionClasses.join(" ")}>
+      <Section>
         <div className='text-xl mb-1 overflow-hidden rounded underline w-full'>
           <div className='bg-gradient-to-r from-green-500 to-green-200 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
         </div>
         {collection.map(item => (
           <ItemForm key={item.budgetItemId} {...item} dispatch={dispatch} />
         ))}
-      </div>
+      </Section>
     )
   }
 };

@@ -11,20 +11,6 @@ import SubmitButton from "./SubmitButton"
 import Summary from "./Summary"
 import AmountSpan from "../shared/AmountSpan"
 
-export const sectionClasses = [
-  'bg-white',
-  'border-b-2',
-  'border-solid',
-  'border-gray-500',
-  'flex',
-  'flex-wrap',
-  'justify-between',
-  'p-2',
-  'mb-2',
-  'rounded',
-  'w-full',
-]
-
 export default props => {
   const { baseInterval } = props
   const initialForm = Form(props)

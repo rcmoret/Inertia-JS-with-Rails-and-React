@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select"
-import { sectionClasses } from "./App"
+
+import Section from "../shared/Section"
 
 export default props => {
   const {
@@ -8,12 +9,11 @@ export default props => {
     dispatch,
     rolloverItem,
   } = props
-  const flexItemSectionClassName = sectionClasses.join(' ')
   return (
-    <div className={flexItemSectionClassName}>
+    <Section>
       <div>Apply to:</div>
       <CategorySelect categories={categories} dispatch={dispatch} rolloverItem={rolloverItem} />
-    </div>
+    </Section>
   )
 }
 
