@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import AmountSpan from "../shared/AmountSpan";
+import Row from "../shared/Row"
+
+const titleStyling = {
+  border: 'border-b-2 border-blue-900 border-solid',
+  rounded: null,
+  text: 'text-2xl',
+}
 
 export default ({ dateString, discretionary, extraBalance, rolloverItemName, totalExtra}) => (
   <div className='w-3/10 mb-4 rounded z-50'>
     <div className='bg-blue-900 p-2 rounded'>
       <div className='bg-white p-4 rounded shadow-lg'>
-        <div className='border-b-2 border-blue-900 border-solid flex justify-between text-2xl'>
+        <Row styling={titleStyling}>
           <div>Finalize</div>
           <div>{dateString}</div>
-        </div>
-        <div className='w-full text-xl flex space-between flex-wrap'>
+        </Row>
+        <Row styling={{text: 'text-xl', flexWrap: 'flex-wrap'}}>
           <div className='w-1/2'>Disrectionary:</div>
           <div className='w-1/2 text-right'>
             <AmountSpan amount={discretionary * -1} />
@@ -22,7 +29,7 @@ export default ({ dateString, discretionary, extraBalance, rolloverItemName, tot
           <div className='w-1/2 text-right'>
             <AmountSpan amount={totalExtra * -1} />
           </div>
-        </div>
+        </Row>
       </div>
     </div>
   </div>
