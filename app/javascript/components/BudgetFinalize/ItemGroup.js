@@ -14,9 +14,9 @@ export default ({ name, collection, dispatch }) => {
   } else {
     return (
       <Section>
-        <div className='text-xl mb-1 overflow-hidden rounded underline w-full'>
-          <div className='bg-gradient-to-r from-green-500 to-green-200 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
-        </div>
+        <TitleRow styling={{backgroundColor: 'bg-gradient-to-r from-green-600 to-green-300'}}>
+          &#8226;{' '}{name}
+        </TitleRow>
         {collection.map(item => (
           <ItemForm key={item.budgetItemId} {...item} dispatch={dispatch} />
         ))}

@@ -1,10 +1,19 @@
 import React from "react";
 import MoneyFormatter from "../../lib/MoneyFormatter";
+
+import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Section from "../shared/Section"
-import { StripedRow } from "../shared/Row"
+import { StripedRow, TitleRow } from "../shared/Row"
 import TextInput from "../shared/TextInput"
+
+const titleStyling = {
+  margin: 'mb-1',
+  padding: 'pt-2 pb-2 pl-1 pr-1',
+  text: 'text-xl font-semibold underline',
+  zIndex: 'z-30'
+}
 
 const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   if (collection.length === 0) {
@@ -12,9 +21,9 @@ const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   } else {
     return (
       <Section>
-        <div className='text-xl mb-1 overflow-hidden rounded underline w-full z-30'>
-          <div className='bg-gradient-to-r from-green-600 to-green-300 w-full p-1 rounded font-semibold'>&#8226;{' '}{name}</div>
-        </div>
+        <TitleRow styling={{backgroundColor: 'bg-gradient-to-r from-green-600 to-green-300'}}>
+          &#8226;{' '}{name}
+        </TitleRow>
         {collection.map(item => (
           <ItemForm key={item.budgetItemId} item={item} dispatch={dispatch} />
         ))}

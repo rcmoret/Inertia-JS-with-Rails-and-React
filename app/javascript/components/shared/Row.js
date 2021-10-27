@@ -36,4 +36,21 @@ export const StripedRow = suppliedProps => {
   )
 };
 
+export const TitleRow = suppliedProps => {
+  const titleProps = {
+    fontSize: 'text-xl',
+    fontWeight: 'font-semibold',
+    margin: 'mb-1',
+    padding: 'pt-2 pb-2 pl-1 pr-1',
+    textDecoration: 'underline',
+    zIndex: 'z-30',
+  }
+  const { styling, ...props } = suppliedProps
+  const titleStyles = { ...titleProps, ...styling }
+
+  return (
+    <Row {...props} styling={titleStyles} />
+  )
+}
+
 export default Row;
