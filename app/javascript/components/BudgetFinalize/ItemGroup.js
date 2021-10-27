@@ -29,7 +29,7 @@ const ItemForm = props => {
   const { iconClassName, name } = props
 
   return (
-    <div className='odd:bg-gray-200 even:bg-white p-2 flex justify-between rounded overflow-hidden w-full'>
+    <StripedRow>
       <div className='mb-1 rounded w-4/12'>
         <div>{name}{' '}<i className={iconClassName} /></div>
         <div><Budgeted {...props} /></div>
@@ -43,7 +43,7 @@ const ItemForm = props => {
         <div>Applied to Extra</div>
         <AppliedToExtra {...props} />
       </div>
-    </div>
+    </StripedRow>
   )
 };
 

@@ -3,6 +3,7 @@ import MoneyFormatter from "../../lib/MoneyFormatter";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Section from "../shared/Section"
+import { StripedRow } from "../shared/Row"
 import TextInput from "../shared/TextInput"
 
 const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
@@ -27,8 +28,8 @@ const ItemWrapper = props => {
   const inputClassName = 'text-right rounded w-4/5 border border-gray-400 border-solid'
 
   return (
-    <div className='odd:bg-gray-200 even:bg-white rounded overflow-hidden w-full'>
-      <div className='flex justify-between mb-1 p-2 rounded shadow-sm'>
+    <StripedRow>
+      <div className='flex justify-between mb-1 p-2 rounded w-full'>
         <div className='w-1/3'>
           {item.name}{' '}<i className={item.iconClassName} />
         </div>
@@ -44,7 +45,7 @@ const ItemWrapper = props => {
           </div>
         </div>
       </div>
-    </div>
+    </StripedRow>
   )
 }
 
