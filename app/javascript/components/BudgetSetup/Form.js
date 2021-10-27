@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
-import MoneyFormatter, { decimalToInt } from '../lib/MoneyFormatter';
+import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
 
-const SetupForm = (props) => {
+const Form = (props) => {
   const { baseInterval, targetInterval } = props
   const { month, year } = targetInterval
   const categories = categoriesReducer(props.categories)
@@ -14,12 +14,13 @@ const SetupForm = (props) => {
 
   const collections = { existingItems, newItems, removedItems }
   const balance = balanceReducer(collections)
+  const selectedCategoryId = null
 
   return {
     ...collections,
-    balance: balance,
-    categories: categories,
-    selectedCategoryId: null,
+    balance,
+    categories,
+    selectedCategoryId,
   }
 };
 
@@ -31,6 +32,18 @@ export const Reducer = (event, state, payload) => {
     balance: balanceReducer(newCollections),
   }
 }
+
+export const categoryFilterFn = (category, dayToDayItemIds) => (
+  category.isMonthly || !dayToDayItemIds.includes(category.id)
+)
+
+export const eventsReducer = collections => {
+  const { newItems, removedItems } = collections
+
+  const existingItems = collections.existingItems.filter(item => item.isChanged)
+  const events = [...existingItems, ...newItems, ...removedItems].map(item => item.eventAttributes)
+  return { events }
+};
 
 const collectionsReducer = (event, state, payload) => {
   switch(event) {
@@ -51,11 +64,9 @@ const collectionsReducer = (event, state, payload) => {
   }
 }
 
-const balanceReducer = ({ newItems, existingItems }) => {
-  return (
-    [...newItems, ...existingItems].reduce((sum, item) => sum + item.amount, 0)
-  )
-}
+const balanceReducer = ({ newItems, existingItems }) => (
+  [...newItems, ...existingItems].reduce((sum, item) => sum + item.amount, 0)
+)
 
 const existingItemDefaults = item => ({
   isChanged: false,
@@ -182,22 +193,10 @@ const categorySelect = (state, payload) => (
   { ...state, selectedCategoryId: payload.value }
 )
 
-export const categoryFilterFn = (category, dayToDayItemIds) => (
-  category.isMonthly || !dayToDayItemIds.includes(category.id)
-)
-
 const categoriesReducer = collection => (
   collection.map(category => (
     { ...category, value: category.id, label: category.name }
   ))
 )
 
-export const eventsReducer = collections => {
-  const { newItems, removedItems } = collections
-
-  const existingItems = collections.existingItems.filter(item => item.isChanged)
-  const events = [...existingItems, ...newItems, ...removedItems].map(item => item.eventAttributes)
-  return { events }
-};
-
-export default SetupForm;
+export default Form;
