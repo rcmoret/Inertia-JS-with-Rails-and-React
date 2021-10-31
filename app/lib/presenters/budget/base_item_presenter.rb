@@ -50,6 +50,11 @@ module Presenters
         amount - spent
       end
 
+      def deletable?
+        transaction_detail_count.zero?
+      end
+      alias_method :is_deletable, :deletable?
+
       private
 
       def attributes

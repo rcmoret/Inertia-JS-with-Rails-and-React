@@ -25,8 +25,10 @@ module Budget
     def presenter_class
       if monthly?
         Presenters::Budget::MonthlyItemPresenter
+      elsif expense?
+        Presenters::Budget::DayToDayExpensePresenter
       else
-        Presenters::Budget::DayToDayItemPresenter
+        Presenters::Budget::DayToDayRevenuePresenter
       end
     end
   end

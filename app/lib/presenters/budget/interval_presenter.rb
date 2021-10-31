@@ -15,11 +15,15 @@ module Presenters
         with_presenters { item_views.accruals }
       end
 
-      def items(include_deleted: false)
+      def items(include_deleted: false, reviewable_only: false)
         items_query = item_views
         items_query = items_query.active unless include_deleted
 
-        items_query.map(&:as_presenter)
+        items_query.map(&:as_presenter).then do |item_presenters|
+          item_presenters.select! { |p| p.reviewable? } if reviewable_only
+
+          item_presenters
+        end
       end
 
       def discretionary

@@ -76,7 +76,7 @@ module Budget
             discretionary
             month
             year
-            items {
+            items(reviewableOnly: true) {
               budgetItemId: id
               budgetCategoryId
               budgeted: amount

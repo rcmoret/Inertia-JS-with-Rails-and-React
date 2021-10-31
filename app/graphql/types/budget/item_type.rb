@@ -7,6 +7,7 @@ module Types
       field :budget_category_id, ID, 'The primary key of the category', null: false
       field :difference, Integer, 'The difference between the amount spend and budgeted', null: false
       field :icon_class_name, String, 'The icon class name for the item', null: true
+      field :is_deletable?, Boolean, 'Can this budget item be deleted base on transaction details', null: false
       field :is_accrual, Boolean, 'Is the item\'s category an accrual', null: false
       field :is_monthly, Boolean, 'Is the category a monthly/not day-to-day', null: false
       field :is_expense, Boolean, 'Is the category an expense/not revenue', null: false

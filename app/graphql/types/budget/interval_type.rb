@@ -10,6 +10,7 @@ module Types
       field :discretionary, Integer, 'The amount of cash plus the remaining budget items amounts', null: false
       field :items, [ItemType], 'budget items within the given interval', null: false do
         argument :include_deleted, Boolean, required: false
+        argument :reviewable_only, Boolean, required: false
       end
       # field :transaction_entries, [TransactionEntryType], 'Transactions for the interval', null: false do
       #   argument :account_id, Integer, required: true
