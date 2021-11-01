@@ -10,7 +10,6 @@ module Budget
 
     def complete
       form = Budget::Events::Form.new(events: events_params)
-      require 'pry'; binding.pry
       if form.save
         interval.update(close_out_completed_at: Time.current)
         redirect_to '/budget/set-up'
@@ -38,7 +37,7 @@ module Budget
     end
 
     def target_interval_year
-      if target_interval_month == 12
+      if base_interval_month == 12
         base_interval_year + 1
       else
         base_interval_year
@@ -80,6 +79,7 @@ module Budget
               budgetItemId: id
               budgetCategoryId
               budgeted: amount
+              remaining
               iconClassName
               isAccrual
               isExpense
