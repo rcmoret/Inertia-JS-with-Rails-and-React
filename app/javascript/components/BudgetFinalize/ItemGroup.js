@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
 
-import { decimalToInt } from "../../lib/MoneyFormatter"
+import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
 import AmountSpan from "../shared/AmountSpan";
 import { StripedRow, TitleRow } from "../shared/Row";

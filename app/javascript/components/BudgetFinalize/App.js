@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// import { Inertia } from "@inertiajs/inertia";
 import Form, { itemReducer } from "./Form";
-import { reducer } from "./Reducer"
+import { postEvents, reducer } from "./Functions"
 import DateFormatter from "../../lib/DateFormatter"
 import Header from "./Header"
 import ItemGroup from "./ItemGroup"
@@ -33,14 +32,8 @@ export default props => {
   }
   const dateString = DateFormatter({ ...baseInterval, day: 1, format: 'shortMonthYear' })
   const onSubmit = event => {
-    event.preventDefault();
-    const events = [{ eventAttributes: rolloverItem }, ...reviewItems]
-      .map(item => itemReducer(item))
-      .filter(form => form.amount !== 0)
-
-    const body = { events }
-    console.log(body)
-    // Inertia.post('/budget/finalize', body)
+    event.preventDefault()
+    postEvents(rolloverItem, reviewItems)
   }
   document.title = `Finalize ${dateString}`
 

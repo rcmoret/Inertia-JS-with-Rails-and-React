@@ -173,3 +173,5 @@ it("returns an updated item/collection when updating rollover amount", () => {
 });
 
 // extraBalanceReducer - test this directly
+//
+// postEvents - test this as well

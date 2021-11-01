@@ -4,11 +4,13 @@ import { extraBalanceReducer } from "./Reducer"
 
 const Form = (props) => {
   const { baseInterval, targetInterval } = props
-  const categories = props.categories.map(category => ({...category, label: category.name, value: category.id })).sort(sortFn)
+  const categories = props.categories.map(category => (
+    { ...category, label: category.name, value: category.id }
+  )).sort(sortFn)
   const discretionary = baseInterval.discretionary * -1
   const reviewItems = baseInterval.items.map(item => (
-    reviewItem({ ...item, ...eventForm(targetInterval, item) })
-  )).filter(item => item.isReviewable)
+    { ...item, ...eventForm(targetInterval, item) }
+  ))
   const balances = extraBalanceReducer(discretionary, reviewItems)
 
   return {
@@ -28,31 +30,6 @@ const Form = (props) => {
   }
 };
 
-const reviewItem = (props) => props.isMonthly ? monthlyObject(props) : dayToDayObject(props)
-
-const dayToDayObject = (props) => {
-  const { isExpense, remaining } = props
-  const isReviewable = isExpense ? remaining < 0 : remaining > 0
-
-  return { ...props, isReviewable }
-}
-
-const monthlyObject = (props) => {
-  const { transactionDetailCount } = props
-  const isReviewable = transactionDetailCount === 0
-
-  return { ...props, isReviewable }
-}
-
-export const itemReducer = props => {
-  const { data, ...eventProps } = props.eventAttributes
-  if (Object.keys(data).length === 0) {
-    return { ...eventProps }
-  } else {
-    return { data: JSON.stringify(data), ...eventProps }
-  }
-}
-
 const eventForm = (targetInterval, item) => {
   const { items, month, year } = targetInterval
   const { budgetCategoryId, isAccrual, remaining } = item
@@ -67,7 +44,6 @@ const eventForm = (targetInterval, item) => {
   if (matchingItems.length === 0) {
     const amount = isAccrual ? remaining : 0
     return {
-      baseItem: item,
       budgeted: 0,
       displayAmount,
       extra,
@@ -84,11 +60,12 @@ const eventForm = (targetInterval, item) => {
       targetItems: [{ budgetItemId: null, amount: 0 }],
     }
   } else if (matchingItems.length === 1) {
-    const { amount, budgetItemId } = matchingItems[0]
+    const { budgetItemId } = matchingItems[0]
+    const budgeted = matchingItems[0].amount
+    const amount = isAccrual ? (budgeted + remaining) : budgeted
     const rolloverAmount = isAccrual ? remaining : 0
     return {
-      baseItem: item,
-      budgeted: amount,
+      budgeted,
       displayAmount,
       extra,
       itemStatus,
@@ -104,14 +81,13 @@ const eventForm = (targetInterval, item) => {
   } else {
     const amount = isAccrual ? remaining : 0
     return {
-      baseItem: item,
       budgeted: 0,
       displayAmount,
       extra,
       itemStatus,
       eventAttributes: {
         budgetItemId: null,
-        amount: 0,
+        amount: amount,
         data: { baseItemId: item.budgetItemId },
         eventType: 'rollover_item_adjust',
       },
