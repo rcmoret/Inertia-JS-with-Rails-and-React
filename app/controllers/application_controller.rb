@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!, unless: :demo_env?
   after_action :add_csrf_token
@@ -5,7 +7,7 @@ class ApplicationController < ActionController::Base
   private
 
   def add_csrf_token
-    cookies["XSRF-TOKEN"] = form_authenticity_token
+    cookies['XSRF-TOKEN'] = form_authenticity_token
   end
 
   def demo_env?

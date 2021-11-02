@@ -87,7 +87,7 @@ RSpec.describe Budget::Events::CreateItemForm do
         it 'does not create an interval - not needed' do
           interval = Budget::Interval.current
           form = new_object(month: interval.month, year: interval.year)
-          expect { form.save }.not_to change { Budget::Interval.count }
+          expect { form.save }.not_to(change { Budget::Interval.count })
         end
       end
 
@@ -256,11 +256,11 @@ RSpec.describe Budget::Events::CreateItemForm do
 
   def budget_interval(**params)
     @budget_interval ||= begin
-       month = params.fetch(:month) { rand(1..12) }
-       year = params.fetch(:year) { rand(2019..2025) }
-       traits = params.fetch(:traits, [:set_up])
-       FactoryBot.create(:budget_interval, *traits, month: month, year: year)
-     end
+      month = params.fetch(:month) { rand(1..12) }
+      year = params.fetch(:year) { rand(2019..2025) }
+      traits = params.fetch(:traits, [:set_up])
+      FactoryBot.create(:budget_interval, *traits, month: month, year: year)
+    end
   end
 
   def amount

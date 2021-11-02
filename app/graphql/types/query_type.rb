@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class QueryType < Types::BaseObject
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
@@ -44,7 +46,7 @@ module Types
 
     def category(id:)
       ::Budget::Category.find(id).then do |budget_category|
-        Presenters::BudgetCategoryPresenter.new(budget_cateory)
+        Presenters::BudgetCategoryPresenter.new(budget_category)
       end
     end
 

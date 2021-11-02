@@ -19,7 +19,7 @@ module Transaction
     scope :prior_to, ->(date) { joins(:entry).merge(Entry.prior_to(date)) }
     scope :pending, -> { joins(:entry).merge(Entry.pending) }
     scope :budget_inclusions, -> { joins(:entry).merge(Entry.budget_inclusions) }
-    scope :for_accounts , ->(account_ids) {
+    scope :for_accounts, lambda { |account_ids|
       joins(:entry).where(transaction_entries: { account_id: account_ids })
     }
 

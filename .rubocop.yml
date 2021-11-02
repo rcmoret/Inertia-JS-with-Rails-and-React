@@ -1,0 +1,48 @@
+AllCops:
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*.rb'
+    - 'node_modules/**/*'
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - db/schema.rb
+    - config/initializers/devise.rb
+
+Metrics/BlockLength:
+  Max: 10
+  ExcludedMethods:
+    - before
+    - context
+    - create_table
+    - define
+    - describe
+    - factory
+    - group
+    - included
+    - it
+    - let
+    - namespace
+    - shared_context
+    - shared_examples_for
+    - task
+  Exclude:
+    - config/environments/*
+    - config/initializers/*
+
+Style/Documentation:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/GlobalVars:
+  AllowedVariables:
+    - $logger
+
+Sytle/MultilineBlockChain:
+  Enabled: false

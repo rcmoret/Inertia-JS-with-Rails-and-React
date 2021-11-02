@@ -39,6 +39,7 @@ module Budget
         @budget_item_id = params[:budget_item_id]
         @event_type = params[:event_type]
         @data = params[:data]
+        super
       end
 
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
@@ -95,10 +96,7 @@ module Budget
         end
       end
 
-      attr_reader :amount
-      attr_reader :budget_item_id
-      attr_reader :event_type
-      attr_reader :data
+      attr_reader :amount, :budget_item_id, :event_type, :data
     end
   end
 end

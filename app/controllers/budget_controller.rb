@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class BudgetController < ApplicationController
   include GraphQuery
   skip_before_action :authenticate_user!
 
   def index
-    render inertia: "BudgetSetupApp", props: graph_data
+    render inertia: 'BudgetSetupApp', props: graph_data
   end
 
   private

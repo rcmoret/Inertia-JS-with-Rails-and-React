@@ -5,7 +5,7 @@ module Budget
     include GraphQuery
 
     def new
-      render inertia: "BudgetFinalizeApp", props: props
+      render inertia: 'BudgetFinalizeApp', props: props
     end
 
     def complete

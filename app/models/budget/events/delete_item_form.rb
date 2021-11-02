@@ -24,6 +24,7 @@ module Budget
         @event_type = params[:event_type]
         @budget_item_id = params[:budget_item_id]
         @data = params[:data]
+        super
       end
 
       def save
@@ -105,9 +106,7 @@ module Budget
         end
       end
 
-      attr_reader :budget_item_id
-      attr_reader :event_type
-      attr_reader :data
+      attr_reader :budget_item_id, :event_type, :data
     end
   end
 end

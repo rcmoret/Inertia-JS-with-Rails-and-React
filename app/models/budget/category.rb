@@ -28,7 +28,7 @@ module Budget
               if: :revenue?
 
     validates_uniqueness_of :name, conditions: -> { active }
-    validates :default_amount, :name,  presence: true
+    validates :default_amount, :name, presence: true
     validate :accrual_on_expense
 
     scope :active, -> { where(archived_at: nil) }

@@ -14,6 +14,8 @@ module Budget
           raise NotImplementedError
         end
       end
+
+      def initialize(*); end
     end
   end
 end

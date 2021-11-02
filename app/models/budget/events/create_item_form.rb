@@ -44,6 +44,7 @@ module Budget
         @year = params[:year].to_i
         @budget_category_id = params[:budget_category_id]
         @data = params[:data]
+        super
       end
 
       def save
@@ -162,12 +163,7 @@ module Budget
         end
       end
 
-      attr_reader :amount
-      attr_reader :budget_category_id
-      attr_reader :event_type
-      attr_reader :month
-      attr_reader :year
-      attr_reader :data
+      attr_reader :amount, :budget_category_id, :event_type, :month, :year, :data
     end
     # rubocop:enable Metrics/ClassLength
   end
