@@ -1,100 +1,72 @@
-import MoneyFormatter from "../../lib/MoneyFormatter";
-import { sortByName as sortFn } from "../../lib/Functions"
-import { extraBalanceReducer } from "./Reducer"
+import { v4 as uuid } from 'uuid';
+import { asOption } from '../../lib/Functions';
+import { extraFrom } from './Functions';
+import MoneyFormatter from '../../lib/MoneyFormatter';
 
-const Form = (props) => {
-  const { baseInterval, targetInterval } = props
-  const categories = props.categories.map(category => (
-    { ...category, label: category.name, value: category.id }
-  )).sort(sortFn)
-  const discretionary = baseInterval.discretionary * -1
-  const reviewItems = baseInterval.items.map(item => (
-    { ...item, ...eventForm(targetInterval, item) }
-  ))
-  const balances = extraBalanceReducer(discretionary, reviewItems)
+const Form = props => {
+  const { baseInterval, categories, targetInterval } = props
+  const { discretionary } = baseInterval
+  const { month, year } = targetInterval
+  const baseIntervalItems = baseInterval.items
+  const targetIntervalItems = targetInterval.items
+
+  const baseIntervalCategoryIds = baseIntervalItems.map(item => item.budgetCategoryId)
+  const targetItemCategoryIds = targetIntervalItems.map(item => item.budgetCategoryId)
+
+  const newModel = category => {
+    const { isAccrual, isMonthly } = category
+    const availableItems = targetIntervalItems
+      .filter(item => item.budgetCategoryId === category.id)
+      .map(({ budgetItemId, budgeted }) => ({ budgetItemId, budgeted, eventType: 'rollover_item_adjust' }))
+    const newItem = () => ({ budgetItemId: uuid(), budgeted: 0, eventType: 'rollover_item_create' })
+
+    const baseItems = baseIntervalItems.filter(item => item.budgetCategoryId === category.id)
+
+    const newItemEvents = isMonthly || availableItems.length === 0 ? baseItems.map(newItem) : []
+    const targetItems = [...availableItems, ...newItemEvents]
+
+    return {
+      ...category,
+      baseItems: baseItems.map(item => {
+        const inputAmount = isAccrual ? MoneyFormatter(item.remaining) : ''
+        const status = isAccrual ? 'rolloverAll' : null
+        const rolloverAmount = isAccrual ? item.remaining : null
+        const targetItemId = baseItems.length === 1 && availableItems.length <= 1 ? targetItems[0].budgetItemId : null
+        return { ...item, inputAmount, status, rolloverAmount, targetItemId }
+      }),
+      targetItems
+    }
+  }
+
+  const models = categories.reduce((array, category) => {
+    if (baseIntervalCategoryIds.includes(category.id)) {
+      return [...array, newModel(category)]
+    } else {
+      return array
+    }
+  }, [])
+  const availableCategories = categories.reduce((array, category) => {
+    if (targetItemCategoryIds.includes(category.id)) {
+      return array
+    } else {
+      return [...array, asOption(category)]
+    }
+  }, [])
+
+  const rolloverItem = {
+    data: {},
+    discretionary: (discretionary * -1),
+    extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
+    budgetCategoryId: null,
+  }
 
   return {
-    categories,
-    ...balances,
-    reviewItems,
-    rolloverItem: {
-      amount: discretionary,
-      budgetCategoryId: null,
-      data: {},
-      eventType: 'rollover_item_create',
-      month: targetInterval.month,
-      remaining: discretionary,
-      year: targetInterval.year,
-    },
-    rolloverItemName: '',
+    availableCategories,
+    models,
+    month,
+    rolloverItem,
+    year,
   }
 };
-
-const eventForm = (targetInterval, item) => {
-  const { items, month, year } = targetInterval
-  const { budgetCategoryId, isAccrual, remaining } = item
-  const itemStatus = isAccrual ? 'rolloverAll' : ''
-  const displayAmount = isAccrual ? MoneyFormatter(remaining) : ''
-  const extra = 0
-
-  const matchingItems = items
-    .filter(item => item.budgetCategoryId === budgetCategoryId)
-    .map(({ budgetItemId, amount }) => ({ budgetItemId, amount }))
-
-  if (matchingItems.length === 0) {
-    const amount = isAccrual ? remaining : 0
-    return {
-      budgeted: 0,
-      displayAmount,
-      extra,
-      itemStatus,
-      eventAttributes: {
-        amount,
-        budgetCategoryId: budgetCategoryId,
-        eventType: 'rollover_item_create',
-        data: {},
-        month: month,
-        year: year,
-      },
-      rolloverAmount: amount,
-      targetItems: [{ budgetItemId: null, amount: 0 }],
-    }
-  } else if (matchingItems.length === 1) {
-    const { budgetItemId } = matchingItems[0]
-    const budgeted = matchingItems[0].amount
-    const amount = isAccrual ? (budgeted + remaining) : budgeted
-    const rolloverAmount = isAccrual ? remaining : 0
-    return {
-      budgeted,
-      displayAmount,
-      extra,
-      itemStatus,
-      eventAttributes: {
-        budgetItemId: budgetItemId,
-        amount,
-        data: { baseItemId: item.budgetItemId },
-        eventType: 'rollover_item_adjust',
-      },
-      rolloverAmount,
-      targetItems: matchingItems,
-    }
-  } else {
-    const amount = isAccrual ? remaining : 0
-    return {
-      budgeted: 0,
-      displayAmount,
-      extra,
-      itemStatus,
-      eventAttributes: {
-        budgetItemId: null,
-        amount: amount,
-        data: { baseItemId: item.budgetItemId },
-        eventType: 'rollover_item_adjust',
-      },
-      rolloverAmount: amount,
-      targetItems: matchingItems,
-    }
-  }
-}
 
 export default Form;

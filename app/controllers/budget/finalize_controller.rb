@@ -68,28 +68,17 @@ module Budget
           categories {
             id
             name
+            iconClassName
+            isAccrual
             isExpense
             isMonthly
           }
           baseInterval: interval(month: #{base_interval_month}, year: #{base_interval_year}) {
             discretionary
-            month
-            year
             items(reviewableOnly: true) {
               budgetItemId: id
               budgetCategoryId
-              budgeted: amount
               remaining
-              iconClassName
-              isAccrual
-              isExpense
-              isMonthly
-              month
-              name
-              remaining
-              spent
-              transactionDetailCount
-              year
             }
           }
           targetInterval: interval(month: #{target_interval_month}, year: #{target_interval_year}) {
@@ -97,15 +86,8 @@ module Budget
             year
             items {
               budgetItemId: id
-              name
               budgetCategoryId
-              amount
-              month
-              year
-              iconClassName
-              isAccrual
-              isExpense
-              isMonthly
+              budgeted: amount
             }
           }
         }

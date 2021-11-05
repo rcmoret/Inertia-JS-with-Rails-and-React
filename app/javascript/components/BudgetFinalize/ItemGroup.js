@@ -78,7 +78,6 @@ const RolloverAmount = props => {
       {
         budgetItemId: budgetItemId,
         displayAmount: event.target.value,
-        rolloverAmount: decimalToInt(event.target.value),
       }
     )
   const selectAll = () =>
@@ -86,7 +85,6 @@ const RolloverAmount = props => {
       {
         budgetItemId: budgetItemId,
         displayAmount: MoneyFormatter(remaining),
-        rolloverAmount: remaining,
       }
     )
   const selectNone = () =>
@@ -94,7 +92,6 @@ const RolloverAmount = props => {
       {
         budgetItemId: budgetItemId,
         displayAmount: '0.00',
-        rolloverAmount: 0,
       }
     )
   const partialAmount = itemStatus === 'rolloverPartial' ? decimalToInt(displayAmount) : ''
