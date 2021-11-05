@@ -44,5 +44,9 @@ Style/GlobalVars:
   AllowedVariables:
     - $logger
 
-Sytle/MultilineBlockChain:
+Style/MultilineBlockChain:
   Enabled: false
+
+Lint/UselessMethodDefinition:
+  Exclude:
+    - app/lib/presenters/**/*

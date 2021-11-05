@@ -53,7 +53,6 @@ module Presenters
       def deletable?
         transaction_detail_count.zero?
       end
-
       alias is_deletable deletable?
 
       private
