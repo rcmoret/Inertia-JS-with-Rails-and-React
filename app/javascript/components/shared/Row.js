@@ -43,7 +43,6 @@ export const TitleRow = suppliedProps => {
     margin: 'mb-1',
     padding: 'pt-2 pb-2 pl-1 pr-1',
     textDecoration: 'underline',
-    zIndex: 'z-30',
   }
   const { styling, ...props } = suppliedProps
   const titleStyles = { ...titleProps, ...styling }
