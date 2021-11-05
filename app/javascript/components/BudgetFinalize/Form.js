@@ -11,19 +11,37 @@ const Form = props => {
   const targetIntervalItems = targetInterval.items
 
   const baseIntervalCategoryIds = baseIntervalItems.map(item => item.budgetCategoryId)
-  const targetItemCategoryIds = targetIntervalItems.map(item => item.budgetCategoryId)
+  const targetIntervalCategoryIds = targetIntervalItems.map(item => item.budgetCategoryId)
 
   const newModel = category => {
     const { isAccrual, isMonthly } = category
     const availableItems = targetIntervalItems
       .filter(item => item.budgetCategoryId === category.id)
-      .map(({ budgetItemId, budgeted }) => ({ budgetItemId, budgeted, eventType: 'rollover_item_adjust' }))
-    const newItem = () => ({ budgetItemId: uuid(), budgeted: 0, eventType: 'rollover_item_create' })
+      .map(({ budgetItemId, budgeted }) => ({
+        name: `${budgetItemId} - ${MoneyFormatter(budgeted, { decorate: true })}`,
+        budgetItemId,
+        budgeted,
+        eventType: 'rollover_item_adjust',
+      }))
+    const newItem = (_item, index) => (
+      {
+        name: `New (${index})`,
+        budgetItemId: uuid(),
+        budgeted: 0,
+        eventType: 'rollover_item_create',
+      }
+    )
 
     const baseItems = baseIntervalItems.filter(item => item.budgetCategoryId === category.id)
 
-    const newItemEvents = isMonthly || availableItems.length === 0 ? baseItems.map(newItem) : []
-    const targetItems = [...availableItems, ...newItemEvents]
+    const newItemEvents = () => {
+      if ((isMonthly && !isAccrual) || availableItems.length === 0) {
+        return baseItems.map(newItem)
+      } else {
+        return []
+      }
+    }
+    const targetItems = [...availableItems, ...newItemEvents()]
 
     return {
       ...category,
@@ -45,8 +63,9 @@ const Form = props => {
       return array
     }
   }, [])
+
   const availableCategories = categories.reduce((array, category) => {
-    if (targetItemCategoryIds.includes(category.id)) {
+    if (targetIntervalCategoryIds.includes(category.id)) {
       return array
     } else {
       return [...array, asOption(category)]
@@ -58,6 +77,7 @@ const Form = props => {
     discretionary: (discretionary * -1),
     extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
     budgetCategoryId: null,
+    name: '',
   }
 
   return {

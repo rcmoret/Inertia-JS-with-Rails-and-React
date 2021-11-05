@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Select from "react-select";
+import { sortByName as sortFn } from "../../lib/Functions"
 
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
@@ -17,91 +18,145 @@ export default ({ name, collection, dispatch }) => {
         <TitleRow styling={{backgroundColor: 'bg-gradient-to-r from-green-600 to-green-300'}}>
           &#8226;{' '}{name}
         </TitleRow>
-        {collection.map(item => (
-          <ItemForm key={item.budgetItemId} {...item} dispatch={dispatch} />
+        {collection.map(model => (
+          <ModelForm key={model.id} model={model} dispatch={dispatch} />
         ))}
       </Section>
     )
   }
 };
 
-const ItemForm = props => {
-  const { iconClassName, name } = props
+const ModelForm = ({ dispatch, model }) => {
+  const { id, baseItems, iconClassName, name, targetItems } = model
 
   return (
-    <StripedRow>
-      <div className='mb-1 rounded w-4/12'>
+    <StripedRow styling={{overflow: null}}>
+      <div className='mb-1 rounded w-3/12'>
         <div>{name}{' '}<i className={iconClassName} /></div>
-        <div><Budgeted {...props} /></div>
+        {model.baseItems.map(item => (
+          <TargetItemSelect
+            key={item.budgetItemId}
+            baseItem={item}
+            categoryId={id}
+            dispatch={dispatch}
+            targetItems={targetItems}
+          />
+        ))}
       </div>
       <div width='w-5/12'>
-        <RolloverAmount {...props} />
+        {model.baseItems.map(item => (
+          <BaseItem key={item.budgetItemId} item={item} categoryId={id} dispatch={dispatch} />
+        ))}
       </div>
-      <div className='w-2/12 text-right'>
-        <div>New Amount</div>
-        <NewAmount {...props} />
-        <div>Applied to Extra</div>
-        <AppliedToExtra {...props} />
+      <div className='w-3/12 text-right'>
+        <TargetItems baseItems={baseItems} targetItems={targetItems} />
       </div>
     </StripedRow>
   )
 };
 
-const Budgeted = props => {
-  const { targetItems } = props
-  if (targetItems.length === 1) {
-    return (
-      <div className='flex justify-between'>
-        <div>Budgeted:</div>
-        <AmountSpan amount={targetItems[0].amount} color='text-green-700' negativeColor='text-green-700' />
-      </div>
+const ItemsWrapper = ({ children }) => (
+  <div className='w-full flex justify-between flex-wrap items-center'>
+    {children}
+  </div>
+)
+
+const TargetItems = ({ baseItems, targetItems }) => {
+  const displayItems = targetItems.reduce((array, item) => {
+    if (baseItems.map(i => i.targetItemId).includes(item.budgetItemId)) {
+      return [...array, item]
+    } else {
+      return array
+    }
+  }, [])
+
+  if (displayItems.length === 1 && targetItems.length === 1) {
+    const item = displayItems[0]
+    return(
+      <ItemsWrapper>
+        <TargetItem key={item.budgetItemId} multiple={false} baseItems={baseItems} item={item} />
+      </ItemsWrapper>
     )
   } else {
     return (
-      <div className='w-full'>
-        <BudgetItemSelect {...props} />
-      </div>
+      <ItemsWrapper>
+        <div className ='w-full'>Target Items</div>
+        {displayItems.map(item => (
+          <TargetItem key={item.budgetItemId} multiple={true} baseItems={baseItems} item={item} />
+        ))}
+      </ItemsWrapper>
     )
   }
-};
+}
 
-const RolloverAmount = props => {
+const TargetItem = ({ item, baseItems, multiple }) => {
+  const { budgetItemId, budgeted } = item
+  const newAmount = baseItems.reduce((sum, i) => {
+    if (i.targetItemId === item.budgetItemId && i.rolloverAmount != null) {
+      return sum + i.rolloverAmount
+    } else {
+      return sum
+    }
+  }, budgeted)
+  const appliedToExtra = baseItems.reduce((sum, i) => (
+    i.targetItemId === budgetItemId ? sum + i.remaining - i.rolloverAmount : sum
+  ), 0)
+  const spanProps = { color: 'text-green-700', negativeColor: 'text-green-700' }
+  return (
+    <>
+      {multiple && <div className='w-full'>{item.name}</div>}
+      <div className="w-1/2">
+        Budgeted:
+      </div>
+     <div className="w-1/2">
+        <AmountSpan amount={budgeted} { ...spanProps } />
+      </div>
+      <div className="w-1/2">
+        New Amount:
+      </div>
+      <div className="w-1/2">
+        <AmountSpan amount={newAmount} { ...spanProps } />
+      </div>
+      <div className="w-1/2">
+        Applied to Extra:
+      </div>
+      <div className="w-1/2">
+        <AmountSpan amount={appliedToExtra} { ...spanProps }/>
+      </div>
+    </>
+  )
+}
+
+const BaseItem = ({ item, dispatch, categoryId }) => {
   const {
     budgetItemId,
-    dispatch,
-    displayAmount,
-    itemStatus,
+    inputAmount,
+    status,
     remaining,
-  } = props
-  const inputChange = event =>
-    dispatch('updateRolloverAmount',
-      {
-        budgetItemId: budgetItemId,
-        displayAmount: event.target.value,
-      }
-    )
-  const selectAll = () =>
-    dispatch('updateRolloverAmount',
-      {
-        budgetItemId: budgetItemId,
-        displayAmount: MoneyFormatter(remaining),
-      }
-    )
-  const selectNone = () =>
-    dispatch('updateRolloverAmount',
-      {
-        budgetItemId: budgetItemId,
-        displayAmount: '0.00',
-      }
-    )
-  const partialAmount = itemStatus === 'rolloverPartial' ? decimalToInt(displayAmount) : ''
+  } = item
+  const inputChange = event => dispatch('updateBudgetModel', {
+    budgetCategoryId: categoryId,
+    budgetItemId: budgetItemId,
+    inputAmount: event.target.value,
+  })
+  const selectAll = () => dispatch('updateBudgetModel', {
+    budgetCategoryId: categoryId,
+    budgetItemId: budgetItemId,
+    inputAmount: MoneyFormatter(remaining),
+  })
+  const selectNone = () => dispatch('updateBudgetModel', {
+    budgetCategoryId: categoryId,
+    budgetItemId: budgetItemId,
+    inputAmount: '0.00',
+  })
+  const partialAmount = status === 'rolloverPartial' ? decimalToInt(inputAmount) : ''
 
   return (
-    <div className='flex justify-between' >
+    <div className='w-full flex justify-between flex-wrap' >
       <div className='w-1/2'>
         <QuickSelectButton
           amount={remaining}
-          checked={itemStatus === 'rolloverAll'}
+          checked={status === 'rolloverAll'}
           label='All'
           name={budgetItemId}
           onChange={selectAll}
@@ -109,7 +164,7 @@ const RolloverAmount = props => {
         />
         <QuickSelectButton
           amount={0}
-          checked={itemStatus === 'rolloverNone'}
+          checked={status === 'rolloverNone'}
           label='None'
           name={budgetItemId}
           onChange={selectNone}
@@ -117,7 +172,7 @@ const RolloverAmount = props => {
         />
         <QuickSelectButton
           amount={partialAmount}
-          checked={itemStatus === 'rolloverPartial'}
+          checked={status === 'rolloverPartial'}
           label='Partial'
           name={budgetItemId}
           onChange={() => null}
@@ -127,7 +182,13 @@ const RolloverAmount = props => {
       </div>
       <div className='text-right w-5/12'>
         <div>
-          $ <TextInput onChange={inputChange} className='text-right rounded w-4/5 border border-gray-400 border-solid' value={displayAmount} />
+          $
+          {" "}
+          <TextInput
+            onChange={inputChange}
+            className='text-right rounded w-4/5 border border-gray-400 border-solid'
+            value={inputAmount}
+          />
         </div>
       </div>
     </div>
@@ -165,36 +226,6 @@ const QuickSelectButton = ({ amount, checked, label, onChange, name, remaining }
   }
 }
 
-const NewAmount = props =>{
-  const { eventAttributes } = props
-  const { amount } = eventAttributes
-  // const { eventAttributes, targetItems } = props
-  // const { budgetItemId, amount } = eventAttributes
-  // const targetItem = targetItems.find(item => item.budgetItemId === budgetItemId) || null
-
-  // if (targetItem === null) {
-  return (
-    <div>
-      <Amount amount={amount} />
-    </div>
-  )
-}
-
-const AppliedToExtra = props =>{
-  const { eventAttributes, extra, targetItems } = props
-  const targetItem = targetItems.find(item => item.id == eventAttributes.id) || null
-
-  if (targetItem === null) {
-    return (
-      <div><Amount amount={0} /></div>
-    )
-  } else {
-    return (
-      <div><Amount amount={extra} /></div>
-    )
-  }
-}
-
 const Amount = ({ amount }) => (
   <AmountSpan
     amount={amount}
@@ -203,23 +234,41 @@ const Amount = ({ amount }) => (
   />
 );
 
-const BudgetItemSelect = props => {
-  const valueFn = item => (
-    { ...item, value: item.id, label: `${item.budgetItemId} - ${MoneyFormatter(item.amount, { decorate: true })}`}
-  )
-  const options = [{ label: '', value: null }, ...props.targetItems.map(item => valueFn(item))]
-  const value = options.find(option => option.value === props.eventAttributes.budgetItemId)
+const TargetItemSelect = ({ categoryId, baseItem, dispatch, targetItems }) => {
+  const isNewItem = item => item.budgetItemId.match(/^\d+$/) === null // then it's a uuid
+  const itemOptions = targetItems
+    .sort((a, b) => {
+      if (isNewItem(a) && !isNewItem(b)) {
+        return 1
+      } else if (!isNewItem(b) && isNewItem(a)) {
+        return -1
+      } else {
+        return sortFn(a, b)
+      }
+    })
+    .map(item => ({
+      value: item.budgetItemId,
+      label: item.name
+    }))
+  const options = [{ value: null, lable: "" }, ...itemOptions]
+  const value = options.find(option => option.value === baseItem.targetItemId)
   const onChange = event => {
-    props.dispatch("updateSelectedItem", { budgetItemId: props.budgetItemId, id: event.budgetItemId })
+    dispatch("updateBudgetModel", {
+      targetItemId: event.value,
+      budgetItemId: baseItem.budgetItemId,
+      budgetCategoryId: categoryId,
+    })
   }
 
-  return (
-    <div className='w-4/5 text-sm' >
+  if (targetItems.length === 1) {
+    return null
+  } else {
+    return (
       <Select
         onChange={onChange}
         options={options}
         value={value}
       />
-    </div>
-  )
+    )
+  }
 };

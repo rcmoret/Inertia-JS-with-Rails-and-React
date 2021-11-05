@@ -27,12 +27,16 @@ export const StripedRow = suppliedProps => {
     evenColor: (suppliedProps.evenColor || defaultStripes.evenColor),
     oddColor: (suppliedProps.oddColor || defaultStripes.oddColor),
   }
-  const stripedStyle = {
-    backgroundColor: `odd:bg-${stripedColors.oddColor} even:bg-${stripedColors.evenColor}`
+  const rowProps = {
+    ...props,
+    styling: {
+      ...props.styling,
+      backgroundColor: `odd:bg-${stripedColors.oddColor} even:bg-${stripedColors.evenColor}`,
+    },
   }
 
   return (
-    <Row {...props} styling={stripedStyle} />
+    <Row { ...rowProps } />
   )
 };
 

@@ -75,6 +75,8 @@ module Budget
           }
           baseInterval: interval(month: #{base_interval_month}, year: #{base_interval_year}) {
             discretionary
+            month
+            year
             items(reviewableOnly: true) {
               budgetItemId: id
               budgetCategoryId

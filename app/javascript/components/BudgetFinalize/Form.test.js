@@ -80,6 +80,7 @@ describe("Form", () => {
       budgetItemId: targetItem.budgetItemId,
       budgeted: targetItem.budgeted,
       eventType: 'rollover_item_adjust',
+      name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
     })
   })
 
@@ -127,6 +128,7 @@ describe("Form", () => {
       budgetItemId: targetItem.budgetItemId,
       budgeted: targetItem.budgeted,
       eventType: 'rollover_item_adjust',
+      name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
     })
   })
 
@@ -158,8 +160,13 @@ describe("Form", () => {
     expect(actual.baseItems[0]).toEqual({ ...baseItem, targetItemId: targetItem.budgetItemId })
     expect(actual.targetItems.length).toEqual(2)
     expect(actual.targetItems).toEqual(expect.arrayContaining([
-      { budgetItemId: targetItem.budgetItemId, budgeted: targetItem.budgeted, eventType: 'rollover_item_adjust' },
-      expect.objectContaining({ budgeted: 0, eventType: 'rollover_item_create' })
+      {
+        budgetItemId: targetItem.budgetItemId,
+        budgeted: targetItem.budgeted,
+        eventType: 'rollover_item_adjust',
+        name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`
+      },
+      expect.objectContaining({ budgeted: 0, eventType: 'rollover_item_create', name: 'New (0)' })
     ]))
   })
 

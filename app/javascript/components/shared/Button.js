@@ -1,24 +1,25 @@
 import React from "react";
 
-const defaultProps = {
-  bgColor: 'bg-gray-800',
-  childen: [],
-  classes: [],
-  color: 'text-white',
-  fontWeight: 'font-semibold',
-  onClick: () => null,
-  onSubmit: () => null,
-  hoverBgColor: 'hover:bg-black',
-  hoverBgOpacity: 'hover:bg-opacity-1',
-  hoverColor: 'hover:text-white',
-  padding: 'p-2',
-  rounded: 'rounded',
-  shadow: 'shadow-md',
-  type: 'submit',
-};
-
 const Button = suppliedProps => {
+  const defaultProps = {
+    bgColor: 'bg-gray-800',
+    childen: [],
+    classes: [],
+    color: 'text-white',
+    fontWeight: 'font-semibold',
+    onClick: () => null,
+    onSubmit: () => null,
+    hoverBgColor: 'hover:bg-black',
+    hoverBgOpacity: 'hover:bg-opacity-1',
+    hoverColor: 'hover:text-white',
+    padding: 'p-2',
+    rounded: 'rounded',
+    shadow: 'shadow-md',
+    type: 'submit',
+  }
+
   const props = { ...defaultProps, ...suppliedProps }
+
   const {
     bgColor,
     children,
@@ -35,6 +36,7 @@ const Button = suppliedProps => {
     shadow,
     type,
   } = props
+
   const className = [
     bgColor,
     children,
@@ -55,5 +57,20 @@ const Button = suppliedProps => {
     </button>
   )
 };
+
+export const DisabledButton = suppliedProps => {
+  const defaultProps = {
+    bgColor: 'bg-gray-500',
+    hoverBgColor: 'hover:bg-gray-500',
+    classes: ['cursor-not-allowed'],
+    onClick: () => null,
+    onSubmit: () => null,
+  }
+
+  const props = { ...defaultProps, ...suppliedProps }
+  return (
+    <Button {...props} />
+  )
+}
 
 export default Button;
