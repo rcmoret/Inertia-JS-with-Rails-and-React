@@ -1,26 +1,25 @@
+# frozen_string_literal: true
+
 module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
-      def set_up?
-        super
-      end
-      alias_method :is_set_up, :set_up?
+      alias is_set_up set_up?
 
-      def closed_out?
-        super
-      end
-      alias_method :is_closed_out, :closed_out?
+      alias is_closed_out closed_out?
 
       def accrual_items
         with_presenters { item_views.accruals }
       end
 
       def items(include_deleted: false, reviewable_only: false)
-        items_query = item_views
-        items_query = items_query.active unless include_deleted
+        item_query = if include_deleted
+                       item_views.all
+                     else
+                       item_views.active
+                     end
 
-        items_query.map(&:as_presenter).then do |item_presenters|
-          item_presenters.select! { |p| p.reviewable? } if reviewable_only
+        item_query.map(&:as_presenter).then do |item_presenters|
+          item_presenters.select!(&:reviewable?) if reviewable_only
 
           item_presenters
         end

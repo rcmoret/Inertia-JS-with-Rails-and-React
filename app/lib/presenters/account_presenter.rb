@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Presenters
   class AccountPresenter < SimpleDelegator
     def initialize(account, balance: nil)

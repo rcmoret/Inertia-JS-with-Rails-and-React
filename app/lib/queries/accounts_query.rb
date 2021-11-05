@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Queries
   class AccountsQuery
     def initialize(include_inactive)
@@ -14,7 +16,6 @@ module Queries
         AccountPresenter.new(account, balance: balance)
       end
     end
-
 
     private
 

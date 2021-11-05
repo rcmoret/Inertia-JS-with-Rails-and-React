@@ -22,7 +22,7 @@ module Presenters
       def accrual?
         attributes.fetch(:accrual) { category.accrual? }
       end
-      alias_method :is_accrual, :accrual?
+      alias is_accrual accrual?
 
       def month
         attributes.fetch(:month) { interval.month }
@@ -35,12 +35,12 @@ module Presenters
       def monthly?
         attributes.fetch(:monthly?) { category.monthly? }
       end
-      alias_method :is_monthly, :monthly?
+      alias is_monthly monthly?
 
       def expense?
         attributes.fetch(:expense?) { category.expense? }
       end
-      alias_method :is_expense, :expense?
+      alias is_expense expense?
 
       def transaction_detail_count
         attributes.fetch(:transaction_count) { transation_details.count }
@@ -53,7 +53,8 @@ module Presenters
       def deletable?
         transaction_detail_count.zero?
       end
-      alias_method :is_deletable, :deletable?
+
+      alias is_deletable deletable?
 
       private
 
