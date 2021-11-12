@@ -8,24 +8,17 @@ import Section from "../shared/Section"
 import { StripedRow, TitleRow } from "../shared/Row"
 import TextInput from "../shared/TextInput"
 
-const titleStyling = {
-  margin: 'mb-1',
-  padding: 'pt-2 pb-2 pl-1 pr-1',
-  text: 'text-xl font-semibold underline',
-  zIndex: 'z-30'
-}
-
 const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
   if (collection.length === 0) {
     return null
   } else {
     return (
       <Section>
-        <TitleRow styling={{backgroundColor: 'bg-gradient-to-r from-green-600 to-green-300'}}>
-          &#8226;{' '}{name}
+        <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-600 to-green-300"}}>
+          &#8226;{" "}{name}
         </TitleRow>
         {collection.map(item => (
-          <ItemForm key={item.budgetItemId} item={item} dispatch={dispatch} />
+          <ItemForm key={item.id} item={item} dispatch={dispatch} />
         ))}
       </Section>
     )
@@ -34,23 +27,23 @@ const ItemGroup = ({ collection, name, ItemForm, dispatch }) => {
 
 const ItemWrapper = props => {
   const { children, item, inputChange, removeItem } = props
-  const inputClassName = 'text-right rounded w-4/5 border border-gray-400 border-solid'
+  const inputClassName = "text-right rounded w-4/5 border border-gray-400 border-solid"
 
   return (
     <StripedRow>
-      <Cell styling={{width: 'w-1/3'}}>
+      <Cell styling={{width: "w-1/3"}}>
         {item.name}
         {" "}
         <i className={item.iconClassName} />
       </Cell>
       {children}
-      <Cell styling={{width: 'w-1/4'}}>
-        <div className='text-right'>
+      <Cell styling={{width: "w-1/4"}}>
+        <div className="text-right">
           $ <TextInput onChange={inputChange} className={inputClassName} value={item.displayAmount} />
         </div>
-        <div className='w-4'>
+        <div className="w-4">
           <Link onClick={removeItem}>
-            <Icon className='fas fa-times' />
+            <Icon className="fas fa-times" />
           </Link>
         </div>
       </Cell>
@@ -61,11 +54,11 @@ const ItemWrapper = props => {
 export const ExistingItemForm = props => {
   const { item, dispatch } = props
   const inputChange = event => {
-    dispatch('adjustExistingItem', { budgetItemId: item.budgetItemId, displayAmount: event.target.value, isChanged: true })
+    dispatch("adjustExistingItem", { id: item.id, displayAmount: event.target.value })
   }
   const removeItem = event => {
     event.preventDefault()
-    dispatch('removeExistingItem', { budgetItemId: item.budgetItemId })
+    dispatch("removeItem", { id: item.id })
   }
 
   return (
@@ -74,46 +67,46 @@ export const ExistingItemForm = props => {
 };
 
 export const NewItemForm = ({ item, dispatch }) => {
-  const { budgetItemId, budgeted, defaultAmount, spent } = item
+  const { id, budgeted, defaultAmount, radioStatus, spent } = item
   const inputChange = event => {
-    dispatch('adjustNewItem', { budgetItemId: budgetItemId, displayAmount: event.target.value, radioStatus: null, })
+    dispatch("adjustNewItem", { id: id, displayAmount: event.target.value, radioStatus: null, })
   }
   const removeItem = event => {
     event.preventDefault()
-    dispatch('removeNewItem', item)
+    dispatch("removeItem", { id: id })
   }
   const selectSpent = () => {
-    dispatch('adjustNewItem', { budgetItemId: budgetItemId, displayAmount: MoneyFormatter(spent), radioStatus: 'spent' })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(spent), radioStatus: "spent" })
   }
   const selectBudgeted = () => {
-    dispatch('adjustNewItem', { budgetItemId: budgetItemId, displayAmount: MoneyFormatter(budgeted), radioStatus: 'budgeted' })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(budgeted), radioStatus: "budgeted" })
   }
   const selectDefault = () => {
-    dispatch('adjustNewItem', { budgetItemId: budgetItemId, displayAmount: MoneyFormatter(defaultAmount), radioStatus: 'default' })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(defaultAmount), radioStatus: "default" })
   }
 
   return (
     <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem}>
-      <div className='w-1/3'>
+      <div className="w-1/3">
         <QuickSelectButton
-          amount={item.budgeted}
-          checked={item.radioStatus === 'budgeted'}
-          label='Budgeted'
-          name={item.budgetItemId}
+          amount={budgeted}
+          checked={radioStatus === "budgeted"}
+          label="Budgeted"
+          name={id}
           onChange={selectBudgeted}
         />
         <QuickSelectButton
-          amount={item.defaultAmount}
-          checked={item.radioStatus === 'default'}
-          label='Default'
-          name={item.budgetItemId}
+          amount={defaultAmount}
+          checked={radioStatus === "default"}
+          label="Default"
+          name={id}
           onChange={selectDefault}
         />
         <QuickSelectButton
-          amount={item.spent}
-          checked={item.radioStatus === 'spent'}
-          label='Spent'
-          name={item.budgetItemId}
+          amount={spent}
+          checked={radioStatus === "spent"}
+          label="Spent"
+          name={id}
           onChange={selectSpent}
         />
       </div>
@@ -122,11 +115,11 @@ export const NewItemForm = ({ item, dispatch }) => {
 };
 
 const QuickSelectButton = ({ amount, checked, label, onChange, name }) => (
-  <div className='flex justify-between'>
-    <div className='text-right w-1/3'>{label}:</div>
-    <div className='text-right w-1/2'>{MoneyFormatter(amount, { decorate: true })}</div>
-    <div className='w-8'>
-      <input type='radio' onChange={onChange} checked={checked} name={name} />
+  <div className="flex justify-between">
+    <div className="text-right w-1/3">{label}:</div>
+    <div className="text-right w-1/2">{MoneyFormatter(amount, { decorate: true })}</div>
+    <div className="w-8">
+      <input type="radio" onChange={onChange} checked={checked} name={name} />
     </div>
   </div>
 )
