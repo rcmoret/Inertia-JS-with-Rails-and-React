@@ -1,5 +1,6 @@
 import { Inertia } from "@inertiajs/inertia";
-import { decimalToInt } from "../../lib/MoneyFormatter"
+import { decimalToInt } from "../../lib/MoneyFormatter";
+import { eventForm } from "../../lib/Functions";
 
 export const reducer = (event, form, payload) => {
   switch(event) {
@@ -82,16 +83,7 @@ export const formReducer = ({ models, month, rolloverItem, year }) => {
     [rolloverItemEvent]
   )
 
-  return events.map(eventReducer)
-}
-
-const eventReducer = event => {
-  const { data, ...eventProps } = event
-  if (Object.keys(data).length === 0) {
-    return { data: null, ...eventProps }
-  } else {
-    return { data: JSON.stringify(data), ...eventProps }
-  }
+  return events.map(eventForm)
 }
 
 export const postEvents = eventsBody => {

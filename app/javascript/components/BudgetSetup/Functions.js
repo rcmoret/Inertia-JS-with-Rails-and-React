@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import { newItemEvent, adjustItemEvent, deleteItemEvent } from "../../lib/Functions";
 // import { Inertia } from "@inertiajs/inertia";
 
 import { decimalToInt } from "../../lib/MoneyFormatter";
@@ -10,6 +11,7 @@ export const reducer = (event, form, payload) => {
     case "addItem":
       return {
         ...form,
+        selectedCategory: { budgetCategoryId: null, displayAmount: "" },
         newItems: [
           ...form.newItems,
           {
@@ -68,40 +70,11 @@ export const reducer = (event, form, payload) => {
   }
 };
 
-const dataFor = ({ data }) => {
-  if (data === null || data === undefined || Object.keys(data).length === 0) {
-    return null
-  } else {
-    return JSON.stringify(data)
-  }
-}
-
-const newItemEvent = (item, month, year) => ({
-  amount: item.amount,
-  budgetCategoryId: item.budgetCategoryId,
-  eventType: "setup_item_create",
-  month,
-  year,
-  data: dataFor(item)
-})
-
-const adjustItemEvent = item => ({
-  amount: item.amount,
-  budgetItemId: item.id,
-  eventType: "setup_item_adjust",
-  data: dataFor(item)
-})
-
-const deleteItemEvent = item => ({
-  budgetItemId: item.id,
-  eventType: "setup_item_delete",
-  data: dataFor(item)
-})
 
 export const eventsReducer = ({ existingItems, newItems, removedItems, month, year }) => [
-  ...newItems.map(item => newItemEvent(item, month, year)),
-  ...existingItems.filter(item => item.isChanged).map(adjustItemEvent),
-  ...removedItems.map(deleteItemEvent),
+  ...newItems.map(item => newItemEvent(item, month, year, "setup_item_create")),
+  ...existingItems.filter(item => item.isChanged).map(item => adjustItemEvent(item, "setup_item_adjust")),
+  ...removedItems.map(item => deleteItemEvent(item, "setup_item_delete")),
 ]
 
 export const postEvents = body => {

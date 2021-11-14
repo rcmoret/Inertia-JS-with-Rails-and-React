@@ -6,7 +6,7 @@ import { baseCategory, baseBaseInterval, baseBaseItem, baseTargetInterval } from
 
 import { Inertia } from "@inertiajs/inertia";
 
-jest.mock('@inertiajs/inertia')
+jest.mock("@inertiajs/inertia")
 
 describe("reducer", () => {
   // when event is "updateBudgetModel" and the amount is partial
@@ -20,8 +20,8 @@ describe("reducer", () => {
     const payload = {
       budgetCategoryId: category.id,
       budgetItemId: baseItem.budgetItemId,
-      inputAmount: '-12.00',
-      targetItemId: '878',
+      inputAmount: "-12.00",
+      targetItemId: "878",
     }
     const updatedForm = reducer("updateBudgetModel", form, payload)
     expect(updatedForm.models.length).toEqual(1)
@@ -29,7 +29,7 @@ describe("reducer", () => {
     const updatedItem = updatedForm.models[0].baseItems[0]
     expect(updatedItem.inputAmount).toEqual(payload.inputAmount)
     expect(updatedItem.rolloverAmount).toEqual(decimalToInt(payload.inputAmount))
-    expect(updatedItem.status).toEqual('rolloverPartial')
+    expect(updatedItem.status).toEqual("rolloverPartial")
     expect(updatedItem.targetItemId).toEqual(payload.targetItemId)
     const updatedRolloverItem = updatedForm.rolloverItem
     const expectedDataObject = {
@@ -53,8 +53,8 @@ describe("reducer", () => {
     const payload = {
       budgetCategoryId: category.id,
       budgetItemId: baseItem.budgetItemId,
-      inputAmount: '0.00',
-      targetItemId: '878',
+      inputAmount: "0.00",
+      targetItemId: "878",
     }
     const updatedForm = reducer("updateBudgetModel", form, payload)
     expect(updatedForm.models.length).toEqual(1)
@@ -62,7 +62,7 @@ describe("reducer", () => {
     const updatedItem = updatedForm.models[0].baseItems[0]
     expect(updatedItem.inputAmount).toEqual(payload.inputAmount)
     expect(updatedItem.rolloverAmount).toEqual(0)
-    expect(updatedItem.status).toEqual('rolloverNone')
+    expect(updatedItem.status).toEqual("rolloverNone")
     expect(updatedItem.targetItemId).toEqual(payload.targetItemId)
     const updatedRolloverItem = updatedForm.rolloverItem
     const expectedDataObject = {
@@ -86,7 +86,7 @@ describe("reducer", () => {
       budgetCategoryId: category.id,
       budgetItemId: baseItem.budgetItemId,
       inputAmount: MoneyFormatter(baseItem.remaining),
-      targetItemId: '878',
+      targetItemId: "878",
     }
     const updatedForm = reducer("updateBudgetModel", form, payload)
     expect(updatedForm.models.length).toEqual(1)
@@ -94,7 +94,7 @@ describe("reducer", () => {
     const updatedItem = updatedForm.models[0].baseItems[0]
     expect(updatedItem.inputAmount).toEqual(payload.inputAmount)
     expect(updatedItem.rolloverAmount).toEqual(baseItem.remaining)
-    expect(updatedItem.status).toEqual('rolloverAll')
+    expect(updatedItem.status).toEqual("rolloverAll")
     expect(updatedItem.targetItemId).toEqual(payload.targetItemId)
     expect(updatedForm.rolloverItem.data).toEqual(form.rolloverItem.data)
     expect(updatedForm.rolloverItem.extraBalance).toEqual(baseItem.remaining - decimalToInt(payload.inputAmount))
@@ -132,8 +132,8 @@ describe("reducer", () => {
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
     const form = Form(props)
-    const payload = { budgetCategoryId: '981' }
-    const actual = reducer('updateRolloverItem', form, payload)
+    const payload = { budgetCategoryId: "981" }
+    const actual = reducer("updateRolloverItem", form, payload)
     expect(actual.rolloverItem.budgetCategoryId).toEqual(payload.budgetCategoryId)
   })
 });
@@ -143,9 +143,9 @@ describe("isSubmittable", () => {
   it("returns false", () => {
     const form = {
       models: [
-        { baseItems: [{ status: null, targetItemId: '22' }] },
+        { baseItems: [{ status: null, targetItemId: "22" }] },
       ],
-      rolloverItem: { budgetCategoryId: '66' },
+      rolloverItem: { budgetCategoryId: "66" },
     }
     expect(isSubmittable(form)).toBe(false)
   })
@@ -154,9 +154,9 @@ describe("isSubmittable", () => {
   it("returns false", () => {
     const form = {
       models: [
-        { baseItems: [{ status: 'rolloverPartial', targetItemId: null }] },
+        { baseItems: [{ status: "rolloverPartial", targetItemId: null }] },
       ],
-      rolloverItem: { budgetCategoryId: '66' },
+      rolloverItem: { budgetCategoryId: "66" },
     }
     expect(isSubmittable(form)).toBe(false)
   })
@@ -165,7 +165,7 @@ describe("isSubmittable", () => {
   it("returns false", () => {
     const form = {
       models: [
-        { baseItems: [{ status: 'rolloverPartial', targetItemId: '91' }] },
+        { baseItems: [{ status: "rolloverPartial", targetItemId: "91" }] },
       ],
       rolloverItem: { budgetCategoryId: null },
     }
@@ -175,9 +175,9 @@ describe("isSubmittable", () => {
   // when a base item has both target item id and status and the rollover item has a category id
   it("returns true", () => {
     const form = {
-      rolloverItem: { budgetCategoryId: '66' },
+      rolloverItem: { budgetCategoryId: "66" },
       models: [
-        { baseItems: [{ status: 'rolloverPartial', targetItemId: '91' }] },
+        { baseItems: [{ status: "rolloverPartial", targetItemId: "91" }] },
       ],
     }
     expect(isSubmittable(form)).toBe(true)
@@ -188,32 +188,32 @@ describe("formReducer", () => {
   // when the model is day to day and no target item exists
   it("includes an item create event", () => {
     const baseItem = {
-      budgetItemId: '1015',
-      inputAmount: '-22.00',
-      budgetCategoryId: '11',
+      budgetItemId: "1015",
+      inputAmount: "-22.00",
+      budgetCategoryId: "11",
       remaining: -2200,
       rolloverAmount: -2200,
-      status: 'rolloverAll',
-      targetItemId: '531bea80-51ad-4274-83eb-cd75e3a54ada'
+      status: "rolloverAll",
+      targetItemId: "531bea80-51ad-4274-83eb-cd75e3a54ada"
     }
     const model = {
-      id: '11',
-      name: 'Groceries',
-      iconClassName: 'fa-buggy',
+      id: "11",
+      name: "Groceries",
+      iconClassName: "fa-buggy",
       isAccrual: true,
       isExpense: true,
       isMonthly: false,
       baseItems: [baseItem],
       targetItems: [
         {
-          budgetItemId: '531bea80-51ad-4274-83eb-cd75e3a54ada',
+          budgetItemId: "531bea80-51ad-4274-83eb-cd75e3a54ada",
           budgeted: 0,
-          eventType: 'rollover_item_create'
+          eventType: "rollover_item_create"
         }
       ]
     }
     const form = {
-      availableCategories: [ { value: '11', label: 'Groceries' } ],
+      availableCategories: [ { value: "11", label: "Groceries" } ],
       models: [model],
       month: 2,
       rolloverItem: {
@@ -229,7 +229,7 @@ describe("formReducer", () => {
       amount: baseItem.remaining,
       budgetCategoryId: model.id,
       data: JSON.stringify({ [baseItem.budgetItemId]: { amount: baseItem.rolloverAmount } }),
-      eventType: 'rollover_item_create',
+      eventType: "rollover_item_create",
       month: form.month,
       year: form.year,
     }
@@ -239,26 +239,26 @@ describe("formReducer", () => {
   // when the model is day to day and a target item exists
   it("includes an item adjust event", () => {
     const baseItem = {
-      budgetItemId: '1015',
-      inputAmount: '-22.00',
-      budgetCategoryId: '11',
+      budgetItemId: "1015",
+      inputAmount: "-22.00",
+      budgetCategoryId: "11",
       remaining: -2200,
       rolloverAmount: -2200,
-      status: 'rolloverAll',
-      targetItemId: '5515'
+      status: "rolloverAll",
+      targetItemId: "5515"
     }
     const targetItem = {
-      budgetItemId: '5515',
+      budgetItemId: "5515",
       budgeted: -1000,
-      eventType: 'rollover_item_adjust',
+      eventType: "rollover_item_adjust",
     }
     const form = {
       availableCategories: [],
       models: [
         {
-          id: '11',
-          name: 'Groceries',
-          iconClassName: 'fa-buggy',
+          id: "11",
+          name: "Groceries",
+          iconClassName: "fa-buggy",
           isAccrual: true,
           isExpense: true,
           isMonthly: false,
@@ -288,34 +288,34 @@ describe("formReducer", () => {
   // when the model contains two base items both pointing to the same target item
   it("returns a single target item with the correct attributes", () => {
     const targetItem = {
-      budgetItemId: '662',
+      budgetItemId: "662",
       budgeted: -1000,
-      eventType: 'rollover_item_adjust',
+      eventType: "rollover_item_adjust",
     }
     const baseItem1 = {
-      budgetItemId: '1015',
-      inputAmount: '-22.00',
-      budgetCategoryId: '11',
+      budgetItemId: "1015",
+      inputAmount: "-22.00",
+      budgetCategoryId: "11",
       remaining: -2200,
       rolloverAmount: -2200,
-      status: 'rolloverAll',
+      status: "rolloverAll",
       targetItemId: targetItem.budgetItemId,
     }
     const baseItem2 = {
       ...baseItem1,
-      budgetItemId: '1051',
-      inputAmount: '-15.00',
+      budgetItemId: "1051",
+      inputAmount: "-15.00",
       remaining: -7200,
       rolloverAmount: -1500,
-      status: 'rolloverPartial',
+      status: "rolloverPartial",
       targetItemId: targetItem.budgetItemId,
     }
     const form = {
       models: [
         {
-          id: '11',
-          name: 'Groceries',
-          iconClassName: 'fa-buggy',
+          id: "11",
+          name: "Groceries",
+          iconClassName: "fa-buggy",
           isAccrual: true,
           isExpense: true,
           isMonthly: false,
@@ -328,7 +328,7 @@ describe("formReducer", () => {
         data: {},
         discretionary: -100,
         extraBalance: 0,
-        budgetCategoryId: '73',
+        budgetCategoryId: "73",
       },
       year: 2022,
     }
@@ -348,26 +348,26 @@ describe("formReducer", () => {
   // when the model is day to day and a target item exists
   it("includes an item create event", () => {
     const baseItem = {
-      budgetItemId: '1015',
-      inputAmount: '-22.00',
-      budgetCategoryId: '11',
+      budgetItemId: "1015",
+      inputAmount: "-22.00",
+      budgetCategoryId: "11",
       remaining: -2200,
       rolloverAmount: -2200,
-      status: 'rolloverAll',
-      targetItemId: '5515'
+      status: "rolloverAll",
+      targetItemId: "5515"
     }
     const targetItem = {
-      budgetItemId: '5515',
+      budgetItemId: "5515",
       budgeted: -1000,
-      eventType: 'rollover_item_adjust',
+      eventType: "rollover_item_adjust",
     }
     const form = {
       availableCategories: [],
       models: [
         {
-          id: '11',
-          name: 'Groceries',
-          iconClassName: 'fa-buggy',
+          id: "11",
+          name: "Groceries",
+          iconClassName: "fa-buggy",
           isAccrual: true,
           isExpense: true,
           isMonthly: false,
@@ -389,7 +389,7 @@ describe("formReducer", () => {
       amount: (baseItem.remaining + targetItem.budgeted),
       budgetItemId: targetItem.budgetItemId,
       data: JSON.stringify({ [baseItem.budgetItemId]: { amount: baseItem.rolloverAmount } }),
-      eventType: 'rollover_item_adjust',
+      eventType: "rollover_item_adjust",
     }
     expect(actual[0]).toEqual(expected)
   })
@@ -398,11 +398,11 @@ describe("formReducer", () => {
   it("includes an item create event for the rollover item", () => {
     const rolloverItem ={
       data: {
-        '242': { amount: -2020 },
+        "242": { amount: -2020 },
       },
       discretionary: -1040,
       extraBalance: -2020,
-      budgetCategoryId: '573',
+      budgetCategoryId: "573",
     }
     const form = {
       availableCategories: [],
@@ -416,7 +416,7 @@ describe("formReducer", () => {
       amount: (rolloverItem.discretionary + rolloverItem.extraBalance),
       budgetCategoryId: rolloverItem.budgetCategoryId,
       data: JSON.stringify(rolloverItem.data),
-      eventType: 'rollover_item_create',
+      eventType: "rollover_item_create",
       month: form.month,
       year: form.year,
     }
