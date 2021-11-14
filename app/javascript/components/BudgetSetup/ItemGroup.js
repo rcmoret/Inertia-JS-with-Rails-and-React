@@ -67,22 +67,22 @@ export const ExistingItemForm = props => {
 };
 
 export const NewItemForm = ({ item, dispatch }) => {
-  const { id, budgeted, defaultAmount, radioStatus, spent } = item
+  const { id, budgeted, defaultAmount, status, spent } = item
   const inputChange = event => {
-    dispatch("adjustNewItem", { id: id, displayAmount: event.target.value, radioStatus: null, })
+    dispatch("adjustNewItem", { id: id, displayAmount: event.target.value, status: null, })
   }
   const removeItem = event => {
     event.preventDefault()
     dispatch("removeItem", { id: id })
   }
   const selectSpent = () => {
-    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(spent), radioStatus: "spent" })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(spent), status: "spent" })
   }
   const selectBudgeted = () => {
-    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(budgeted), radioStatus: "budgeted" })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(budgeted), status: "budgeted" })
   }
   const selectDefault = () => {
-    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(defaultAmount), radioStatus: "default" })
+    dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(defaultAmount), status: "default" })
   }
 
   return (
@@ -90,21 +90,21 @@ export const NewItemForm = ({ item, dispatch }) => {
       <div className="w-1/3">
         <QuickSelectButton
           amount={budgeted}
-          checked={radioStatus === "budgeted"}
+          checked={status === "budgeted"}
           label="Budgeted"
           name={id}
           onChange={selectBudgeted}
         />
         <QuickSelectButton
           amount={defaultAmount}
-          checked={radioStatus === "default"}
+          checked={status === "default"}
           label="Default"
           name={id}
           onChange={selectDefault}
         />
         <QuickSelectButton
           amount={spent}
-          checked={radioStatus === "spent"}
+          checked={status === "spent"}
           label="Spent"
           name={id}
           onChange={selectSpent}

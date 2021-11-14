@@ -3,16 +3,6 @@
 module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
-      def set_up?
-        super
-      end
-      alias is_set_up set_up?
-
-      def closed_out?
-        super
-      end
-      alias is_closed_out closed_out?
-
       def accrual_items
         with_presenters { item_views.accruals }
       end

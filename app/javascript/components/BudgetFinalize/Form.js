@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { asOption } from '../../lib/Functions';
 import { extraFrom } from './Functions';
-import MoneyFormatter from '../../lib/MoneyFormatter';
+import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
 
 const Form = props => {
   const { baseInterval, categories, targetInterval } = props
@@ -86,6 +86,78 @@ const Form = props => {
     month,
     rolloverItem,
     year,
+  }
+};
+
+export const reducer = (event, form, payload) => {
+  const updateBudgetModel = (form, { budgetCategoryId, budgetItemId, ...objectProps }) => {
+    const model = form.models.find(model => model.id === budgetCategoryId)
+    const originalItem = model.baseItems.find(originalItem => originalItem.budgetItemId === budgetItemId)
+    const rolloverAmount = objectProps.hasOwnProperty("inputAmount") ? decimalToInt(objectProps.inputAmount) : originalItem.rolloverAmount
+    const determineStatus = () => {
+      if (rolloverAmount === 0) {
+        return "rolloverNone"
+      } else if (rolloverAmount === originalItem.remaining) {
+        return "rolloverAll"
+      } else {
+        return "rolloverPartial"
+      }
+    }
+    const status = determineStatus()
+    const updatedItem = {
+      ...originalItem,
+      ...objectProps,
+      rolloverAmount,
+      status,
+    }
+    const updatedModel = {
+      ...model,
+      baseItems: model.baseItems.map(item => item.budgetItemId === budgetItemId ? updatedItem : item),
+    }
+    const models = form.models.map(model => model.id === budgetCategoryId ? updatedModel : model)
+    const updatedData = () => {
+      const itemData = {
+        [budgetItemId]: {
+          name: model.name,
+          amount: (originalItem.remaining - rolloverAmount)
+        }
+      }
+      return Object.entries({ ...form.rolloverItem.data, ...itemData }).reduce((newData, entry) => {
+        const key = entry[0]
+        const value = entry[1]
+        if (key !== budgetItemId || status !== "rolloverAll") {
+          return { ...newData, [key]: value }
+        } else {
+          return newData
+        }
+      }, {})
+    }
+
+    return {
+      ...form,
+      models,
+      rolloverItem: {
+        ...form.rolloverItem,
+        data: updatedData(),
+        extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
+      },
+    }
+  }
+
+  switch(event) {
+    case "updateBudgetModel":
+      return updateBudgetModel(form, payload)
+    case "updateRolloverItem":
+      return {
+        ...form,
+        rolloverItemName: payload.name,
+        rolloverItem: {
+          ...form.rolloverItem,
+          ...payload,
+        }
+      }
+    default:
+     return form
   }
 };
 

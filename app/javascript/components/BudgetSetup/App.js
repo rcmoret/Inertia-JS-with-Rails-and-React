@@ -1,12 +1,12 @@
 import React, { useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
 
 import CategorySelect from "./CategorySelect"
-import Form from "./Form";
-import { reducer, eventsReducer, postEvents } from "./Functions"
-import ItemGroup, { ExistingItemForm, NewItemForm } from "./ItemGroup"
+import Form, { reducer, eventsReducer } from "./Form";
+import ItemGroup, { ExistingItemForm, NewItemForm } from "./ItemGroup";
 
-import DateFormatter from "../../lib/DateFormatter"
-import { sortByName as sortFn } from "../../lib/Functions"
+import DateFormatter from "../../lib/DateFormatter";
+import { sortByName as sortFn } from "../../lib/Functions";
 
 import AmountSpan from "../shared/AmountSpan";
 import Button from "../shared/Button";
@@ -16,19 +16,19 @@ const BudgetSetupApp = (props) => {
   const initialForm = Form(props)
   const [form, setFormObject] = useState(initialForm);
   const dispatch = (event, payload) => setFormObject(reducer(event, form, payload))
-  const { categoryOptions, newItems, selectedCategory, month, year } = form
-  const accruals = newItems.filter(item => item.isAccrual).sort(sortFn)
-  const expenses = newItems.filter(item => !item.isAccrual && item.isExpense).sort(sortFn)
-  const revenues = newItems.filter(item => !item.isExpense).sort(sortFn)
+  const { categoryOptions, newItems, selectedCategory, targetMonth, targetYear } = form
   const existingItems = form.existingItems.sort(sortFn)
-  const dayToDayItemIds = [...existingItems, ...form.newItems].filter(item => !item.isMonthly).map(item => item.id)
+  const accruals = newItems.filter(item => item.isAccrual).sort(sortFn)
+  const revenues = newItems.filter(item => !item.isExpense).sort(sortFn)
+  const monthlyExpenses = newItems.filter(item => !item.isAccrual && item.isExpense && item.isMonthly).sort(sortFn)
+  const dayToDayExpenses = newItems.filter(item => !item.isAccrual && item.isExpense && !item.isMonthly).sort(sortFn)
   const balance = [...existingItems, ...form.newItems].reduce((sum, item) => sum + item.amount, 0)
   const onSubmit = ev => {
     ev.preventDefault();
-    const body = eventsReducer(form)
-    postEvents(body)
+    const events = eventsReducer(form)
+    Inertia.post("/budget/set-up", { events })
   }
-  const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
+  const dateString = DateFormatter({ targetMonth, targetYear, day: 1, format: "shortMonthYear" })
   document.title = `Set up ${dateString}`
 
   return (
@@ -46,7 +46,8 @@ const BudgetSetupApp = (props) => {
             <ItemGroup name="Existing Items" ItemForm={ExistingItemForm} collection={existingItems} dispatch={dispatch} />
             <ItemGroup name="Accruals" ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
             <ItemGroup name="Revenues" ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
-            <ItemGroup name="Expenses" ItemForm={NewItemForm} collection={expenses} dispatch={dispatch} />
+            <ItemGroup name="Monthly Expenses" ItemForm={NewItemForm} collection={monthlyExpenses} dispatch={dispatch} />
+            <ItemGroup name="Day-to-Day Expenses" ItemForm={NewItemForm} collection={dayToDayExpenses} dispatch={dispatch} />
             <div className="flex justify-between flex-row-reverse">
               <div className="bg-white rounded justify-between flex-row-reverse pl-6 pr-6 pt-2 pb-2">
                 <Button bgColor="bg-green-600" hoverBgColor="hover:bg-green-700" onSubmit={onSubmit}>
