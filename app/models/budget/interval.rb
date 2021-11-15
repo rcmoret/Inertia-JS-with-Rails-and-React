@@ -9,7 +9,6 @@ module Budget
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
     validate :close_out_completed_at_end_of_month
-    before_save :update_start_and_end_date!, if: -> { set_up_completed_at_changed? }
 
     PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at].freeze
 
@@ -136,11 +135,6 @@ module Budget
       return if close_out_completed_at >= last_date
 
       errors.add(:close_out_completed_at, 'Must be on or after the last day of the month')
-    end
-
-    def update_start_and_end_date!
-      self[:start_date] ||= first_date
-      self[:end_date] ||= last_date
     end
 
     QueryError = Class.new(StandardError)

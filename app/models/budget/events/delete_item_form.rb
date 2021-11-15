@@ -24,7 +24,7 @@ module Budget
         @event_type = params[:event_type]
         @budget_item_id = params[:budget_item_id]
         @data = params[:data]
-        super
+        super()
       end
 
       def save

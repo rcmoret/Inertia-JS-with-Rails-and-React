@@ -44,7 +44,7 @@ module Budget
         @year = params[:year].to_i
         @budget_category_id = params[:budget_category_id]
         @data = params[:data]
-        super
+        super()
       end
 
       def save

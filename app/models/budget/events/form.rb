@@ -14,9 +14,7 @@ module Budget
       def save
         return false unless valid?
 
-        ActiveRecord::Base.transaction do
-          save_all!
-        end
+        Budget::ItemEvent.transaction { save_all! }
 
         errors.none?
       end

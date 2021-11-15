@@ -39,7 +39,7 @@ module Budget
         @budget_item_id = params[:budget_item_id]
         @event_type = params[:event_type]
         @data = params[:data]
-        super
+        super()
       end
 
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
