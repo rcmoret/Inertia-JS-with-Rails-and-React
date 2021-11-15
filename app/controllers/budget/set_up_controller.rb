@@ -71,6 +71,7 @@ module Budget
             id
             defaultAmount
             name
+            iconClassName
             isAccrual
             isExpense
             isMonthly
@@ -83,7 +84,6 @@ module Budget
               budgetCategoryId
               budgeted: amount
               spent
-              iconClassName
               isAccrual
               isExpense
               isMonthly
@@ -97,7 +97,6 @@ module Budget
               name
               budgetCategoryId
               amount
-              iconClassName
               isAccrual
               isExpense
               isMonthly

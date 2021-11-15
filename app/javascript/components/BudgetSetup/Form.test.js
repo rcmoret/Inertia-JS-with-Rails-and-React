@@ -98,13 +98,25 @@ describe("Form", () => {
     const {
       removedItems,
       selectedCategory,
-      targetMonth,
-      targetYear,
+      month,
+      year,
     } = Form({ categories: [groceries, rent], targetInterval, baseInterval })
     expect(selectedCategory).toEqual({ budgetCategoryId: null, displayAmount: "" })
     expect(removedItems).toEqual([])
-    expect(targetMonth).toEqual(targetInterval.month)
-    expect(targetYear).toEqual(targetInterval.year)
+    expect(month).toEqual(targetInterval.month)
+    expect(year).toEqual(targetInterval.year)
+  })
+
+  // when a monthly accrual item is present as base item and target item
+  it("does not add a new item for that category", () => {
+    const category = { ...baseCategory, name: "Car Registration", isAccrual: true, isMonthly: true }
+    const targetItem = baseTargetItem({ category })
+    const targetInterval = { ...baseTargetInterval, items: [targetItem] }
+    const baseItem = baseBaseItem({ category: category })
+    const baseInterval = { ...baseBaseInterval, items: [baseItem] }
+    const { newItems, existingItems } = Form({ categories: [category], targetInterval, baseInterval })
+    expect(newItems.length).toEqual(0)
+    expect(existingItems.length).toEqual(1)
   })
 
   it("maps existing items and creates an item adjust forms", () => {
@@ -222,13 +234,13 @@ const baseNewItem = ({ category, ...overrides }) => ({
   budgeted: -1280,
   iconClassName: "fa-fa-fa",
   spent: -2299,
+  amount: 0,
   ...overrides,
   budgetCategoryId: category.id,
   iconClassName: category.iconClassName,
   isAccrual: category.isAccrual,
   isExpense: category.isExpense,
   isMonthly: category.isMonthly,
-  amount: 0,
   data: {},
   defaultAmount: category.defaultAmount,
   displayAmount: "",
@@ -382,7 +394,7 @@ describe("eventsReducer", () => {
   // when new items are present
   it("creates new item event payloads", () => {
     const category = { ...baseCategory }
-    const newItem = { ...baseNewItem({ category }) }
+    const newItem = { ...baseNewItem({ category, amount: -2349 }) }
     const month = 2
     const year = 2021
     const form = { ...baseForm, newItems: [newItem], month, year }

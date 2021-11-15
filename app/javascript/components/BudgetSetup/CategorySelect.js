@@ -38,7 +38,7 @@ const CategorySelect = props => {
        <div className="w-4/12">
          <AmountInput
            onChange={handleAmountChange}
-           className="text-right w-8/12 rounded border border-gray-400 border-solid"
+           className="h-full text-right w-8/12 rounded border border-gray-400 border-solid"
            placeholder="amount"
            value={selectedCategory.displayAmount}
          />

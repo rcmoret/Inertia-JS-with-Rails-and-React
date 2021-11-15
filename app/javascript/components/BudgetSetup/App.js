@@ -16,19 +16,30 @@ const BudgetSetupApp = (props) => {
   const initialForm = Form(props)
   const [form, setFormObject] = useState(initialForm);
   const dispatch = (event, payload) => setFormObject(reducer(event, form, payload))
-  const { categoryOptions, newItems, selectedCategory, targetMonth, targetYear } = form
-  const existingItems = form.existingItems.sort(sortFn)
-  const accruals = newItems.filter(item => item.isAccrual).sort(sortFn)
-  const revenues = newItems.filter(item => !item.isExpense).sort(sortFn)
-  const monthlyExpenses = newItems.filter(item => !item.isAccrual && item.isExpense && item.isMonthly).sort(sortFn)
-  const dayToDayExpenses = newItems.filter(item => !item.isAccrual && item.isExpense && !item.isMonthly).sort(sortFn)
-  const balance = [...existingItems, ...form.newItems].reduce((sum, item) => sum + item.amount, 0)
+  const { categories, categoryOptions, selectedCategory, month, year } = form
+  const models = categories.reduce((array, category) => {
+    const existingItems = form.existingItems.filter(item => item.budgetCategoryId === category.id)
+    const newItems = form.newItems.filter(item => item.budgetCategoryId === category.id)
+
+    const object = {
+      ...category,
+      existingItems,
+      newItems,
+    }
+
+    return [...array, object]
+  }, [])
+  const accruals = models.filter(model => model.isAccrual).sort(sortFn)
+  const revenues = models.filter(model => !model.isExpense).sort(sortFn)
+  const monthlyExpenses = models.filter(model => !model.isAccrual && model.isExpense && model.isMonthly).sort(sortFn)
+  const dayToDayExpenses = models.filter(model => !model.isAccrual && model.isExpense && !model.isMonthly).sort(sortFn)
+  const balance = [...form.existingItems, ...form.newItems].reduce((sum, item) => sum + item.amount, 0)
   const onSubmit = ev => {
     ev.preventDefault();
     const events = eventsReducer(form)
     Inertia.post("/budget/set-up", { events })
   }
-  const dateString = DateFormatter({ targetMonth, targetYear, day: 1, format: "shortMonthYear" })
+  const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
   document.title = `Set up ${dateString}`
 
   return (
@@ -43,7 +54,6 @@ const BudgetSetupApp = (props) => {
                 selectedCategory={selectedCategory}
               />
             </Section>
-            <ItemGroup name="Existing Items" ItemForm={ExistingItemForm} collection={existingItems} dispatch={dispatch} />
             <ItemGroup name="Accruals" ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
             <ItemGroup name="Revenues" ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
             <ItemGroup name="Monthly Expenses" ItemForm={NewItemForm} collection={monthlyExpenses} dispatch={dispatch} />

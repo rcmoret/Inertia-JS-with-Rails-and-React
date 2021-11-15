@@ -40,8 +40,15 @@ const Form = (props) => {
   const excludeDayToDayFilter = objectId => !targetIntervalDayToDayCategoryIds.includes(objectId)
 
   const defaultAmountLookUp = item => categories.find(c => c.id === item.budgetCategoryId).defaultAmount
+  const excludeAccrualsFilter = categoryId => {
+    const accrualCategoryIds = existingItems.filter(i => i.isAccrual).map(i => i.budgetCategoryId)
+    return !accrualCategoryIds.includes(categoryId)
+  }
   const newItems = baseInterval.items
-    .filter(item => excludeDayToDayFilter(item.budgetCategoryId))
+    .filter(item => {
+      const { budgetCategoryId } = item
+      return excludeDayToDayFilter(budgetCategoryId) && excludeAccrualsFilter(budgetCategoryId)
+    })
     .map(item => newItem({ item, defaultAmount: defaultAmountLookUp(item) }))
 
   const baseIntervalDayToDayCategoryIds = newItems.map(i => i.budgetCategoryId)
@@ -56,8 +63,8 @@ const Form = (props) => {
     categoryOptions,
     categories,
     selectedCategory: { budgetCategoryId: null, displayAmount: "" },
-    month: month,
-    year: year,
+    month,
+    year,
   }
 };
 
