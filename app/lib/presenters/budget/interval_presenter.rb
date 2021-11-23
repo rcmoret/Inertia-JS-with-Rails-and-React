@@ -3,6 +3,11 @@
 module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
+      def current?
+        !closed_out? && prev.as_presenter.closed_out?
+      end
+      alias is_current current?
+
       def accrual_items
         with_presenters { item_views.accruals }
       end
@@ -22,9 +27,39 @@ module Presenters
         Account.available_cash + items.map(&:remaining).reduce(:+)
       end
 
-      # def transaction_entries(account_id:)
-      #   Account.
-      # end
+      def set_up?
+        set_up_completed_at.present?
+      end
+      alias is_set_up set_up?
+
+      def closed_out?
+        close_out_completed_at.present?
+      end
+      alias is_closed_out closed_out?
+
+      def total_days
+        (last_date - first_date).to_i + 1
+      end
+
+      def days_remaining
+        if current?
+          (last_date - today + 1).to_i
+        elsif closed_out?
+          0
+        else
+          total_days
+        end
+      end
+
+      def date_range
+        first_date..last_date
+      end
+
+      private
+
+      def today
+        @today ||= Date.today
+      end
     end
   end
 end

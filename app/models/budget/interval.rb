@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Budget
-  # rubocop:disable Metrics/ClassLength
   class Interval < ActiveRecord::Base
+    include Presentable
     has_many :items, foreign_key: :budget_interval_id
     has_many :item_views, foreign_key: :budget_interval_id
 
@@ -55,14 +55,6 @@ module Budget
       self.for
     end
 
-    def set_up?
-      set_up_completed_at.present?
-    end
-
-    def closed_out?
-      close_out_completed_at.present?
-    end
-
     def first_date
       return start_date if start_date.present?
 
@@ -75,28 +67,6 @@ module Budget
       last = Date.new(year, month, -1)
       last -= 1.day while last.saturday? || last.sunday?
       last - 1.day
-    end
-
-    def current?
-      !closed_out? && prev.closed_out?
-    end
-
-    def total_days
-      (last_date - first_date).to_i + 1
-    end
-
-    def days_remaining
-      if current?
-        (last_date - today + 1).to_i
-      elsif closed_out?
-        0
-      else
-        total_days
-      end
-    end
-
-    def date_range
-      first_date..last_date
     end
 
     def date_hash
@@ -126,10 +96,6 @@ module Budget
 
     private
 
-    def today
-      @today ||= Date.today
-    end
-
     def close_out_completed_at_end_of_month
       return if close_out_completed_at.nil?
       return if close_out_completed_at >= last_date
@@ -137,7 +103,10 @@ module Budget
       errors.add(:close_out_completed_at, 'Must be on or after the last day of the month')
     end
 
+    def presenter_class
+      Presenters::Budget::IntervalPresenter
+    end
+
     QueryError = Class.new(StandardError)
   end
-  # rubocop:enable Metrics/ClassLength
 end
