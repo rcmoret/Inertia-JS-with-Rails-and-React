@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Form from "./Form";
-import { isSubmittable, formReducer, postEvents, reducer } from "./Functions"
+import Form, { reducer }from "./Form";
+import { isSubmittable, formReducer, postEvents } from "./Functions"
 import DateFormatter from "../../lib/DateFormatter"
 import Header from "./Header"
 import ItemGroup from "./ItemGroup"
