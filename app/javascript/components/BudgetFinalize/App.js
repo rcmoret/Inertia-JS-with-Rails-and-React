@@ -6,6 +6,8 @@ import Header from "./Header"
 import ItemGroup from "./ItemGroup"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 import { sortByName as sortFn } from "../../lib/Functions"
+import { titles, finalize as copy } from "../../lib/copy/budget"
+import { titleize } from "../../lib/copy/functions"
 import SubmitButton from "./SubmitButton"
 import Summary from "./Summary"
 import AmountSpan from "../shared/AmountSpan"
@@ -34,7 +36,7 @@ export default props => {
   }
   const totalExtra = rolloverItem.discretionary + rolloverItem.extraBalance
   const isEnabled = isSubmittable({ models, rolloverItem })
-  document.title = `Finalize ${dateString}`
+  document.title = copy.docTitle(dateString)
 
   return (
     <div>
@@ -46,9 +48,9 @@ export default props => {
               dispatch={dispatch}
               rolloverItem={rolloverItem}
             />
-            <ItemGroup name='Accruals' collection={accruals} dispatch={dispatch} />
-            <ItemGroup name='Monthly' collection={monthlyItems} dispatch={dispatch} />
-            <ItemGroup name='Day-to-Day' collection={dayToDayItems} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.accruals)} collection={accruals} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.monthly)} collection={monthlyItems} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.dayToDay)}  collection={dayToDayItems} dispatch={dispatch} />
             <SubmitButton isEnabled={isEnabled} onSubmit={onSubmit} />
           </form>
         </div>

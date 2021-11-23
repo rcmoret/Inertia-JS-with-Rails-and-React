@@ -7,6 +7,9 @@ import { AmountInput } from "../shared/TextInput";
 
 import { sortByName as sortFn } from "../../lib/Functions"
 
+import { setup as copy } from "../../lib/copy/budget"
+import { titleize } from "../../lib/copy/functions"
+
 const CategorySelect = props => {
   const { categoryOptions, dispatch, selectedCategory } = props
   const { budgetCategoryId, displayAmount } = selectedCategory
@@ -46,7 +49,7 @@ const CategorySelect = props => {
       <AddItemButton buttonDisabled={buttonDisabled} onClick={onClick}>
         <Icon className="fas fa-plus" />
         {" "}
-        Add Item
+        {titleize(copy.addItemText)}
       </AddItemButton>
    </div>
   )

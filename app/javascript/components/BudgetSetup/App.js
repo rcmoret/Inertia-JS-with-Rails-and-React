@@ -7,6 +7,8 @@ import ItemGroup, { ExistingItemForm, NewItemForm } from "./ItemGroup";
 
 import DateFormatter from "../../lib/DateFormatter";
 import { sortByName as sortFn } from "../../lib/Functions";
+import { shared, titles, setup as copy } from "../../lib/copy/budget"
+import { titleize } from "../../lib/copy/functions"
 
 import AmountSpan from "../shared/AmountSpan";
 import Button from "../shared/Button";
@@ -40,7 +42,7 @@ const BudgetSetupApp = (props) => {
     Inertia.post("/budget/set-up", { events })
   }
   const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
-  document.title = `Set up ${dateString}`
+  document.title = titleize(copy.docTitle(dateString))
 
   return (
     <div>
@@ -54,14 +56,24 @@ const BudgetSetupApp = (props) => {
                 selectedCategory={selectedCategory}
               />
             </Section>
-            <ItemGroup name="Accruals" ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
-            <ItemGroup name="Revenues" ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
-            <ItemGroup name="Monthly Expenses" ItemForm={NewItemForm} collection={monthlyExpenses} dispatch={dispatch} />
-            <ItemGroup name="Day-to-Day Expenses" ItemForm={NewItemForm} collection={dayToDayExpenses} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.accruals)} ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.revenues)} ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
+            <ItemGroup
+              name={titleize(`${titles.monthly} ${titles.expenses}`)}
+              ItemForm={NewItemForm}
+              collection={monthlyExpenses}
+              dispatch={dispatch}
+            />
+            <ItemGroup
+              name={titleize(`${titles.dayToDay} ${titles.expenses}`)}
+              ItemForm={NewItemForm}
+              collection={dayToDayExpenses}
+              dispatch={dispatch}
+            />
             <div className="flex justify-between flex-row-reverse">
               <div className="bg-white rounded justify-between flex-row-reverse pl-6 pr-6 pt-2 pb-2">
                 <Button bgColor="bg-green-600" hoverBgColor="hover:bg-green-700" onSubmit={onSubmit}>
-                  Create Budget
+                  {titleize(copy.submitText)}
                 </Button>
               </div>
             </div>
@@ -71,10 +83,10 @@ const BudgetSetupApp = (props) => {
           <div className="bg-blue-900 p-2 rounded">
             <div className="bg-white p-4 rounded shadow-lg">
               <div className="border-b-2 border-blue-900 border-solid">
-                <h1 className="text-2xl">Set up: {dateString}</h1>
+                <h1 className="text-2xl">{titleize(copy.docTitle(dateString))}</h1>
               </div>
               <div className="flex justify-between text-xl">
-                <div>Balance</div>
+                <div>{titleize(shared.budgeted)}</div>
                 <div className="text-xl text-right">
                   <AmountSpan amount={balance} />
                 </div>

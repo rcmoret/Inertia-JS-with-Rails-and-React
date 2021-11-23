@@ -1,6 +1,9 @@
 import React from "react";
 import MoneyFormatter from "../../lib/MoneyFormatter";
 
+import { shared, setup as copy } from "../../lib/copy/budget"
+import { titleize } from "../../lib/copy/functions"
+
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
@@ -125,7 +128,7 @@ export const ExistingItem = props => {
 
   return (
     <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} hasBorder={hasBorder}>
-      <div><strong>Existing Item</strong></div>
+      <div><strong>{titleize(copy.existingItem)}</strong></div>
     </ItemWrapper>
   )
 };
@@ -151,26 +154,26 @@ export const NewItem = ({ item, index, dispatch, hasBorder }) => {
 
   return (
     <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} hasBorder={hasBorder}>
-      <div className="w-3/12"><strong>New Item</strong></div>
+      <div className="w-3/12"><strong>{titleize(copy.newItem)}</strong></div>
       <div className="w-1/3">
         <QuickSelectButton
           amount={budgeted}
-          checked={status === "budgeted"}
-          label="Budgeted"
+          checked={status === shared.budgeted}
+          label={titleize(shared.budgeted)}
           name={id}
           onChange={selectBudgeted}
         />
         <QuickSelectButton
           amount={defaultAmount}
-          checked={status === "default"}
-          label="Default"
+          checked={status === shared.default}
+          label={titleize(shared.default)}
           name={id}
           onChange={selectDefault}
         />
         <QuickSelectButton
           amount={spent}
-          checked={status === "spent"}
-          label="Spent"
+          checked={status === shared.spent}
+          label={titleize(shared.spent)}
           name={id}
           onChange={selectSpent}
         />

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { sortByName as sortFn } from "../../lib/Functions"
 
+import { shared, finalize as copy } from "../../lib/copy/budget"
+import { titleize } from "../../lib/copy/functions"
+
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
 import AmountSpan from "../shared/AmountSpan";
@@ -15,8 +18,8 @@ export default ({ name, collection, dispatch }) => {
   } else {
     return (
       <Section>
-        <TitleRow styling={{backgroundColor: 'bg-gradient-to-r from-green-600 to-green-300'}}>
-          &#8226;{' '}{name}
+        <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-600 to-green-300"}}>
+          &#8226;{" "}{name}
         </TitleRow>
         {collection.map(model => (
           <ModelForm key={model.id} model={model} dispatch={dispatch} />
@@ -31,8 +34,8 @@ const ModelForm = ({ dispatch, model }) => {
 
   return (
     <StripedRow styling={{overflow: null}}>
-      <div className='mb-1 rounded w-3/12'>
-        <div>{name}{' '}<i className={iconClassName} /></div>
+      <div className="mb-1 rounded w-3/12">
+        <div>{name}{" "}<i className={iconClassName} /></div>
         {model.baseItems.map(item => (
           <TargetItemSelect
             key={item.budgetItemId}
@@ -43,12 +46,12 @@ const ModelForm = ({ dispatch, model }) => {
           />
         ))}
       </div>
-      <div width='w-5/12'>
+      <div width="w-5/12">
         {model.baseItems.map(item => (
           <BaseItem key={item.budgetItemId} item={item} categoryId={id} dispatch={dispatch} />
         ))}
       </div>
-      <div className='w-3/12 text-right'>
+      <div className="w-3/12 text-right">
         <TargetItems baseItems={baseItems} targetItems={targetItems} />
       </div>
     </StripedRow>
@@ -56,7 +59,7 @@ const ModelForm = ({ dispatch, model }) => {
 };
 
 const ItemsWrapper = ({ children }) => (
-  <div className='w-full flex justify-between flex-wrap items-center'>
+  <div className="w-full flex justify-between flex-wrap items-center">
     {children}
   </div>
 )
@@ -80,7 +83,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
   } else {
     return (
       <ItemsWrapper>
-        <div className ='w-full'>Target Items</div>
+        <div className ="w-full">Target Items</div>
         {displayItems.map(item => (
           <TargetItem key={item.budgetItemId} multiple={true} baseItems={baseItems} item={item} />
         ))}
@@ -101,24 +104,24 @@ const TargetItem = ({ item, baseItems, multiple }) => {
   const appliedToExtra = baseItems.reduce((sum, i) => (
     i.targetItemId === budgetItemId ? sum + i.remaining - i.rolloverAmount : sum
   ), 0)
-  const spanProps = { color: 'text-green-700', negativeColor: 'text-green-700' }
+  const spanProps = { color: "text-green-700", negativeColor: "text-green-700" }
   return (
     <>
-      {multiple && <div className='w-full'>{item.name}</div>}
+      {multiple && <div className="w-full">{item.name}</div>}
       <div className="w-1/2">
-        Budgeted:
+        {titleize(shared.budgeted)}:
       </div>
      <div className="w-1/2">
         <AmountSpan amount={budgeted} { ...spanProps } />
       </div>
       <div className="w-1/2">
-        New Amount:
+        {titleize(shared.newAmount)}:
       </div>
       <div className="w-1/2">
         <AmountSpan amount={newAmount} { ...spanProps } />
       </div>
       <div className="w-1/2">
-        Applied to Extra:
+        {copy.appliedToExtra}
       </div>
       <div className="w-1/2">
         <AmountSpan amount={appliedToExtra} { ...spanProps }/>
@@ -134,59 +137,59 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
     status,
     remaining,
   } = item
-  const inputChange = event => dispatch('updateBudgetModel', {
+  const inputChange = event => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
     budgetItemId: budgetItemId,
     inputAmount: event.target.value,
   })
-  const selectAll = () => dispatch('updateBudgetModel', {
+  const selectAll = () => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
     budgetItemId: budgetItemId,
     inputAmount: MoneyFormatter(remaining),
   })
-  const selectNone = () => dispatch('updateBudgetModel', {
+  const selectNone = () => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
     budgetItemId: budgetItemId,
-    inputAmount: '0.00',
+    inputAmount: "0.00",
   })
-  const partialAmount = status === 'rolloverPartial' ? decimalToInt(inputAmount) : ''
+  const partialAmount = status === "rolloverPartial" ? decimalToInt(inputAmount) : ""
 
   return (
-    <div className='w-full flex justify-between flex-wrap' >
-      <div className='w-1/2'>
+    <div className="w-full flex justify-between flex-wrap" >
+      <div className="w-1/2">
         <QuickSelectButton
           amount={remaining}
-          checked={status === 'rolloverAll'}
-          label='All'
+          checked={status === "rolloverAll"}
+          label={titleize(copy.all)}
           name={budgetItemId}
           onChange={selectAll}
           remaining={remaining}
         />
         <QuickSelectButton
           amount={0}
-          checked={status === 'rolloverNone'}
-          label='None'
+          checked={status === "rolloverNone"}
+          label={titleize(copy.none)}
           name={budgetItemId}
           onChange={selectNone}
           remaining={remaining}
         />
         <QuickSelectButton
           amount={partialAmount}
-          checked={status === 'rolloverPartial'}
-          label='Partial'
+          checked={status === "rolloverPartial"}
+          label={titleize(copy.partial)}
           name={budgetItemId}
           onChange={() => null}
           remaining={remaining}
         />
 
       </div>
-      <div className='text-right w-5/12'>
+      <div className="text-right w-5/12">
         <div>
-          $
+          {shared.currencySymbol}
           {" "}
           <TextInput
             onChange={inputChange}
-            className='text-right rounded w-4/5 border border-gray-400 border-solid'
+            className="text-right rounded w-4/5 border border-gray-400 border-solid"
             value={inputAmount}
           />
         </div>
@@ -197,10 +200,10 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
 
 const QuickSelectButton = ({ amount, checked, label, onChange, name, remaining }) => {
   const shouldRender = () => {
-    if (label !== 'Partial') {
+    if (label !== copy.partial) {
       return true
     } else {
-      if (amount === 0 || amount === '' || amount === remaining) {
+      if (amount === 0 || amount === "" || amount === remaining) {
         return false
       } else {
         return true
@@ -209,15 +212,15 @@ const QuickSelectButton = ({ amount, checked, label, onChange, name, remaining }
   }
   if (shouldRender()) {
     return (
-      <div className='flex justify-between w-full'>
-        <div className='text-right w-full flex justify-between'>
+      <div className="flex justify-between w-full">
+        <div className="text-right w-full flex justify-between">
           <div>{label}:</div>
           <div>
             <Amount amount={amount} />
           </div>
         </div>
-        <div className='w-4 ml-4'>
-          <input type='radio' onChange={onChange} checked={checked} name={name} />
+        <div className="w-4 ml-4">
+          <input type="radio" onChange={onChange} checked={checked} name={name} />
         </div>
       </div>
     )
@@ -229,8 +232,8 @@ const QuickSelectButton = ({ amount, checked, label, onChange, name, remaining }
 const Amount = ({ amount }) => (
   <AmountSpan
     amount={amount}
-    color='text-green-700'
-    negativeColor='text-green-700'
+    color="text-green-700"
+    negativeColor="text-green-700"
   />
 );
 
