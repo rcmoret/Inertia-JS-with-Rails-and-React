@@ -39,7 +39,7 @@ module Budget
     end
 
     def target_interval_year
-      if target_interval_month == 12
+      if base_interval_month == 12
         base_interval_year + 1
       else
         base_interval_year

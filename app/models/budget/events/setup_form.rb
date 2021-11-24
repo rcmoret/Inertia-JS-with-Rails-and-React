@@ -57,7 +57,7 @@ module Budget
       end
 
       def interval_needs_setup!
-        return unless interval.set_up?
+        return if interval.set_up_completed_at.nil?
 
         errors.add(:interval, 'has already been set up')
       end

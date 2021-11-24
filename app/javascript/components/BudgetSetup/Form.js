@@ -133,7 +133,7 @@ export const reducer = (event, form, payload) => {
         newItems: form.newItems.filter(item => item.id !== payload.id),
         removedItems: [
           ...form.removedItems,
-          payload,
+          ...form.existingItems.filter(item => item.id === payload.id),
         ],
       }
     default:

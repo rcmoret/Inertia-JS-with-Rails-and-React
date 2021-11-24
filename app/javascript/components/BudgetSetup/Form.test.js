@@ -386,6 +386,7 @@ describe("reducer", () => {
     const form = { ...baseForm, catgories: [category], newItems: [newItem] }
     const payload = { id: newItem.id }
     const actual = reducer("removeItem", form, payload)
+    expect(actual.removedItems).toEqual([])
     expect(actual.newItems).toEqual([])
   })
 });
