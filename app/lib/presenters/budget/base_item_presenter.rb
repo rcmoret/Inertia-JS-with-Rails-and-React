@@ -55,6 +55,14 @@ module Presenters
       end
       alias is_deletable deletable?
 
+      def events
+        super.map(&:as_presenter)
+      end
+
+      def transaction_details
+        transactions.map(&:as_presenter)
+      end
+
       private
 
       def attributes

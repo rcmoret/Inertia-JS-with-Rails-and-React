@@ -3,6 +3,7 @@
 module Budget
   class ItemEvent < ActiveRecord::Base
     include EventTypes
+    include Presentable
     belongs_to :item, class_name: 'Item', foreign_key: :budget_item_id
     belongs_to :item_view, class_name: 'ItemView', foreign_key: :budget_item_id
     belongs_to :type, class_name: 'ItemEventType', foreign_key: :budget_item_event_type_id
@@ -52,6 +53,10 @@ module Budget
       end
     rescue JSON::ParserError
       errors.add(:data, 'provided a string that was not valid JSON')
+    end
+
+    def presenter_class
+      Presenters::Budget::ItemEventPresenter
     end
   end
 end

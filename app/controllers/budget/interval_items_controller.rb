@@ -26,36 +26,38 @@ module Budget
     def query
       <<~GQL
         {
-          categories {
-            id
-            defaultAmount
-            name
-            iconClassName
-            isAccrual
-            isExpense
-            isMonthly
-          }
-          interval(month: #{interval_month}, year: #{interval_year}) {
-            month
-            year
-            discretionary
-            isCurrent
-            totalDays
-            firstDate
-            daysRemaining
-            items {
+          budget {
+            categories {
               id
-              budgetCategoryId
+              defaultAmount
               name
-              amount
-              difference
-              remaining
-              spent
               iconClassName
               isAccrual
               isExpense
               isMonthly
-              transactionDetailCount
+            }
+            interval(month: #{interval_month}, year: #{interval_year}) {
+              month
+              year
+              discretionary
+              isCurrent
+              totalDays
+              firstDate
+              daysRemaining
+              items {
+                id
+                budgetCategoryId
+                name
+                amount
+                difference
+                remaining
+                spent
+                iconClassName
+                isAccrual
+                isExpense
+                isMonthly
+                transactionDetailCount
+              }
             }
           }
         }

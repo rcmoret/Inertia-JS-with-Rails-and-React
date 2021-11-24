@@ -29,37 +29,12 @@ module Types
       end
     end
 
-    field :categories, [Budget::CategoryType], null: false do
-      description 'Budget Categories available'
+    field :budget, Budget::NamespaceType, null: false do
+      description 'Namespace for all things related to the budget'
     end
 
-    def categories
-      ::Budget::Category.all.map do |category|
-        Presenters::Budget::CategoryPresenter.new(category)
-      end
-    end
-
-    field :category, Budget::CategoryType, null: false do
-      description 'Budget Category by id'
-      argument :id, Integer, required: true
-    end
-
-    def category(id:)
-      ::Budget::Category.find(id).then do |budget_category|
-        Presenters::BudgetCategoryPresenter.new(budget_category)
-      end
-    end
-
-    field :interval, Budget::IntervalType, null: false do
-      description 'Budget Interval (month/year)'
-      argument :month, Integer, required: false
-      argument :year, Integer, required: false
-    end
-
-    def interval(month: Time.current.month, year: Time.current.year)
-      ::Budget::Interval.for(month: month, year: year).then do |budget_interval|
-        Presenters::Budget::IntervalPresenter.new(budget_interval)
-      end
+    def budget
+      Presenters::Budget::NamespacePresenter.new
     end
   end
 end

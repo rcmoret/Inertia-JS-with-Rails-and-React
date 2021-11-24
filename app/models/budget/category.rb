@@ -2,6 +2,7 @@
 
 module Budget
   class Category < ActiveRecord::Base
+    include Presentable
     include Messages
     include Slugable
     has_many :items, foreign_key: :budget_category_id
@@ -81,6 +82,10 @@ module Budget
       return if expense? || (!accrual && revenue?)
 
       errors.add(:accrual, 'can only be enabled for expenses')
+    end
+
+    def presenter_class
+      Presenters::Budget::CategoryPresenter
     end
   end
 end

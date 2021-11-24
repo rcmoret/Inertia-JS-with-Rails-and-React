@@ -14,8 +14,8 @@ import AmountSpan from "../shared/AmountSpan";
 import Button from "../shared/Button";
 import Section from "../shared/Section";
 
-const BudgetSetupApp = (props) => {
-  const initialForm = Form(props)
+const BudgetSetupApp = ({ budget }) => {
+  const initialForm = Form(budget)
   const [form, setFormObject] = useState(initialForm);
   const dispatch = (event, payload) => setFormObject(reducer(event, form, payload))
   const { categories, categoryOptions, selectedCategory, month, year } = form

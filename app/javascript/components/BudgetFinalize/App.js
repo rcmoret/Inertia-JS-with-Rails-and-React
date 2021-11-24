@@ -12,9 +12,9 @@ import SubmitButton from "./SubmitButton"
 import Summary from "./Summary"
 import AmountSpan from "../shared/AmountSpan"
 
-export default props => {
-  const { baseInterval } = props
-  const [formObject, setFormObject] = useState(Form(props));
+export default ({ budget }) => {
+  const { baseInterval } = budget
+  const [formObject, setFormObject] = useState(Form(budget));
   const {
     availableCategories,
     models,
