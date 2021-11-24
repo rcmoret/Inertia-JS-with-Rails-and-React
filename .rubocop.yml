@@ -30,6 +30,7 @@ Metrics/BlockLength:
   Exclude:
     - config/environments/*
     - config/initializers/*
+    - config/routes.rb
 
 Style/Documentation:
   Enabled: false
