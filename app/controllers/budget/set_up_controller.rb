@@ -10,7 +10,7 @@ module Budget
 
     def create
       if form.save
-        render :new
+        redirect_to "/budget/#{target_interval_month}/#{target_interval_year}"
       else
         render inertia: 'BudgetSetupApp', props: props.merge(errors: form.errors)
       end

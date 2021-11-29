@@ -5,8 +5,11 @@ Rails.application.routes.draw do
   devise_for :users
   post '/graphql', to: 'graphql#execute'
   namespace :budget do
-    get '(/:month/:year)', to: 'interval_items#index'
+    get '(/:month/:year)', to: 'items#index'
     resources :items, only: :show
+    namespace :items do
+      resources :events, only: :create
+    end
     get 'set-up', to: 'set_up#new'
     post 'set-up', to: 'set_up#create'
     get 'finalize', to: 'finalize#new'

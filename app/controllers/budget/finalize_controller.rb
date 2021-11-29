@@ -12,7 +12,7 @@ module Budget
       form = Budget::Events::Form.new(events: events_params)
       if form.save
         interval.update(close_out_completed_at: Time.current)
-        redirect_to '/budget/set-up'
+        redirect_to "/budget/#{target_interval_month}/#{target_interval_year}"
       else
         render inertia: 'BudgetFinalizeApp', props: props.merge(errors: form.errors)
       end
