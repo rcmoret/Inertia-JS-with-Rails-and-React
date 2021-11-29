@@ -1,11 +1,14 @@
 export const shared = {
   budgeted: "budgeted",
   currencySymbol: "$",
+  deposited: "deposited",
   default: "default",
-  discretionary: "discrtionary",
+  discretionary: "discretionary",
+  items: "items",
   newAmount: "new amount",
   selectCategory: "select category",
   spent: "spent",
+  total: "total",
 }
 
 export const titles = {

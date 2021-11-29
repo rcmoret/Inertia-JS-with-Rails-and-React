@@ -14,6 +14,14 @@ module Presenters
       def reviewable?
         deletable?
       end
+
+      def budget_impact
+        if transaction_count.zero?
+          0
+        else
+          difference * -1
+        end
+      end
     end
   end
 end

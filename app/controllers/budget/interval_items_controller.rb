@@ -39,10 +39,24 @@ module Budget
             interval(month: #{interval_month}, year: #{interval_year}) {
               month
               year
-              discretionary
+              discretionary {
+                amount
+                overUnderBudget
+                transactionDetails {
+                  id
+                  accountName,
+                  amount
+                  clearanceDate
+                  description
+                  iconClassName
+                  updatedAt
+                }
+                transactionsTotal
+              }
               isCurrent
               totalDays
               firstDate
+              lastDate
               daysRemaining
               items {
                 id
@@ -54,14 +68,37 @@ module Budget
                 spent
                 iconClassName
                 isAccrual
+                isDeletable
                 isExpense
                 isMonthly
+                maturityMonth
+                maturityYear
+                events {
+                  id
+                  amount
+                  createdAt
+                  data
+                  typeDescription
+                }
                 transactionDetailCount
+                transactionDetails {
+                  id
+                  accountName
+                  amount
+                  clearanceDate
+                  description
+                  iconClassName
+                  updatedAt
+                }
               }
             }
           }
         }
       GQL
+    end
+
+    def namespace
+      'budget'
     end
   end
 end

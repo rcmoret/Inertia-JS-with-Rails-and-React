@@ -10,6 +10,14 @@ module Presenters
       def reviewable?
         remaining.negative?
       end
+
+      def budget_impact
+        if remaining.negative?
+          0
+        else
+          difference * -1
+        end
+      end
     end
   end
 end

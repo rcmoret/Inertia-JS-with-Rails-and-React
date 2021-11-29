@@ -3,6 +3,7 @@
 module Transaction
   class DetailView < ActiveRecord::Base
     include Scopes
+    include Presentable
 
     self.table_name = :transaction_detail_view
     self.primary_key = :id
@@ -20,6 +21,10 @@ module Transaction
 
     def to_hash
       attributes.symbolize_keys
+    end
+
+    def presenter_class
+      Presenters::Transactions::DetailPresenter
     end
   end
 end

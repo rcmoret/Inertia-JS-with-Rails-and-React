@@ -63,6 +63,15 @@ module Presenters
         transactions.map(&:as_presenter)
       end
 
+      def maturity_month
+        attributes.fetch(:maturity_month, category.maturity_intervals.first&.month)
+      end
+
+      def maturity_year
+        puts attributes
+        attributes.fetch(:maturity_year, category.maturity_intervals.first&.year)
+      end
+
       private
 
       def attributes

@@ -24,7 +24,15 @@ module Presenters
       end
 
       def discretionary
-        Account.available_cash + items.map(&:remaining).reduce(:+)
+        DiscretionaryPresenter.new(self)
+      end
+
+      def balance
+        if current?
+          (available_cash + charged).to_i
+        else
+          0
+        end
       end
 
       def set_up?
@@ -55,10 +63,26 @@ module Presenters
         first_date..last_date
       end
 
+      def available_cash
+        @available_cash ||= current? ? Account.available_cash : 0
+      end
+
       private
 
       def today
         @today ||= Date.today
+      end
+
+      def charged
+        return 0 unless current?
+
+        @charged ||= Transaction::DetailView
+                     .budget_inclusions
+                     .non_cash_flow
+                     .between(
+                       date_range,
+                       include_pending: current?
+                     ).sum(:amount)
       end
     end
   end

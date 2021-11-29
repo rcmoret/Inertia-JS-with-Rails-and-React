@@ -2,6 +2,7 @@
 
 module Transaction
   class Detail < ActiveRecord::Base
+    include Presentable
     belongs_to :budget_item, class_name: 'Budget::Item', optional: true
     belongs_to :entry,
                optional: false,
@@ -47,6 +48,10 @@ module Transaction
       return unless amount_changed?
 
       errors.add(:amount, 'Cannot be changed for a transfer')
+    end
+
+    def presenter_class
+      Presenters::Transactions::DetailPresenter
     end
   end
 end
