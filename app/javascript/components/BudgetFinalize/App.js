@@ -5,7 +5,15 @@ import DateFormatter from "../../lib/DateFormatter"
 import Header from "./Header"
 import ItemGroup from "./ItemGroup"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
-import { sortByName as sortFn } from "../../lib/Functions"
+import {
+  isAccrual,
+  isNonAccrual,
+  isDayToDay,
+  isMonthly,
+  isExpense,
+  isRevenue
+  sortByName as sortFn
+} from "../../lib/Functions"
 import { titles, finalize as copy } from "../../lib/copy/budget"
 import { titleize } from "../../lib/copy/functions"
 import SubmitButton from "./SubmitButton"
@@ -21,9 +29,9 @@ export default ({ budget }) => {
     extraBalance,
     rolloverItem,
   } = formObject
-  const accruals = models.filter(item => item.isAccrual).sort(sortFn)
-  const dayToDayItems = models.filter(item => !item.isAccrual && !item.isMonthly).sort(sortFn)
-  const monthlyItems = models.filter(item => !item.isAccrual && item.isMonthly).sort(sortFn)
+  const accruals = models.filter(isAccrual).sort(sortFn)
+  const dayToDayItems = models.filter(isNonAccrual).filter(isDayToDay).sort(sortFn)
+  const monthlyItems = models.filter(isNonAccrual).filter(isMonthly).sort(sortFn)
   const dispatch = (event, payload) => {
     const updatedState = reducer(event, formObject, payload)
     setFormObject(updatedState)

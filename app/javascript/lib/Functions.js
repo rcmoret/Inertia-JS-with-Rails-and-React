@@ -2,12 +2,46 @@ export const sortByName = (obj1, obj2) => (
   obj1.name < obj2.name ? -1 : 1
 );
 
-const defaultOptionFns = {
-  labelFn: object => object.name,
-  valueFn: object => object.id,
+export const sortByClearanceDate = (txn1, txn2) => {
+  const today = new Date()
+  if ((txn1.isCleared && txn2.isCleared) || (txn1.isPending && txn2.isPending)) {
+    return txn1.updatedAt > txn2.updatedAt ? 1 : -1
+  } else if (txn1.isPending) {
+    return txn2.clearanceDate > today ? -1 : 1
+  } else {
+    return txn1.clearanceDate > today ? 1 : -1
+  }
 }
 
+// item filters
+export const isAccural = object => object.isAccrual
+export const isNonAccural = object => !object.isAccrual
+export const isMatureAccrual = (object, month, year) => {
+  if (object.maturityMonth === null) {
+    return false
+  } else {
+    return object.maturityMonth === month && object.maturityYear === year
+  }
+}
+
+export const isDayToDay = object => !object.isMonthly
+export const isMonthly = object => object.isMonthly
+
+export const isExpense = object => object.isExpense
+export const isRevenue = object => !object.isExpense
+
+export const pendingMonthly = object => object.isMonthly && object.transactionDetailCount === 0
+export const clearedMonthly = object => object.isMonthly && object.transactionDetailCount > 0
+
+// combined item filters
+export const dayToDayExpense = object => isDayToDay(object) && isExpense(object)
+export const dayToDayRevenue = object => isDayToDay(object) && isRevenue(object)
+
 export const asOption = (object, optionalFns = {}) => {
+  const defaultOptionFns = {
+    labelFn: object => object.name,
+    valueFn: object => object.id,
+  }
   const { labelFn, valueFn } = { ...defaultOptionFns, ...optionalFns }
 
   return {

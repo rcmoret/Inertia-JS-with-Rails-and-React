@@ -6,7 +6,7 @@ module Budget
     skip_before_action :authenticate_user!
 
     def index
-      render inertia: 'BudgetSetupApp', props: graph_data
+      render inertia: 'BudgetItemIndexApp', props: props
     end
 
     private

@@ -1,24 +1,38 @@
 import React from "react";
 import MoneyFormatter from "../../lib/MoneyFormatter";
 
-const defaultProps = {
-  absolute: false,
-  amount: 0,
-  decorate: true,
-  color: 'text-black',
-  classes: [],
-  negativeColor: 'text-red-600',
-}
 
 const AmountSpan = suppliedProps => {
-  const props = { ...defaultProps, ...suppliedProps }
-  const { absolute, amount, classes, color, decorate, negativeColor } = props
+  const defaultProps = {
+    absolute: false,
+    amount: 0,
+    decorate: true,
+    color: "text-black",
+    classes: [],
+    prefix: null,
+  }
 
-  const textColor = amount < 0 ? negativeColor : color
-  const className = [textColor, ...classes].join(' ')
+  const props = { ...defaultProps, ...suppliedProps }
+  const { absolute, amount, classes, color, decorate, prefix } = props
+  const zeroColor = props.zeroColor || color
+  const negativeColor = props.negativeColor || color
+
+  const textColor = () => {
+    if (amount === 0) {
+      return zeroColor
+    } else if (amount > 0) {
+      return color
+    } else {
+      return negativeColor
+    }
+  }
+  const className = [textColor(), ...classes].join(' ')
 
   return (
-    <span className={className}>{MoneyFormatter(amount, { absolute, decorate })}</span>
+    <span className={className}>
+      {prefix && `${prefix} `}
+      {MoneyFormatter(amount, { absolute, decorate })}
+    </span>
   )
 }
 
