@@ -36,7 +36,7 @@ module Presenters
       end
 
       def set_up?
-        set_up_completed_at.present?
+        super
       end
       alias is_set_up set_up?
 

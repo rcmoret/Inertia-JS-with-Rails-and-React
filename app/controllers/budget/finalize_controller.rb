@@ -75,7 +75,7 @@ module Budget
               isMonthly
             }
             baseInterval: interval(month: #{base_interval_month}, year: #{base_interval_year}) {
-              discretionary
+              discretionary { amount }
               month
               year
               items(reviewableOnly: true) {

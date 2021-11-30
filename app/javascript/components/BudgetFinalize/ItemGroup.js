@@ -101,9 +101,13 @@ const TargetItem = ({ item, baseItems, multiple }) => {
       return sum
     }
   }, budgeted)
-  const appliedToExtra = baseItems.reduce((sum, i) => (
-    i.targetItemId === budgetItemId ? sum + i.remaining - i.rolloverAmount : sum
-  ), 0)
+  const appliedToExtra = baseItems.reduce((sum, i) => {
+    if (i.inputAmount === "" || i.targetItemId !== budgetItemId ) {
+      return sum
+    } else {
+      return sum + i.remaining - i.rolloverAmount
+    }
+  }, 0)
   const spanProps = { color: "text-green-700", negativeColor: "text-green-700" }
   return (
     <>

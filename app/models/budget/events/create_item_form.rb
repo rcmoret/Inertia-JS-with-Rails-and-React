@@ -94,7 +94,7 @@ module Budget
 
       def event
         @event ||= Budget::ItemEvent.new(item: item,
-                                         type: budget_item_event_type,
+                                         type: ItemEventType.send(budget_item_event_type),
                                          data: data,
                                          amount: amount)
       end
@@ -140,29 +140,24 @@ module Budget
       end
 
       def budget_item_event_type
-        @budget_item_event_type ||= if event_type == SETUP_ITEM_CREATE
-                                      Budget::ItemEventType.setup_item_create
-                                    elsif interval.set_up?
-                                      Budget::ItemEventType.item_create
-                                    else
-                                      Budget::ItemEventType.pre_setup_item_create
-                                    end
+        @budget_item_event_type ||=
+          if interval.set_up?
+            event_type
+          else
+            pre_setup_event_type
+          end
       end
 
-      def budget_item_event_type_description
-        if [SETUP_ITEM_CREATE, ROLLOVER_ITEM_CREATE].include?(event_type)
-          event_type
-        elsif interval.set_up?
-          return MULTI_ITEM_ADJUST_CREATE if event_type == MULTI_ITEM_ADJUST_CREATE
-
-          ITEM_CREATE
-        else
-          return PRE_SETUP_MULTI_ITEM_ADJUST_CREATE if event_type == PRE_SETUP_MULTI_ITEM_ADJUST_CREATE
-
+      def pre_setup_event_type
+        case event_type
+        when SETUP_ITEM_CREATE, ITEM_CREATE
           PRE_SETUP_ITEM_CREATE
+        when MULTI_ITEM_ADJUST_CREATE, PRE_SETUP_MULTI_ITEM_ADJUST_CREATE
+          PRE_SETUP_MULTI_ITEM_ADJUST_CREATE
+        else
+          event_type
         end
       end
-
       attr_reader :amount, :budget_category_id, :event_type, :month, :year, :data
     end
     # rubocop:enable Metrics/ClassLength

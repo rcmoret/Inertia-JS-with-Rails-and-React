@@ -11,8 +11,8 @@ import {
   isDayToDay,
   isMonthly,
   isExpense,
-  isRevenue
-  sortByName as sortFn
+  isRevenue,
+  sortByName as sortFn,
 } from "../../lib/Functions"
 import { titles, finalize as copy } from "../../lib/copy/budget"
 import { titleize } from "../../lib/copy/functions"

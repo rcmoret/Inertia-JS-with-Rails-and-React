@@ -55,6 +55,10 @@ module Budget
       self.for
     end
 
+    def set_up?
+      set_up_completed_at.present?
+    end
+
     def first_date
       return start_date if start_date.present?
 

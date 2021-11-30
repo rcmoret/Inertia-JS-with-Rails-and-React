@@ -14,10 +14,10 @@ const BudgetItemDetails = ({ id, details }) => {
     <>
       <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
         <div className="w-8/12">
-          <strong>{copy.detailsTitle}</strong>
+          <strong>{titleize(copy.detailsTitle)}</strong>
         </div>
         <div className="w-4/12 text-right">
-          <strong>${copy.id}: {id}</strong>
+          <strong>{copy.id}: {id}</strong>
         </div>
       </Row>
       <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
@@ -123,7 +123,7 @@ const BudgetItemData = ({ data, renderData, toggleData }) => {
         <Link onClick={toggleData} color="text-blue-800" hoverColor="text-blue-800">
           <Icon className={caretClassName} />
           {" "}
-          {shared.hideData}
+          {copy.hideData}
         </Link>
         <pre className="p-2 text-purple-700 border border-solid border-purple-700 rounded">
           {JSON.stringify(data, null, 2)}
@@ -136,7 +136,7 @@ const BudgetItemData = ({ data, renderData, toggleData }) => {
         <Link onClick={toggleData} color="text-blue-800" hoverColor="text-blue-800">
           <Icon className={caretClassName} />
           {" "}
-          {shared.showData}
+          {copy.showData}
         </Link>
       </div>
     )

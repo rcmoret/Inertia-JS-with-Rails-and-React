@@ -68,7 +68,6 @@ module Presenters
       end
 
       def maturity_year
-        puts attributes
         attributes.fetch(:maturity_year, category.maturity_intervals.first&.year)
       end
 

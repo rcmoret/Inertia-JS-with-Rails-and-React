@@ -19,7 +19,7 @@ const ItemGroup = ({ collection, name }) => {
     return null
   } else {
     return (
-      <Section>
+      <Section styling={{border: null}}>
         <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
           <div>
             &#8226;
@@ -97,6 +97,9 @@ const DayToDayItem = ({ model }) => {
         <div className="w-4/12 text-right">
           <AmountSpan amount={amount} absolute={true} />
         </div>
+        <div className="w-1/12">
+          <Icon className="far fa-edit" />
+        </div>
       </Cell>
       <Cell styling={{width: "w-full"}}>
         <div className="w-6/12">
@@ -105,6 +108,8 @@ const DayToDayItem = ({ model }) => {
         <div className="w-4/12 text-right">
           <AmountSpan amount={spent} absolute={true} prefix="-" />
         </div>
+        <div className="w-1/12">
+        </div>
       </Cell>
       <Cell styling={{width: "w-full"}}>
         <div className="w-6/12">
@@ -112,6 +117,8 @@ const DayToDayItem = ({ model }) => {
         </div>
         <div className="w-4/12 text-right">
           <AmountSpan amount={difference} absolute={true} negativeColor="text-red-600" />
+        </div>
+        <div className="w-1/12">
         </div>
       </Cell>
       {state.showDetails && <BudgetItemDetails id={id} details={combinedTransactionsAndEvents} />}
@@ -144,8 +151,11 @@ const PendingMonthlyItem = ({ model }) => {
             <Icon className={iconClassName} />
           </span>
         </div>
-        <div className="text-xl w-4/12 text-right">
+        <div className="w-4/12 text-right">
           <AmountSpan amount={model.remaining} />
+        </div>
+        <div className="w-1/12">
+          <Icon className="far fa-edit" />
         </div>
       </Cell>
       {state.showDetails && <BudgetItemDetails id={id} details={events} />}

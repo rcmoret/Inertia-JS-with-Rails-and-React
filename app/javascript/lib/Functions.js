@@ -14,8 +14,8 @@ export const sortByClearanceDate = (txn1, txn2) => {
 }
 
 // item filters
-export const isAccural = object => object.isAccrual
-export const isNonAccural = object => !object.isAccrual
+export const isAccrual = object => object.isAccrual
+export const isNonAccrual = object => !object.isAccrual
 export const isMatureAccrual = (object, month, year) => {
   if (object.maturityMonth === null) {
     return false

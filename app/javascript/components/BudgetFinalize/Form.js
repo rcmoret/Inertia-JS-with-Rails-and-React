@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { asOption } from '../../lib/Functions';
+import { asOption, sortByName as sortFn } from '../../lib/Functions';
 import { extraFrom } from './Functions';
 import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
 
@@ -64,7 +64,9 @@ const Form = props => {
     }
   }, [])
 
-  const availableCategories = categories.reduce((array, category) => {
+  const availableCategories = categories
+    .sort(sortFn)
+    .reduce((array, category) => {
     if (targetIntervalCategoryIds.includes(category.id)) {
       return array
     } else {
@@ -74,7 +76,7 @@ const Form = props => {
 
   const rolloverItem = {
     data: {},
-    discretionary: (discretionary * -1),
+    discretionary: (discretionary.amount * -1),
     extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
     budgetCategoryId: null,
     name: '',

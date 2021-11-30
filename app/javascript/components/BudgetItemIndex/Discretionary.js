@@ -32,7 +32,7 @@ const Discretionary = ({ data, dispatch }) => {
   const transactionsLabel = state.showDiscretionaryTransactions ? hideTransactions : showTransactions
 
   return (
-    <Section>
+    <Section styling={{border: null}}>
       <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
         <div>
           &#8226;

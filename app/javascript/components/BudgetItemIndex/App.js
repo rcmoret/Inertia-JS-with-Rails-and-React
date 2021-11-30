@@ -7,7 +7,7 @@ import {
   dayToDayRevenue,
   pendingMonthly,
   isExpense,
-  isNonAccural,
+  isNonAccrual,
   isMatureAccrual,
   isRevenue,
   sortByName,
@@ -46,7 +46,7 @@ const App = ({ budget }) => {
   const toggleClearedMonthly = () => updateClearedMonthlyState(!renderClearedMonthly)
 
   const accrualFilter = item => {
-    if (renderAccruals || isNonAccural(item)) {
+    if (renderAccruals || isNonAccrual(item)) {
       return true
     } else {
       return isMatureAccrual(item, month, year)
@@ -109,13 +109,13 @@ const App = ({ budget }) => {
                 </div>
               </Row>
             </div>
-            <Section styling={{width: "w-1/2", rounded: null}}>
+            <Section styling={{width: "w-1/2", rounded: null, border: null}}>
               <div className="w-full text-2xl">{titleize(copy.dayToDay)}</div>
               <Discretionary data={discretionary} />
               <ItemGroup name={titleize(titles.revenues)} collection={dayToDayRevenues} />
               <ItemGroup name={titleize(titles.expenses)} collection={dayToDayExpenses} />
             </Section>
-            <Section styling={{width: "w-1/2", rounded: null}}>
+            <Section styling={{width: "w-1/2", rounded: null, border: null}}>
               <div className="w-full text-2xl">{titleize(copy.monthly)}</div>
               <ItemGroup name={titleize(titles.revenues)} collection={monthlyRevenues} />
               <ItemGroup name={titleize(titles.expenses)} collection={monthlyExpenses} />

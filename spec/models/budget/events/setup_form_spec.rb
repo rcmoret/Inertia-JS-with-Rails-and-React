@@ -31,9 +31,14 @@ RSpec.describe Budget::Events::SetupForm do
 
   describe 'interval not setup validation' do
     before do
+      interval_double = instance_double(
+        Budget::Interval,
+        persisted?: true,
+        set_up?: true
+      )
       allow(Budget::Interval)
         .to receive(:for)
-        .and_return(instance_double(Budget::Interval, persisted?: true, set_up?: true))
+        .and_return(interval_double)
       allow(Budget::Events::Form)
         .to receive(:new)
         .and_return(instance_double(Budget::Events::Form, valid?: true, save: true))
