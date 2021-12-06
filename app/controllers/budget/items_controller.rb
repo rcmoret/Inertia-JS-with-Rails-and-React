@@ -6,7 +6,11 @@ module Budget
     skip_before_action :authenticate_user!
 
     def index
-      render inertia: 'BudgetItemIndexApp', props: props
+      if month.nil? || year.nil?
+        redirect_to budget_path(month: today.month, year: today.year)
+      else
+        render inertia: 'BudgetItemIndexApp', props: props
+      end
     end
 
     private
@@ -15,12 +19,12 @@ module Budget
       Time.current
     end
 
-    def interval_month
-      params.fetch(:month, today.month).to_i
+    def month
+      params[:month]
     end
 
-    def interval_year
-      params.fetch(:year, today.year).to_i
+    def year
+      params[:year]
     end
 
     def query
@@ -35,7 +39,7 @@ module Budget
               isExpense
               isMonthly
             }
-            interval(month: #{interval_month}, year: #{interval_year}) {
+            interval(month: #{month.to_i}, year: #{year.to_i}) {
               month
               year
               discretionary {

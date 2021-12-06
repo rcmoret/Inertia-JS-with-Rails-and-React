@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/graphql' if Rails.env.development? || Rails.env.demo?
   devise_for :users
+  get '/', to: redirect('/budget')
+  get '/sign_in', to: redirect('/users/sign_in')
   post '/graphql', to: 'graphql#execute'
   namespace :budget do
     get '(/:month/:year)', to: 'items#index'
