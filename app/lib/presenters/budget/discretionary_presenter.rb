@@ -26,10 +26,11 @@ module Presenters
           .budget_inclusions
           .non_transfers
           .between(date_range, include_pending: current?)
+          .map(&:as_presenter)
       end
 
       def transactions_total
-        transaction_details.total.to_i
+        transaction_details.reduce(0) { |sum, detail| sum + detail.amount }
       end
     end
   end

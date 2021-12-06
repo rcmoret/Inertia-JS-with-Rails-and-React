@@ -8,11 +8,11 @@ module Presenters
       end
 
       def amount
-        attributes.fetch(:amount) { super }
+        attributes.fetch(:amount) { events.reduce(0) { |sum, event| sum + event.amount } }
       end
 
       def spent
-        attributes.fetch(:spent) { transaction_details.map(&:amount).reduce(:+) }
+        attributes.fetch(:spent) { transaction_details.reduce(0) { |sum, detail| sum + detail.amount } }
       end
 
       def icon_class_name
@@ -33,12 +33,12 @@ module Presenters
       end
 
       def monthly?
-        attributes.fetch(:monthly?) { category.monthly? }
+        attributes.fetch(:monthly) { category.monthly? }
       end
       alias is_monthly monthly?
 
       def expense?
-        attributes.fetch(:expense?) { category.expense? }
+        attributes.fetch(:expense) { category.expense? }
       end
       alias is_expense expense?
 
@@ -64,11 +64,11 @@ module Presenters
       end
 
       def maturity_month
-        attributes.fetch(:maturity_month, category.maturity_intervals.first&.month)
+        attributes.fetch(:maturity_month) { category.maturity_intervals.first&.month }
       end
 
       def maturity_year
-        attributes.fetch(:maturity_year, category.maturity_intervals.first&.year)
+        attributes.fetch(:maturity_year) { category.maturity_intervals.first&.year }
       end
 
       private

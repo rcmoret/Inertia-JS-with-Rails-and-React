@@ -16,6 +16,7 @@ module Transaction
       }
       scope :budget_inclusions, -> { where(budget_exclusion: false) }
       scope :non_transfers, -> { where(transfer_id: nil) }
+      scope :cash_flow, -> { joins(:account).merge(Account.cash_flow) }
       scope :non_cash_flow, -> { joins(:account).merge(Account.non_cash_flow) }
     end
   end

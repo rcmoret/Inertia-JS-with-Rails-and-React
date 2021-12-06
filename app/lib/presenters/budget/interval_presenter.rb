@@ -4,23 +4,12 @@ module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
       def current?
-        !closed_out? && prev.as_presenter.closed_out?
+        !closed_out? && prev.closed_out?
       end
       alias is_current current?
 
-      def accrual_items
-        with_presenters { item_views.accruals }
-      end
-
       def items(include_deleted: false, reviewable_only: false)
-        items_query = item_views
-        items_query = items_query.active unless include_deleted
-
-        items_query.map(&:as_presenter).then do |item_presenters|
-          item_presenters.select!(&:reviewable?) if reviewable_only
-
-          item_presenters
-        end
+        @items ||= fetch_items(include_deleted: include_deleted, reviewable_only: reviewable_only)
       end
 
       def discretionary
@@ -64,7 +53,14 @@ module Presenters
       end
 
       def available_cash
-        @available_cash ||= current? ? Account.available_cash : 0
+        @available_cash ||=
+          if current?
+            Account.available_cash + charged
+          elsif closed_out?
+            charged + Transaction::Detail.prior_to(last_date + 1.day).cash_flow.sum(:amount)
+          else
+            0
+          end
       end
 
       private
@@ -74,15 +70,26 @@ module Presenters
       end
 
       def charged
-        return 0 unless current?
-
-        @charged ||= Transaction::DetailView
+        @charged ||= Transaction::Detail
                      .budget_inclusions
                      .non_cash_flow
-                     .between(
-                       date_range,
-                       include_pending: current?
-                     ).sum(:amount)
+                     .between(date_range, include_pending: current?)
+                     .sum(:amount)
+      end
+
+      def fetch_items(include_deleted:, reviewable_only:)
+        items_query = item_views.includes(:transactions).includes(events: :type)
+        items_query = items_query.active unless include_deleted
+
+        items_query.map(&:as_presenter).then do |item_presenters|
+          item_presenters.select!(&:reviewable?) if reviewable_only
+
+          item_presenters
+        end
+      end
+
+      def prev
+        @prev ||= super.as_presenter
       end
     end
   end

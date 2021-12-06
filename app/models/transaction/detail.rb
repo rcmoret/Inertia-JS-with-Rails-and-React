@@ -23,6 +23,11 @@ module Transaction
     scope :for_accounts, lambda { |account_ids|
       joins(:entry).where(transaction_entries: { account_id: account_ids })
     }
+    scope :between, lambda { |date_range, include_pending:|
+      joins(:entry).merge(Entry.between(date_range, include_pending: include_pending))
+    }
+    scope :cash_flow, -> { joins(:entry).merge(Entry.cash_flow) }
+    scope :non_cash_flow, -> { joins(:entry).merge(Entry.non_cash_flow) }
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry

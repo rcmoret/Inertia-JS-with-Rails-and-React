@@ -31,7 +31,6 @@ module Budget
               id
               defaultAmount
               name
-              iconClassName
               isAccrual
               isExpense
               isMonthly
