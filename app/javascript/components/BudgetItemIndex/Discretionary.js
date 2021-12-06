@@ -27,12 +27,12 @@ const Discretionary = ({ data, dispatch }) => {
   const toggleTransactions = () => setState({ showDiscretionaryTransactions: !state.showDiscretionaryTransactions })
   const { amount, transactionDetails, transactionsTotal, overUnderBudget } = data
   const total = amount - transactionsTotal - overUnderBudget
-  const depositedOrSpent = transactionsTotal < 0 ? spent : deposited
+  const depositedOrSpent = transactionsTotal <= 0 ? spent : deposited
   const overOrUnderBudget = overUnderBudget < 0 ? overBudget : underBudget
   const transactionsLabel = state.showDiscretionaryTransactions ? hideTransactions : showTransactions
 
   return (
-    <Section styling={{border: null}}>
+    <Section styling={{border: null, margin: null, padding: "pt-0.5 pb-0.5 pl-1 pr1"}}>
       <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
         <div>
           &#8226;
@@ -42,37 +42,53 @@ const Discretionary = ({ data, dispatch }) => {
           </span>
         </div>
       </TitleRow>
-      <Row>
-        <div>
+      <Row styling={{padding: "pl-1 pr-1"}}>
+        <div className="w-6/12">
           <span className="italic">
             {titleize(shared.total)}
           </span>
         </div>
-        <div><AmountSpan amount={total} /></div>
+        <div className="w-4/12 text-right"><AmountSpan amount={total} /></div>
+        <div className="w-1/12"></div>
       </Row>
-      <Row>
-        <div>
+      <Row styling={{padding: "pl-1 pr-1"}}>
+        <div className="w-6/12">
           <span className="italic">
             {titleize(depositedOrSpent)}
           </span>
         </div>
-        <div><AmountSpan amount={transactionsTotal} /></div>
+        <div className="w-4/12 text-right">
+          <AmountSpan amount={transactionsTotal}
+            color="text-green-800"
+            negativeColor="text-red-700"
+            zeroColor="text-black"
+          />
+        </div>
+        <div className="w-1/12"></div>
       </Row>
-      <Row>
-        <div>
+      <Row styling={{padding: "pl-1 pr-1"}}>
+        <div className="w-6/12">
           <span className="italic">
             {titleize(overOrUnderBudget)}
           </span>
         </div>
-        <div><AmountSpan amount={overUnderBudget} negativeColor="text-red-700" /></div>
+        <div className="w-4/12 text-right">
+          <AmountSpan amount={overUnderBudget}
+            color="text-green-800"
+            negativeColor="text-red-700"
+            zeroColor="text-black"
+          />
+        </div>
+        <div className="w-1/12"></div>
       </Row>
-      <Row>
-        <div>
+      <Row styling={{padding: "pl-1 pr-1"}}>
+        <div className="w-6/12">
           <span className="italic">
             {titleize(remaining)}
           </span>
         </div>
-        <div><AmountSpan amount={amount} negativeColor="text-red-700" /></div>
+        <div className="w-4/12 text-right"><AmountSpan amount={amount} negativeColor="text-red-700" /></div>
+        <div className="w-1/12"></div>
       </Row>
       <Transactions
         toggleTransactions={toggleTransactions}

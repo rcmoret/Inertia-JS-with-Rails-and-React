@@ -1,4 +1,5 @@
 import { fromDateString } from "../../lib/DateFormatter";
+import MoneyFormatter from "../../lib/MoneyFormatter";
 import { sortByClearanceDate } from "../../lib/Functions"
 
 const eventModel = event => {
@@ -15,13 +16,16 @@ const eventModel = event => {
   }
 }
 
-export const itemModel = item  => ({
-  ...item,
-  difference: (item.difference * -1),
-  events: item.events.map(eventModel),
-  showDetails: false,
-  transactionDetails: item.transactionDetails.map(transactionDetailModel),
-})
+export const itemModel = item  => {
+  return {
+    ...item,
+    difference: (item.difference * -1),
+    events: item.events.map(eventModel),
+    inputAmount: MoneyFormatter(item.amount, { decoarate: false }),
+    transactionDetails: item.transactionDetails.map(transactionDetailModel),
+    updateAmount: null,
+  }
+}
 
 export const transactionDetailModel = detail => {
   const isPending = detail.clearanceDate === null

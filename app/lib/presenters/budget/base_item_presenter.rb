@@ -12,7 +12,7 @@ module Presenters
       end
 
       def spent
-        attributes.fetch(:spent) { transaction_details.sum(:amount) }
+        attributes.fetch(:spent) { transaction_details.map(&:amount).reduce(:+) }
       end
 
       def icon_class_name

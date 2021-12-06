@@ -16,7 +16,7 @@ module Presenters
       end
 
       def item(id:)
-        Budget::Item
+        ::Budget::Item
           .includes(events: :type)
           .includes(transaction_details: { entry: :account })
           .find(id)

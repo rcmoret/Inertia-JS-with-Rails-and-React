@@ -7,19 +7,22 @@ import { titleize } from "../../lib/copy/functions";
 import AmountSpan from "../shared/AmountSpan";
 import BudgetItemDetails from "./ItemDetails";
 import Cell from "../shared/Cell";
+import DayToDayItem from "./DayToDayItem";
 import { eventAndTransactionDetailSort, eventTransactionReducer } from "./Functions";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
+import PendingMonthlyItem from "./PendingMonthlyItem";
 import { StripedRow, TitleRow } from "../shared/Row"
 import Section from "../shared/Section";
 import { TransactionDetail } from "./shared";
 
-const ItemGroup = ({ collection, name }) => {
+
+const ItemGroup = ({ collection, name, fns, pageState }) => {
   if (collection.length === 0) {
     return null
   } else {
     return (
-      <Section styling={{border: null}}>
+      <Section styling={{border: null, margin: null, padding: "pt-0.5 pb-0.5 pl-1 pr1"}}>
         <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
           <div>
             &#8226;
@@ -30,143 +33,39 @@ const ItemGroup = ({ collection, name }) => {
           </div>
         </TitleRow>
         {collection.map(model => (
-          <BudgetItem key={model.id} model={model} />
+          <BudgetItem key={model.id} model={model} fns={fns} pageState={pageState} />
         ))}
       </Section>
     )
   }
 };
 
-const BudgetItem = ({ model }) => {
-  if (pendingMonthly(model)) {
+const BudgetItem = ({ model, fns, pageState }) => {
+  const item = {
+    ...model,
+    showDetails: pageState.showDetailsIds.includes(model.id),
+    showForm: (model.id === pageState.showFormId),
+  }
+
+  if (pendingMonthly(item)) {
     return (
-      <PendingMonthlyItem model={model} />
+      <PendingMonthlyItem model={item} fns={fns} />
     )
-  } else if (model.isMonthly) {
+  } else if (item.isMonthly) {
     return (
-      <ClearedMonthlyItem model={model} />
+      <ClearedMonthlyItem model={item} />
     )
   } else {
     return (
-      <DayToDayItem model={model} />
+      <DayToDayItem model={item} fns={fns} />
     )
   }
-}
-
-const DayToDayItem = ({ model }) => {
-  const [state, setState] = useState({ showDetails: model.showDetails })
-
-  const {
-    id,
-    amount,
-    iconClassName,
-    isExpense,
-    difference,
-    name,
-    spent,
-    transactionDetails,
-  } = model
-  const toggleDetail = () => setState({ showDetails: !state.showDetails })
-  const caretClassName = state.showDetails ? "fas fa-caret-down" : "fas fa-caret-right"
-  const combinedTransactionsAndEvents = [
-    ...model.events,
-    ...model.transactionDetails,
-  ].sort(eventAndTransactionDetailSort)
-  .reduce(eventTransactionReducer, [])
-  const spentOrDeposited = isExpense ? shared.spent : shared.deposited
-  const remainingOrDifference = (Math.abs(spent) > Math.abs(amount)) ? shared.difference : shared.remaining
-
-  return (
-    <StripedRow styling={{ wrap: "flex-wrap"}}>
-      <Cell styling={{width: "w-full"}}>
-        <div className="w-6/12">
-          <Link onClick ={toggleDetail} color="text-blue-800" hoverColor="text-blue-800">
-            <span className="text-sm">
-              <Icon className={caretClassName} />
-            </span>
-            {" "}
-            <span className="underline">
-                {name}
-            </span>
-          </Link>
-          {" "}
-          <span>
-            <Icon className={iconClassName} />
-          </span>
-        </div>
-        <div className="w-4/12 text-right">
-          <AmountSpan amount={amount} absolute={true} />
-        </div>
-        <div className="w-1/12">
-          <Icon className="far fa-edit" />
-        </div>
-      </Cell>
-      <Cell styling={{width: "w-full"}}>
-        <div className="w-6/12">
-          {titleize(spentOrDeposited)}
-        </div>
-        <div className="w-4/12 text-right">
-          <AmountSpan amount={spent} absolute={true} prefix="-" />
-        </div>
-        <div className="w-1/12">
-        </div>
-      </Cell>
-      <Cell styling={{width: "w-full"}}>
-        <div className="w-6/12">
-          {titleize(remainingOrDifference)}
-        </div>
-        <div className="w-4/12 text-right">
-          <AmountSpan amount={difference} absolute={true} negativeColor="text-red-600" />
-        </div>
-        <div className="w-1/12">
-        </div>
-      </Cell>
-      {state.showDetails && <BudgetItemDetails id={id} details={combinedTransactionsAndEvents} />}
-     </StripedRow>
-  )
-}
-
-const PendingMonthlyItem = ({ model }) => {
-  const events = model.events.reduce(eventTransactionReducer, [])
-  const [state, setState] = useState({ showDetails: model.showDetails })
-  const toggleDetail = () => setState({ showDetails: !state.showDetails })
-  const caretClassName = state.showDetails ? "fas fa-caret-down" : "fas fa-caret-right"
-  const { id, iconClassName, name } = model
-
-  return (
-    <StripedRow styling={{ wrap: "flex-wrap"}}>
-      <Cell styling={{width: "w-full"}}>
-        <div className="w-6/12">
-          <Link onClick ={toggleDetail} color="text-blue-800" hoverColor="text-blue-800">
-            <span className="text-sm">
-              <Icon className={caretClassName} />
-            </span>
-            {" "}
-            <span className="underline">
-              {name}
-            </span>
-          </Link>
-          {" "}
-          <span>
-            <Icon className={iconClassName} />
-          </span>
-        </div>
-        <div className="w-4/12 text-right">
-          <AmountSpan amount={model.remaining} />
-        </div>
-        <div className="w-1/12">
-          <Icon className="far fa-edit" />
-        </div>
-      </Cell>
-      {state.showDetails && <BudgetItemDetails id={id} details={events} />}
-    </StripedRow>
-  )
 }
 
 const ClearedMonthlyItem = ({ model }) => {
   const [state, setState] = useState({ showDetails: model.showDetails })
   const { id, difference, iconClassName, isExpense, name, spent, transactionDetails } = model
-  const events = model.events.reduce(eventTransactionReducer, [])
+  const events = model.events.sort(eventAndTransactionDetailSort).reduce(eventTransactionReducer, [])
   const toggleDetail = () => setState({ showDetails: !state.showDetails })
   const caretClassName = state.showDetails ? "fas fa-caret-down" : "fas fa-caret-right"
   const spentOrDeposited = isExpense ? shared.spent : shared.deposited
@@ -190,7 +89,8 @@ const ClearedMonthlyItem = ({ model }) => {
           </span>
         </div>
         <div className="w-4/12 text-right">
-          <AmountSpan amount={model.amount} absolute={true} />
+          <AmountSpan amount={model.amount} absolute={true}
+          />
         </div>
       </Cell>
       <Cell styling={{width: "w-full"}}>
@@ -203,7 +103,13 @@ const ClearedMonthlyItem = ({ model }) => {
           Difference
         </div>
         <div className="w-4/12 text-right">
-          <AmountSpan amount={difference} absolute={true} negativeColor="text-red-600" />
+          <AmountSpan
+            amount={difference}
+            absolute={true}
+            color="text-green-700"
+            negativeColor="text-red-700"
+            zeroColor="text-black"
+          />
         </div>
       </Cell>
       {state.showDetails && <BudgetItemDetails id={id} details={events} />}

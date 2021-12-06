@@ -3,7 +3,7 @@ import { Inertia } from "@inertiajs/inertia";
 
 import CategorySelect from "./CategorySelect"
 import Form, { reducer, eventsReducer } from "./Form";
-import ItemGroup, { ExistingItemForm, NewItemForm } from "./ItemGroup";
+import ItemGroup, { ExistingItemForm, NewItem } from "./ItemGroup";
 
 import DateFormatter from "../../lib/DateFormatter";
 import { sortByName as sortFn } from "../../lib/Functions";

@@ -61,7 +61,7 @@ export const index = {
   showData: "show data",
   showTransactions: "show transactions",
   spent: "spent",
-  title: (dateString) => `Budget Items for ${dateString}`,
+  title: (dateString) => `Budget for ${dateString}`,
   totalDays: (num) => `total days: ${num}`,
   underBudget: "under budget",
 }
