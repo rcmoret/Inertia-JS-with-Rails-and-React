@@ -119,61 +119,16 @@ const App = ({ budget }) => {
     })
   )
 
-  const postEvents = (events, suppliedCallbacks = {}) => {
-    const defaultCallbacks = { onSuccess: () => null }
-    const callbacks = { ...defaultCallbacks, suppliedCallbacks }
-    const onSuccess = page =>  {
-      const { interval } = page.props.budget
-      updateItemsState(interval.items.map(itemModel))
-      updateDiscretionary(discretionaryModel(interval.discretionary))
-      callbacks.onSuccess(page)
-    }
-
-    Inertia.post(
-      `/budget/items/events?month=${month}&year=${year}`,
-      events,
-      { preserveScroll: true , onSuccess: onSuccess }
-    )
-  }
-
-  const postItemCreateEvent = (budgetCategoryId, amount, callbacks = { onSuccess: () => null }) => {
-    const event = {
-      budgetCategoryId,
-      amount,
-      eventType: "item_create",
-      month,
-      year,
-      data: null
-    }
-    debugger
-    postEvents({ events: [event] }, callbacks)
-  }
-
-  const postItemAdjustEvent = (id, amount) => {
-    const event = {
-      budgetItemId: id,
-      amount,
-      eventType: "item_adjust",
-      data: null
-    }
-    postEvents({ events: [event] }, { onSuccess: closeForm() })
-  }
-
-  const postItemDeleteEvent = (id, amount) => {
-    const event = {
-      budgetItemId: id,
-      eventType: "item_delete",
-      data: null
-    }
-    postEvents({ events: [event] })
+  const onPostSuccess = page => {
+    const { interval } = page.props.budget
+    updateItemsState(interval.items.map(itemModel))
+    updateDiscretionary(discretionaryModel(interval.discretionary))
   }
 
   const fns = {
     closeForm,
     collapseDetails,
-    postItemAdjustEvent,
-    postItemCreateEvent,
-    postItemDeleteEvent,
+    onPostSuccess,
     renderForm,
     showDetails,
     toggleDayToDayForm,
@@ -253,17 +208,28 @@ const App = ({ budget }) => {
               <CreateItemForm
                 availableCategories={availableDayToDayCategories}
                 isFormShown={isDayToDayFormShown}
-                postItemCreateEvent={postItemCreateEvent}
+                fns={fns}
+                month={month}
                 toggleForm={toggleDayToDayForm}
+                year={year}
               />
               <Discretionary data={discretionary} />
               <ItemGroup
                 name={titleize(titles.revenues)}
                 collection={dayToDayRevenues}
                 fns={fns}
+                month={month}
                 pageState={pageState}
+                year={year}
               />
-              <ItemGroup name={titleize(titles.expenses)} collection={dayToDayExpenses} fns={fns} pageState={pageState} />
+              <ItemGroup
+                name={titleize(titles.expenses)}
+                collection={dayToDayExpenses}
+                fns={fns}
+                month={month}
+                pageState={pageState}
+                year={year}
+              />
             </Section>
             <Section styling={{width: "w-1/2", rounded: null, border: null, padding: "pt-2"}}>
               <GroupTitle
@@ -274,11 +240,27 @@ const App = ({ budget }) => {
               <CreateItemForm
                 availableCategories={availableMonthlyCategories}
                 isFormShown={isMonthlyFormShown}
-                postItemCreateEvent={postItemCreateEvent}
+                fns={fns}
+                month={month}
                 toggleForm={toggleMonthlyForm}
+                year={year}
               />
-              <ItemGroup name={titleize(titles.revenues)} collection={monthlyRevenues} fns={fns} pageState={pageState} />
-              <ItemGroup name={titleize(titles.expenses)} collection={monthlyExpenses} fns={fns} pageState={pageState} />
+              <ItemGroup
+                name={titleize(titles.revenues)}
+                collection={monthlyRevenues}
+                fns={fns}
+                month={month}
+                pageState={pageState}
+                year={year}
+              />
+              <ItemGroup
+                name={titleize(titles.expenses)}
+                collection={monthlyExpenses}
+                fns={fns}
+                month={month}
+                pageState={pageState}
+                year={year}
+              />
               {pageState.renderClearedMonthly && <ClearedMonthlySection collection={clearedMonthlyItems} pageState={pageState}/>}
             </Section>
           </Row>

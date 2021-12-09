@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import Select from "react-select"
+import Select from "react-select";
 
 import {
   asOption,
   isExpense,
   isRevenue,
   sortByName,
-} from "../../lib/Functions"
-import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
-import { titles, shared } from "../../lib/copy/budget"
-import { titleize } from "../../lib/copy/functions"
+} from "../../lib/Functions";
+import { postItemCreateEvent } from "./Functions";
+import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
+import { titles, shared } from "../../lib/copy/budget";
+import { titleize } from "../../lib/copy/functions";
 
 import { AmountInput } from "../shared/TextInput";
 import Button, { DisabledButton } from "../shared/Button";
@@ -35,7 +36,8 @@ const FormButton = ({ form, onSubmit }) => {
   }
 }
 
-const CreateItemForm = ({ availableCategories, postItemCreateEvent, isFormShown, toggleForm }) => {
+const CreateItemForm = (props) => {
+  const { availableCategories, isFormShown, month, toggleForm, year, fns } = props
   const [form, updateForm] = useState({
     amount: "",
     categoryId: null,
@@ -63,9 +65,14 @@ const CreateItemForm = ({ availableCategories, postItemCreateEvent, isFormShown,
     { label: titleize(titles.revenues), options: revenueOptions },
   ]
   const value = availableCategories.find(c => c.value === form.categoryId)
-  const onSubmit = () => {
-    postItemCreateEvent(form.categoryId, decimalToInt(form.amount), { onSuccess: toggleForm })
+  const onSuccess = page => {
+    toggleForm()
+    fns.onPostSuccess(page)
   }
+  const onSubmit = () => postItemCreateEvent(
+    { budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
+    { onSuccess }
+  )
 
   if (isFormShown) {
     return (

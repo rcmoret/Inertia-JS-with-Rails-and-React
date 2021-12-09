@@ -7,6 +7,7 @@ import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Row from "../shared/Row";
 
+import { postItemDeleteEvent } from "./Functions"
 import { fromDateString } from "../../lib/DateFormatter";
 import { index as copy } from " ../../lib/copy/budget"
 
@@ -43,7 +44,7 @@ export const TransactionDetail = ({ model, ...suppliedProps }) => {
   )
 };
 
-export const NameRow = ({ model, fns }) => {
+export const NameRow = ({ model, fns, month, year }) => {
   const {
     id,
     amount,
@@ -74,7 +75,7 @@ export const NameRow = ({ model, fns }) => {
       <div className="w-4/12 text-right">
         <AmountSpan amount={amount} absolute={true} />
       </div>
-      <Links model={model} fns={fns} />
+      <Links model={model} fns={fns} month={month} year={year} />
     </Cell>
   )
 }
@@ -98,13 +99,13 @@ export const FormRow = ({ handleChange, hideForm, inputAmount, postEvent }) => (
   </Cell>
 )
 
-export const Links = ({ model, fns }) => {
-  const { id, showForm, isDeletable } = model
+export const Links = ({ model, fns, month, year }) => {
+  const { id, name, showForm, isDeletable } = model
 
   return (
     <Cell styling={{width: "w-1/12", fontSize: "text-xs"}}>
       <EditLink id={id} fns={fns} showForm={showForm} />
-      <DeleteLink id={id} name={model.name} isDeletable={isDeletable} fns={fns} />
+      <DeleteLink id={id} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
     </Cell>
   )
 }
@@ -127,10 +128,10 @@ const EditLink = ({ id, fns, showForm }) => {
   }
 }
 
-const DeleteLink = ({ id, isDeletable, fns, name }) => {
+const DeleteLink = ({ id, isDeletable, fns, name, month, year }) => {
   const onClick = () => {
     if(window.confirm(copy.deleteConfirmation(name))) {
-      fns.postItemDeleteEvent(id)
+      postItemDeleteEvent({ id, month, year }, { onSuccess: fns.onPostSuccess })
     } else {
       return null
     }

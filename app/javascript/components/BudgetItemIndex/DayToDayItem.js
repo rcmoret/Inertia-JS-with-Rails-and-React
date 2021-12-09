@@ -5,7 +5,7 @@ import { decimalToInt } from "../../lib/MoneyFormatter";
 import { shared } from "../../lib/copy/budget";
 import { titleize } from "../../lib/copy/functions";
 
-import { eventAndTransactionDetailSort, eventTransactionReducer } from "./Functions";
+import { eventAndTransactionDetailSort, eventTransactionReducer, postItemAdjustEvent } from "./Functions";
 
 import AmountSpan from "../shared/AmountSpan";
 import BudgetItemDetails from "./ItemDetails";
@@ -14,7 +14,7 @@ import Cell from "../shared/Cell";
 import { FormRow, NameRow, Links } from "./shared";
 import Link from "../shared/Link";
 
-const DayToDayItem = ({ model, fns }) => {
+const DayToDayItem = ({ model, fns, month, year }) => {
   const details = [
     ...model.events,
     ...model.transactionDetails,
@@ -23,16 +23,16 @@ const DayToDayItem = ({ model, fns }) => {
 
   if (model.showForm) {
     return (
-      <Form  model={model} fns={fns} details={details} />
+      <Form  model={model} fns={fns} details={details} month={month} year={year}/>
     )
   } else {
     return (
-      <Show model={model} fns={fns} details={details} />
+      <Show model={model} fns={fns} details={details} month={month} year={year}/>
     )
   }
 }
 
-const Form = ({ model, fns, details }) => {
+const Form = ({ model, fns, details, month, year }) => {
   const {
     id,
     amount,
@@ -46,15 +46,23 @@ const Form = ({ model, fns, details }) => {
   }
   const updateAmount = model.updateAmount === null ? amount : model.updateAmount
   const updatedRemaining = (updateAmount - spent) * -1
-  const hideForm = () => fns.closeForm()
-  const postEvent = () => fns.postItemAdjustEvent(id, updateAmount)
+  const postEvent = () => {
+    const onSuccess = page => {
+      fns.closeForm()
+      fns.onPostSuccess(page)
+    }
+    postItemAdjustEvent(
+      { id, amount: updateAmount, month, year },
+      { onSuccess }
+    )
+  }
 
   return (
     <StripedRow styling={{ wrap: "flex-wrap"}}>
       <NameRow model={model} fns={fns} />
       <FormRow
         handleChange={handleChange}
-        hideForm={hideForm}
+        hideForm={fns.closeForm}
         inputAmount={inputAmount}
         postEvent={postEvent}
       />
@@ -75,7 +83,7 @@ const Form = ({ model, fns, details }) => {
   )
 }
 
-const Show = ({ model, fns, details }) => {
+const Show = ({ model, fns, details, month, year }) => {
   const {
     id,
     isExpense,
@@ -85,7 +93,7 @@ const Show = ({ model, fns, details }) => {
 
   return (
     <StripedRow styling={{ wrap: "flex-wrap"}}>
-      <NameRow model={model} fns={fns} />
+      <NameRow model={model} fns={fns} month={month} year={year} />
       <SpentOrDeposited isExpense={isExpense} spent={spent} />
       <DifferenceOrRemaining {...model} />
       {showDetails && <BudgetItemDetails id={id} details={details} />}

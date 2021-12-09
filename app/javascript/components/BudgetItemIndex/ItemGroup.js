@@ -16,8 +16,8 @@ import { StripedRow, TitleRow } from "../shared/Row"
 import Section from "../shared/Section";
 import { TransactionDetail } from "./shared";
 
-
-const ItemGroup = ({ collection, name, fns, pageState }) => {
+const ItemGroup = props => {
+  const { collection, name, fns, month, pageState, year } = props
   if (collection.length === 0) {
     return null
   } else {
@@ -33,14 +33,14 @@ const ItemGroup = ({ collection, name, fns, pageState }) => {
           </div>
         </TitleRow>
         {collection.map(model => (
-          <BudgetItem key={model.id} model={model} fns={fns} pageState={pageState} />
+          <BudgetItem key={model.id} model={model} fns={fns} pageState={pageState} month={month} year={year} />
         ))}
       </Section>
     )
   }
 };
 
-const BudgetItem = ({ model, fns, pageState }) => {
+const BudgetItem = ({ model, fns, pageState, month, year }) => {
   const item = {
     ...model,
     showDetails: pageState.showDetailsIds.includes(model.id),
@@ -49,7 +49,7 @@ const BudgetItem = ({ model, fns, pageState }) => {
 
   if (pendingMonthly(item)) {
     return (
-      <PendingMonthlyItem model={item} fns={fns} />
+      <PendingMonthlyItem model={item} fns={fns} month={month} year={year} />
     )
   } else if (item.isMonthly) {
     return (
@@ -57,7 +57,7 @@ const BudgetItem = ({ model, fns, pageState }) => {
     )
   } else {
     return (
-      <DayToDayItem model={item} fns={fns} />
+      <DayToDayItem model={item} fns={fns} month={month} year={year} />
     )
   }
 }

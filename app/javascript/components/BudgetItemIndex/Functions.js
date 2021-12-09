@@ -1,3 +1,5 @@
+import { Inertia } from "@inertiajs/inertia";
+
 import { fromDateString } from "../../lib/DateFormatter";
 import MoneyFormatter from "../../lib/MoneyFormatter";
 import { sortByClearanceDate } from "../../lib/Functions"
@@ -82,4 +84,55 @@ export const eventTransactionReducer = (array, model) => {
       }
     ]
   }
+}
+
+
+const defaultCallbacks = { onSuccess: () => null }
+
+const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => {
+  const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
+  const onSuccess = page => callbacks.onSuccess(page)
+
+  Inertia.post(
+    `/budget/items/events?month=${month}&year=${year}`,
+    { events },
+    { preserveScroll: true , onSuccess: onSuccess }
+  )
+}
+
+export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
+  const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
+  const { budgetCategoryId, amount, month, year } = itemProps
+  const events = [
+    {
+      budgetCategoryId,
+      amount,
+      eventType: "item_create",
+      month,
+      year,
+      data: null,
+    }
+  ]
+  postEvents({ events, month, year }, callbacks)
+}
+
+export const postItemAdjustEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
+  const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
+  const event = {
+    budgetItemId: id,
+    amount,
+    eventType: "item_adjust",
+    data: null
+  }
+  postEvents({ events: [event], month, year }, callbacks)
+}
+
+export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
+  const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
+  const event = {
+    budgetItemId: id,
+    eventType: "item_delete",
+    data: null
+  }
+  postEvents({ events: [event], month, year }, callbacks)
 }
