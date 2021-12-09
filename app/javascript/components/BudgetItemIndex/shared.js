@@ -8,6 +8,7 @@ import Link from "../shared/Link";
 import Row from "../shared/Row";
 
 import { fromDateString } from "../../lib/DateFormatter";
+import { index as copy } from " ../../lib/copy/budget"
 
 export const TransactionDetail = ({ model, ...suppliedProps }) => {
   const props = {
@@ -103,7 +104,7 @@ export const Links = ({ model, fns }) => {
   return (
     <Cell styling={{width: "w-1/12", fontSize: "text-xs"}}>
       <EditLink id={id} fns={fns} showForm={showForm} />
-      <DeleteLink id={id} isDeletable={isDeletable} fns={fns} />
+      <DeleteLink id={id} name={model.name} isDeletable={isDeletable} fns={fns} />
     </Cell>
   )
 }
@@ -126,8 +127,14 @@ const EditLink = ({ id, fns, showForm }) => {
   }
 }
 
-const DeleteLink = ({ id, isDeletable, fns }) => {
-  const onClick = () => fns.postItemDeleteEvent(id)
+const DeleteLink = ({ id, isDeletable, fns, name }) => {
+  const onClick = () => {
+    if(window.confirm(copy.deleteConfirmation(name))) {
+      fns.postItemDeleteEvent(id)
+    } else {
+      return null
+    }
+  }
 
   if (isDeletable) {
     return (

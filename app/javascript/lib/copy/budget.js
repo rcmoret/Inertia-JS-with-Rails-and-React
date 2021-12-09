@@ -47,6 +47,7 @@ export const index = {
   cleared: "cleared",
   dateRange: (first, last) => `${first} to ${last}`,
   daysRemaining: (num) => `days remaining: ${num}`,
+  deleteConfirmation: (name) => `Are you sure you want to delete this item for ${name}?`,
   detailsTitle: "budget item details",
   hideAccruals: "hide accruals",
   hideClearedMonthly: "hide cleared monthly",
