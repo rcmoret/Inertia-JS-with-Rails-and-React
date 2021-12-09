@@ -39,7 +39,7 @@ const BudgetSetupApp = ({ budget }) => {
   const onSubmit = ev => {
     ev.preventDefault();
     const events = eventsReducer(form)
-    Inertia.post("/budget/set-up", { events })
+    Inertia.post(`/budget/set-up?month=${month}&year=${year}`, { events })
   }
   const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
   document.title = titleize(copy.docTitle(dateString))
@@ -56,17 +56,17 @@ const BudgetSetupApp = ({ budget }) => {
                 selectedCategory={selectedCategory}
               />
             </Section>
-            <ItemGroup name={titleize(titles.accruals)} ItemForm={NewItemForm} collection={accruals} dispatch={dispatch} />
-            <ItemGroup name={titleize(titles.revenues)} ItemForm={NewItemForm} collection={revenues} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.accruals)} ItemForm={NewItem} collection={accruals} dispatch={dispatch} />
+            <ItemGroup name={titleize(titles.revenues)} ItemForm={NewItem} collection={revenues} dispatch={dispatch} />
             <ItemGroup
               name={titleize(`${titles.monthly} ${titles.expenses}`)}
-              ItemForm={NewItemForm}
+              ItemForm={NewItem}
               collection={monthlyExpenses}
               dispatch={dispatch}
             />
             <ItemGroup
               name={titleize(`${titles.dayToDay} ${titles.expenses}`)}
-              ItemForm={NewItemForm}
+              ItemForm={NewItem}
               collection={dayToDayExpenses}
               dispatch={dispatch}
             />

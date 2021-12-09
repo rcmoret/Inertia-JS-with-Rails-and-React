@@ -68,7 +68,7 @@ module Budget
       <<~GQL
         {
           budget {
-            categories {
+            categories(includeArchived: true) {
               id
               defaultAmount
               name

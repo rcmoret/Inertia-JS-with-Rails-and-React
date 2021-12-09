@@ -5,7 +5,7 @@ import Button, { DisabledButton } from "../shared/Button";
 import Icon from "../shared/Icons";
 import { AmountInput } from "../shared/TextInput";
 
-import { sortByName as sortFn } from "../../lib/Functions"
+import { sortByLabel as sortFn } from "../../lib/Functions"
 
 import { setup as copy } from "../../lib/copy/budget"
 import { titleize } from "../../lib/copy/functions"
@@ -41,7 +41,7 @@ const CategorySelect = props => {
        <div className="w-4/12">
          <AmountInput
            onChange={handleAmountChange}
-           className="h-full text-right w-8/12 rounded border border-gray-400 border-solid"
+           classes={["p-1 h-full text-right w-8/12 rounded border border-gray-400 border-solid"]}
            placeholder="amount"
            value={selectedCategory.displayAmount}
          />

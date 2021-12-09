@@ -1,5 +1,9 @@
 export const sortByName = (obj1, obj2) => (
-  obj1.name < obj2.name ? -1 : 1
+  obj1.name.toLowerCase() < obj2.name.toLowerCase() ? -1 : 1
+);
+
+export const sortByLabel = (obj1, obj2) => (
+  obj1.label.toLowerCase() < obj2.label.toLowerCase() ? -1 : 1
 );
 
 export const sortByClearanceDate = (txn1, txn2) => {

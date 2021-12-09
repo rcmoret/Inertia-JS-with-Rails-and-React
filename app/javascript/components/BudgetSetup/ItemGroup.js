@@ -104,7 +104,7 @@ const ItemWrapper = props => {
       {children}
       <Cell styling={{width: "w-1/4"}}>
         <div className="text-right">
-          $ <TextInput onChange={inputChange} className={inputClassName} value={item.displayAmount} />
+          $ <TextInput classes={["text-right"]} onChange={inputChange} className={inputClassName} value={item.displayAmount} />
         </div>
         <div className="w-4">
           <Link onClick={removeItem}>
