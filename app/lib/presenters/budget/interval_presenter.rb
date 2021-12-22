@@ -34,6 +34,14 @@ module Presenters
       end
       alias is_closed_out closed_out?
 
+      def first_date
+        super.to_date
+      end
+
+      def last_date
+        super.to_date
+      end
+
       def total_days
         (last_date - first_date).to_i + 1
       end

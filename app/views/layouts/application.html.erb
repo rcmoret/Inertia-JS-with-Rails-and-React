@@ -20,7 +20,7 @@
   <body>
     <%= yield %>
     <% if user_signed_in? %>
-      <div class='rounded bg-blue-900 p-2 w-8/12 text-right underline'>
+      <div class='rounded bg-blue-900 p-2 w-full text-right underline'>
         <div class='bg-white text-blue-900 pt-1 pb-1 pr-3 rounded'>
           <%= link_to 'Sign Out', destroy_user_session_path, method: :delete %>
         </div>

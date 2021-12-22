@@ -3,7 +3,6 @@
 module Budget
   class ItemsController < ApplicationController
     include GraphQuery
-    skip_before_action :authenticate_user!
 
     def index
       if month.nil? || year.nil?
