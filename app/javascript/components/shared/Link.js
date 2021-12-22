@@ -9,7 +9,7 @@ const Link = suppliedProps => {
     onClick: () => null,
     hoverBgColor: "hover:bg-white",
     hoverBgOpacity: "hover:bg-opacity-0",
-    hoverColor: "hover:text-black",
+    // hoverColor: "hover:text-black",
   }
   const props = { ...defaultProps, ...suppliedProps }
   const {
@@ -18,10 +18,10 @@ const Link = suppliedProps => {
     color,
     hoverBgColor,
     hoverBgOpacity,
-    hoverColor,
     href,
     onClick,
   } = props
+  const hoverColor = props.hoverColor || props.color
   const className = [color, hoverBgOpacity, hoverBgColor, hoverColor, ...classes].join(" ")
 
   return (
