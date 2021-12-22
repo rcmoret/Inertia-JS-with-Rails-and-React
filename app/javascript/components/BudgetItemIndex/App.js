@@ -29,6 +29,7 @@ import CreateItemForm from "./CreateItemForm";
 import Icon from "../shared/Icons";
 import ItemGroup from "./ItemGroup";
 import Link, { ButtonStyleLink } from "../shared/Link";
+import MultiItemAdjustForm from "./MultiItemAdjustForm";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
 
@@ -42,18 +43,25 @@ const App = ({ budget }) => {
   } = budget.interval
 
   const [pageState, updatePageState] = usePageData(`budget/index/${month}/${year}`, {
+    adjustItemsForm: {
+      adjustmentItems: [],
+      isRendered: false,
+      selectedItemId: null,
+      selectedCategoryId: null,
+    },
     isDayToDayFormShown: false,
     isMonthlyFormShown: false,
-    renderAccruals: true,
+    renderAccruals: false,
     renderClearedMonthly: false,
     showDetailsIds: [],
     showFormId: null,
   })
   const {
-    renderAccruals,
-    renderClearedMonthly,
+    adjustItemsForm,
     isDayToDayFormShown,
     isMonthlyFormShown,
+    renderAccruals,
+    renderClearedMonthly,
     showDetailsIds,
     showFormId,
   } = pageState
@@ -64,6 +72,7 @@ const App = ({ budget }) => {
     renderAccruals: !renderAccruals,
   })
   const clearedMonthlyLinkText = renderClearedMonthly ? copy.hideClearedMonthly : copy.showClearedMonthly
+  const adjustItemsFormLinkText = adjustItemsForm.isRendered ? copy.hideAdjustItemsForm : copy.showAdjustItemsForm
   const toggleClearedMonthly = () => updatePageState({
     ...pageState,
     renderClearedMonthly: !renderClearedMonthly,
@@ -97,6 +106,23 @@ const App = ({ budget }) => {
     ...pageState,
     isMonthlyFormShown: !isMonthlyFormShown,
   })
+  const updateAdjustItemsForm = payload => updatePageState({
+    ...pageState,
+    adjustItemsForm: {
+      ...pageState.adjustItemsForm,
+      ...payload,
+    },
+  })
+  const clearAdjustItemsForm = () => updatePageState({
+    ...pageState,
+    adjustItemsForm: {
+      adjustmentItems: [],
+      isRendered: false,
+      selectedItemId: null,
+      selectedCategoryId: null,
+    },
+  })
+  const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
   const [discretionary, updateDiscretionary] = useState(discretionaryModel(budget.interval.discretionary))
 
   const [items, updateItemsState] = useState(budget.interval.items.map(itemModel))
@@ -196,9 +222,25 @@ const App = ({ budget }) => {
                       {titleize(clearedMonthlyLinkText)}
                     </Link>
                   </div>
+                  <div>
+                    <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
+                      {titleize(adjustItemsFormLinkText)}
+                    </Link>
+                  </div>
                 </div>
               </Row>
             </div>
+            {adjustItemsForm.isRendered &&
+                <MultiItemAdjustForm
+                  availableCategories={[...availableDayToDayCategories, ...availableMonthlyCategories]}
+                  clearAdjustItemsForm={clearAdjustItemsForm}
+                  items={items}
+                  interval={{ month, year }}
+                  formData={adjustItemsForm}
+                  fns={fns}
+                  updateAdjustItemsForm={updateAdjustItemsForm}
+                />
+            }
             <Section styling={{width: "w-1/2", rounded: null, border: null, padding: "pt-2"}}>
               <GroupTitle
                 title={titleize(titles.dayToDay)}
@@ -270,16 +312,22 @@ const App = ({ budget }) => {
   )
 };
 
-const GroupTitle = ({ title, isFormShown, toggleForm }) => (
-  <Row styling={{padding: "pl-4 pr-4"}}>
-    <div className="text-2xl">{title}</div>
-    <div className="text-xl">
-      <Link onClick={toggleForm}>
-        <Icon className={`fa fa-${isFormShown ? "times-circle" : "plus-circle"}`} />
-      </Link>
-    </div>
-  </Row>
-)
+const GroupTitle = ({ title, isFormShown, toggleForm }) => {
+  const iconClassName = `fa fa-${isFormShown ? "times-circle" : "plus-circle"}`
+  const color = `text-${isFormShown ? "red" : "blue"}-800`
+
+  return (
+    <Row styling={{padding: "pl-4 pr-4"}}>
+      <div className="text-2xl">{title}</div>
+      <div className="text-xl">
+        <Link onClick={toggleForm} color={color}>
+          <Icon className={iconClassName} />
+        </Link>
+      </div>
+    </Row>
+  )
+}
+
 const ClearedMonthlySection = ({ collection, pageState }) => {
   const expenses = collection.filter(isExpense)
   const revenues = collection.filter(isRevenue)

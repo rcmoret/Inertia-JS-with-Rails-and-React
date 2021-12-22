@@ -8,6 +8,7 @@ module Budget
 
       APPLICABLE_EVENT_TYPES = [
         ITEM_DELETE,
+        MULTI_ITEM_ADJUST_DELETE,
         SETUP_ITEM_DELETE,
       ].freeze
 

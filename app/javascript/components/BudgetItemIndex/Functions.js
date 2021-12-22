@@ -2,7 +2,8 @@ import { Inertia } from "@inertiajs/inertia";
 
 import { fromDateString } from "../../lib/DateFormatter";
 import MoneyFormatter from "../../lib/MoneyFormatter";
-import { sortByClearanceDate } from "../../lib/Functions"
+import { adjustItemEvent, deleteItemEvent, newItemEvent, sortByClearanceDate } from "../../lib/Functions";
+import { index as copy } from "../../lib/copy/budget"
 
 const eventModel = event => {
   const data = event.data ? JSON.parse(event.data) : null
@@ -89,7 +90,7 @@ export const eventTransactionReducer = (array, model) => {
 
 const defaultCallbacks = { onSuccess: () => null }
 
-const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => {
+export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
   const onSuccess = page => callbacks.onSuccess(page)
 
@@ -135,4 +136,55 @@ export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbac
     data: null
   }
   postEvents({ events: [event], month, year }, callbacks)
+}
+
+export const eventsFrom = (items, month, year) => {
+  const data = {
+    items: items.map(item => {
+      const {
+        id,
+        name,
+        bottomLineChange,
+        amount,
+        adjustmentAmount,
+        eventType,
+        isMarkedForDelete,
+      } = item
+      const event = isMarkedForDelete ? "delete" : eventType.split("_").reverse()[0]
+      return {
+        id,
+        name,
+        event,
+        originalAmount: MoneyFormatter(amount, { decorate: true }),
+        adjustmentAmount: MoneyFormatter(adjustmentAmount, { decorate: true }),
+        updatedAmount: MoneyFormatter(amount + adjustmentAmount, { decorate: true }),
+        bottomLineChange: MoneyFormatter(bottomLineChange, { decorate: true }),
+      }
+    }),
+    bottomLineChange: MoneyFormatter(items.reduce((sum, i) => sum + i.bottomLineChange, 0), { decorate: true }),
+  }
+
+  console.log(data)
+
+  return items.map(item => {
+    const {
+      id,
+      adjustmentAmount,
+      budgetCategoryId,
+      eventType,
+      isMarkedForDelete,
+      isNewItem,
+    } = item
+    const amount = item.amount + adjustmentAmount
+    if (isNewItem) {
+      const object = { amount, budgetCategoryId, data }
+      return newItemEvent(object, month, year, eventType)
+    } else if (isMarkedForDelete) {
+      const object = { id, data }
+      return deleteItemEvent(object, copy.multiItemAdjustForm.events.delete)
+    } else {
+      const object = { id, amount, data }
+      return adjustItemEvent(object, eventType)
+    }
+  })
 }

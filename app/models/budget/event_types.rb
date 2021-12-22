@@ -9,6 +9,7 @@ module Budget
       LEGACY_ITEM_CREATE = 'legacy_item_create',
       MULTI_ITEM_ADJUST = 'multi_item_adjust',
       MULTI_ITEM_ADJUST_CREATE = 'multi_item_adjust_create',
+      MULTI_ITEM_ADJUST_DELETE = 'multi_item_adjust_delete',
       PRE_SETUP_ITEM_CREATE = 'pre_setup_item_create',
       PRE_SETUP_MULTI_ITEM_ADJUST_CREATE = 'pre_setup_multi_item_adjust_create',
       ROLLOVER_ITEM_ADJUST = 'rollover_item_adjust',
