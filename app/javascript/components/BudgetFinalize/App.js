@@ -3,6 +3,7 @@ import Form, { reducer }from "./Form";
 import { isSubmittable, formReducer, postEvents } from "./Functions"
 import DateFormatter from "../../lib/DateFormatter"
 import Header from "./Header"
+import PageHeader from "../shared/Header";
 import ItemGroup from "./ItemGroup"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 import {
@@ -20,7 +21,7 @@ import SubmitButton from "./SubmitButton"
 import Summary from "./Summary"
 import AmountSpan from "../shared/AmountSpan"
 
-export default ({ budget }) => {
+export default ({ budget, ...props }) => {
   const { baseInterval } = budget
   const [formObject, setFormObject] = useState(Form(budget));
   const {
@@ -48,6 +49,7 @@ export default ({ budget }) => {
 
   return (
     <div>
+      <PageHeader namespace={props.namespace} />
       <div className='flex justify-between mb-1 rounded'>
         <div className='pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-8/12 rounded h-v90 overflow-scroll'>
           <form className='z-10' onSubmit={onSubmit}>

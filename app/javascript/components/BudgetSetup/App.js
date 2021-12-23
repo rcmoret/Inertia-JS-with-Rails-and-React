@@ -12,9 +12,10 @@ import { titleize } from "../../lib/copy/functions"
 
 import AmountSpan from "../shared/AmountSpan";
 import Button from "../shared/Button";
+import Header from "../shared/Header";
 import Section from "../shared/Section";
 
-const BudgetSetupApp = ({ budget }) => {
+const BudgetSetupApp = ({ budget, ...props }) => {
   const initialForm = Form(budget)
   const [form, setFormObject] = useState(initialForm);
   const dispatch = (event, payload) => setFormObject(reducer(event, form, payload))
@@ -46,6 +47,7 @@ const BudgetSetupApp = ({ budget }) => {
 
   return (
     <div>
+      <Header namespace={props.namespace} />
       <div className="flex justify-between mb-1 h-5/6 rounded">
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-8/12 rounded h-v90 overflow-scroll">
           <form className="z-10" onSubmit={onSubmit}>

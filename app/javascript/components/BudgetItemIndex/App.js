@@ -26,6 +26,7 @@ import usePageData from "../../lib/usePageData";
 import Discretionary from "./Discretionary";
 import Cell from "../shared/Cell";
 import CreateItemForm from "./CreateItemForm";
+import Header from "../shared/Header";
 import Icon from "../shared/Icons";
 import ItemGroup from "./ItemGroup";
 import Link, { ButtonStyleLink } from "../shared/Link";
@@ -33,7 +34,7 @@ import MultiItemAdjustForm from "./MultiItemAdjustForm";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
 
-const App = ({ budget }) => {
+const App = ({ budget, ...props }) => {
   const {
     daysRemaining,
     isCurrent,
@@ -180,12 +181,15 @@ const App = ({ budget }) => {
   const longDateString = DateFormatter({ month, year, day: 1, format: "monthYear" })
   const firstDate = fromDateString(budget.interval.firstDate)
   const lastDate = fromDateString(budget.interval.lastDate)
+  const visitNext = () => Inertia.get(`/budget/${nextMonth.month}/${nextMonth.year}`)
+  const visitPrev = () => Inertia.get(`/budget/${prevMonth.month}/${prevMonth.year}`)
   document.title = shortDateString
 
   return (
     <div>
+      <Header namespace={props.namespace} month={month} year={year} />
       <div className="mb-1 h-5/6 rounded">
-        <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-10/12 rounded h-v90 overflow-scroll">
+        <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white"}}>
             <div className="w-full p-2 border-b-2 border-blue-900 border-solid">
               <Row>
@@ -199,12 +203,12 @@ const App = ({ budget }) => {
                     {titleize(copy.totalDays(totalDays))}
                   </div>
                   <Row>
-                    <ButtonStyleLink  href={`/budget/${prevMonth.month}/${prevMonth.year}`}>
+                    <ButtonStyleLink onClick={visitPrev}>
                       <Icon className="fas fa-angle-double-left" />
                       {" "}
                       {DateFormatter({ month: prevMonth.month, year: prevMonth.year, format: "shortMonthYear" })}
                     </ButtonStyleLink>
-                    <ButtonStyleLink  href={`/budget/${nextMonth.month}/${nextMonth.year}`}>
+                    <ButtonStyleLink  onClick={visitNext}>
                       {DateFormatter({ month: nextMonth.month, year: nextMonth.year, format: "shortMonthYear" })}
                       {" "}
                       <Icon className="fas fa-angle-double-right" />
