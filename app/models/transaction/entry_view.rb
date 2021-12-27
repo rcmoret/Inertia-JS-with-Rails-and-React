@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transaction
-  class EntryView < ActiveRecord::Base
+  class EntryView < ApplicationRecord
     include Scopes
     self.table_name = :transaction_view
     self.primary_key = :id

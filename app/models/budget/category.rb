@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class Category < ActiveRecord::Base
+  class Category < ApplicationRecord
     include Presentable
     include Messages
     include Slugable

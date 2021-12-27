@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Icon < ActiveRecord::Base
+class Icon < ApplicationRecord
   validates :name, uniqueness: true, presence: true
   validates :class_name, uniqueness: true, presence: true
 

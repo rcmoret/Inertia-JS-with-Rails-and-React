@@ -50,7 +50,7 @@ module Budget
       def save
         return false unless valid?
 
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           create_interval! unless interval.persisted?
           create_item!
           create_event!

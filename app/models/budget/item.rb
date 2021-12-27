@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class Item < ActiveRecord::Base
+  class Item < ApplicationRecord
     include Budget::Shared
     include Presentable
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class ItemEventType < ActiveRecord::Base
+  class ItemEventType < ApplicationRecord
     include EventTypes
 
     validates :name,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class CategoryMaturityInterval < ActiveRecord::Base
+  class CategoryMaturityInterval < ApplicationRecord
     belongs_to :interval, foreign_key: :budget_interval_id
     belongs_to :category, foreign_key: :budget_category_id
 

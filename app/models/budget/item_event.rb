@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class ItemEvent < ActiveRecord::Base
+  class ItemEvent < ApplicationRecord
     include EventTypes
     include Presentable
     belongs_to :item, class_name: 'Item', foreign_key: :budget_item_id

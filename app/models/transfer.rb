@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Transfer < ActiveRecord::Base
+class Transfer < ApplicationRecord
   belongs_to :from_transaction, class_name: 'Transaction::Entry'
   belongs_to :to_transaction, class_name: 'Transaction::Entry'
 
@@ -25,7 +25,7 @@ class Transfer < ActiveRecord::Base
 
   def update_transactions!(destroy: false)
     transfer_id = destroy ? nil : id
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       transactions.each { |txn| txn.update(transfer_id: transfer_id) }
     end
   end

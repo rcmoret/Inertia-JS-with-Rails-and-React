@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transaction
-  class Detail < ActiveRecord::Base
+  class Detail < ApplicationRecord
     include Presentable
     belongs_to :budget_item, class_name: 'Budget::Item', optional: true
     belongs_to :entry,

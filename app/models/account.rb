@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Account < ActiveRecord::Base
+class Account < ApplicationRecord
   include Slugable
 
   has_many :transaction_views, class_name: 'Transaction::EntryView'

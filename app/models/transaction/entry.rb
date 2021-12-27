@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transaction
-  class Entry < ActiveRecord::Base
+  class Entry < ApplicationRecord
     include Scopes
 
     belongs_to :account

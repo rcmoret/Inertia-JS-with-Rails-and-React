@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transaction
-  class DetailView < ActiveRecord::Base
+  class DetailView < ApplicationRecord
     include Scopes
     include Presentable
 

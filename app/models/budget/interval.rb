@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Budget
-  class Interval < ActiveRecord::Base
+  class Interval < ApplicationRecord
     include Presentable
     has_many :items, foreign_key: :budget_interval_id
     has_many :item_views, foreign_key: :budget_interval_id
