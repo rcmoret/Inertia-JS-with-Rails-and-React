@@ -3,7 +3,8 @@ import { Inertia } from "@inertiajs/inertia";
 import { fromDateString } from "../../lib/DateFormatter";
 import MoneyFormatter from "../../lib/MoneyFormatter";
 import { adjustItemEvent, deleteItemEvent, newItemEvent, sortByClearanceDate } from "../../lib/Functions";
-import { index as copy } from "../../lib/copy/budget"
+import { index as copy } from "../../lib/copy/budget";
+import { shared as transactionCopy } from "../../lib/copy/transactions";
 
 const eventModel = event => {
   const data = event.data ? JSON.parse(event.data) : null
@@ -32,7 +33,7 @@ export const itemModel = item  => {
 
 export const transactionDetailModel = detail => {
   const isPending = detail.clearanceDate === null
-  const clearanceDate = isPending ? "Pending" : fromDateString(detail.clearanceDate)
+  const clearanceDate = isPending ? transactionCopy.pending : fromDateString(detail.clearanceDate)
   const description = detail.description || detail.categoryName
 
   return {

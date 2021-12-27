@@ -3,6 +3,8 @@
 module Transaction
   class EntryView < ApplicationRecord
     include Scopes
+    include Presentable
+
     self.table_name = :transaction_view
     self.primary_key = :id
 
@@ -14,9 +16,11 @@ module Transaction
     end
 
     def to_hash
-      attributes
-        .merge(details: details)
-        .deep_symbolize_keys
+      attributes.deep_symbolize_keys
+    end
+
+    def presenter_class
+      Presenters::Transactions::EntryPresenter
     end
   end
 end
