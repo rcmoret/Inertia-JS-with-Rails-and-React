@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Inertia } from "@inertiajs/inertia";
+
 const Link = suppliedProps => {
   const defaultProps = {
     children: [],
@@ -31,7 +33,7 @@ const Link = suppliedProps => {
   )
 };
 
-export const ButtonStyleLink = suppliedProps => {
+export const ButtonStyleInertiaLink = suppliedProps => {
   const defaultProps = {
     color: "text-white",
     hoverBgColor: "hover:bg-blue-800",
@@ -47,10 +49,21 @@ export const ButtonStyleLink = suppliedProps => {
   }
 
   const classes = Object.values({ ...defaultStyling, ...styling }).filter(val => val && val !== "")
+  const onClick = () => Inertia.get(props.href)
 
   return (
-    <Link {...defaultProps} {...props} classes={classes}/>
+    <InertiaLink {...defaultProps} {...props} classes={classes} />
   )
 };
+
+export const InertiaLink = ({ href, ...suppliedProps }) => {
+  const onClick = event => {
+    event.preventDefault()
+    Inertia.get(href)
+  }
+  return (
+    <Link onClick={onClick} href={href} {...suppliedProps} />
+  )
+}
 
 export default Link;

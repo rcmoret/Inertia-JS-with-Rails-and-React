@@ -29,7 +29,7 @@ import CreateItemForm from "./CreateItemForm";
 import Header from "../shared/Header";
 import Icon from "../shared/Icons";
 import ItemGroup from "./ItemGroup";
-import Link, { ButtonStyleLink } from "../shared/Link";
+import Link, { ButtonStyleInertiaLink } from "../shared/Link";
 import MultiItemAdjustForm from "./MultiItemAdjustForm";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
@@ -181,8 +181,8 @@ const App = ({ budget, ...props }) => {
   const longDateString = DateFormatter({ month, year, day: 1, format: "monthYear" })
   const firstDate = fromDateString(budget.interval.firstDate)
   const lastDate = fromDateString(budget.interval.lastDate)
-  const visitNext = () => Inertia.get(`/budget/${nextMonth.month}/${nextMonth.year}`)
-  const visitPrev = () => Inertia.get(`/budget/${prevMonth.month}/${prevMonth.year}`)
+  const visitNextUrl = `/budget/${nextMonth.month}/${nextMonth.year}`
+  const visitPrevUrl = `/budget/${prevMonth.month}/${prevMonth.year}`
   document.title = shortDateString
 
   return (
@@ -203,16 +203,16 @@ const App = ({ budget, ...props }) => {
                     {titleize(copy.totalDays(totalDays))}
                   </div>
                   <Row>
-                    <ButtonStyleLink onClick={visitPrev}>
+                    <ButtonStyleInertiaLink href={visitPrevUrl}>
                       <Icon className="fas fa-angle-double-left" />
                       {" "}
                       {DateFormatter({ month: prevMonth.month, year: prevMonth.year, format: "shortMonthYear" })}
-                    </ButtonStyleLink>
-                    <ButtonStyleLink  onClick={visitNext}>
+                    </ButtonStyleInertiaLink>
+                    <ButtonStyleInertiaLink  href={visitNextUrl}>
                       {DateFormatter({ month: nextMonth.month, year: nextMonth.year, format: "shortMonthYear" })}
                       {" "}
                       <Icon className="fas fa-angle-double-right" />
-                    </ButtonStyleLink>
+                    </ButtonStyleInertiaLink>
                   </Row>
                 </Cell>
                 <div className="w-4/12">
