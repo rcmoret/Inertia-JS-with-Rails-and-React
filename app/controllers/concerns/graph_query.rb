@@ -4,7 +4,7 @@ module GraphQuery
   private
 
   def props
-    graph_data.fetch('data').merge(metadata)
+    graph_data.fetch('data').merge(metadata).merge(additional_props)
   end
 
   def query
@@ -23,6 +23,10 @@ module GraphQuery
 
   def metadata
     { namespace: namespace }
+  end
+
+  def additional_props
+    {}
   end
 
   GraphqlError = Class.new(StandardError)
