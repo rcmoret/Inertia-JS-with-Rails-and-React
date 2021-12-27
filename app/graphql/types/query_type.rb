@@ -15,16 +15,18 @@ module Types
     end
 
     def accounts(include_inactive: false)
-      Queries::AccountsQuery.execute(include_inactive: include_inactive)
+      scope = AccountWithBalanceView.all
+      scope = scope.where(archived_at: nil) unless include_inactive
+      scope
     end
 
-    field :account, AccountType, null: false do
+    field :account, AccountType, null: true do
       description 'Fetch an Account by id'
-      argument :id, Integer, required: true
+      argument :slug, String, required: true
     end
 
-    def account(id:)
-      Account.find(id).then do |acct|
+    def account(slug:)
+      Account.find_by(slug: slug)&.then do |acct|
         Presenters::AccountPresenter.new(acct)
       end
     end

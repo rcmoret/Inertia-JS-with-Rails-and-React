@@ -9,14 +9,11 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'graphql#execute'
 
-  namespace :accounts do
-    get '/', to: 'transactions#index', as: 'home'
-    get '/:account_slug/transactions(/:month/:year)', to: 'transactions#index', as: :transactions
-  end
+  get '/accounts/:slug/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
+  get '/accounts', to: 'accounts/home#index', as: :accounts_home
+  get '/accounts/admin', to: 'accounts/list#index', as: :accounts
 
-  get 'accounts/admin', to: 'accounts#index'
-
-  resources :accounts, only: %i[create update destroy], param: :slug do
+  resources :accounts, only: %i[create update destroy] do
     resources :transactions, only: %i[create update destroy], controller: 'accounts/transactions'
   end
 

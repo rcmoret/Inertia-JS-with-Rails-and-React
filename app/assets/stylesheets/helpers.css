@@ -11,6 +11,10 @@ body {
   height: 80vh;
 }
 
+.w-1\/10 {
+  width: 10%;
+}
+
 .w-3\/10 {
   width: 30%;
 }

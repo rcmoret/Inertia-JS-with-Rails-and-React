@@ -8,6 +8,11 @@ module Presenters
       end
       alias is_current current?
 
+      def future?
+        !closed_out? && !current?
+      end
+      alias is_future future?
+
       def items(include_deleted: false, reviewable_only: false)
         @items ||= fetch_items(include_deleted: include_deleted, reviewable_only: reviewable_only)
       end
