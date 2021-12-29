@@ -1,4 +1,4 @@
-class AccountWithBalanceView < ActiveRecord::Migration[6.0]
+class CreateAccountWithBalanceView < ActiveRecord::Migration[6.0]
   def up
     execute <<-SQL
       CREATE VIEW account_with_balance_view AS

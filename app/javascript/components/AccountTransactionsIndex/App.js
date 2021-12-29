@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Inertia } from "@inertiajs/inertia";
 import { v4 as uuid } from "uuid";
 
 import DateFormatter, { fromDateString } from "../../lib/DateFormatter"
@@ -8,27 +9,41 @@ import { sortByClearanceDate } from "../../lib/Functions";
 import usePageData from "../../lib/usePageData";
 
 import AccountTabs from "./AccountTabs";
-import AmountSpan from "../shared/AmountSpan";
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link, { ButtonStyleInertiaLink } from "../shared/Link";
 import PageHeader from "../shared/Header";
 import Row, { StripedRow } from "../shared/Row";
+import Transaction from "./Transaction";
+import { NewForm, newTransaction } from "./TransactionForm";
 
-export const App = ({ accounts, selectedAccount, ...props }) => {
-  const { daysRemaining, firstDate, lastDate, month, totalDays, year } = props.budget.interval
+export const App = ({ accounts, budget, selectedAccount, ...props }) => {
+  const { id, balancePriorTo, isCashFlow } = selectedAccount
+  const {
+    daysRemaining,
+    isCurrent,
+    items,
+    firstDate,
+    lastDate,
+    month,
+    totalDays,
+    year,
+  } = budget.interval
+
   const initialBalance = {
     id: 0,
     amount: "",
-    balance: selectedAccount.balancePriorTo,
-    clearanceDate: fromDateString(firstDate),
+    balance: balancePriorTo,
+    clearanceDate: firstDate,
     description: "Initial Balance",
     details: []
   }
-  const selectedAccountId = selectedAccount.id
-  const [pageState, updatePageState] = usePageData(`accounts/${selectedAccountId}/${month}/${year}`, {
+
+  const [pageState, updatePageState] = usePageData(`accounts/${id}/${month}/${year}`, {
     showDetailsForIds: [],
+    showFormForId: null,
   })
+  const { showDetailsForIds, showFormForId } = pageState
 
   const prevMonth = month === 1 ? { month: 12, year: (year - 1) } : { month: (month - 1), year }
   const nextMonth = month === 12 ? { month: 1, year: (year + 1) } : { month: (month + 1), year }
@@ -50,17 +65,17 @@ export const App = ({ accounts, selectedAccount, ...props }) => {
     const detailModel = detail => ({
       ...detail,
       uuid: uuid(),
+      isNew: false,
       updatedAttributes: {},
     })
     const isPending = transaction.clearanceDate === null
-    const clearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate)
     const details = transaction.details.map(detailModel)
 
     return {
       ...transaction,
-      clearanceDate,
       details,
       isCleared: !isPending,
+      isEditable: true,
       isPending,
       updatedAttributes: {},
     }
@@ -76,48 +91,73 @@ export const App = ({ accounts, selectedAccount, ...props }) => {
       ]
     }, [initialBalance])
 
+  const closeForm = () => updatePageState({ ...pageState, showFormForId: null })
+  const renderForm = id => updatePageState({ ...pageState, showFormForId: id })
+
+  const toggleNewForm = () => {
+    if (showFormForId === "new") {
+      closeForm()
+    } else {
+      updatePageState({ ...pageState, showFormForId: "new" })
+    }
+  }
+
   return (
     <div>
       <PageHeader namespace={props.namespace} />
       <div className="mb-1 h-5/6 rounded">
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
-          <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white"}}>
-            <AccountTabs
-              accounts={accounts}
-              month={month}
-              selectedAccount={selectedAccount}
-              year={year}
-            />
-            <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2"}}>
-              <div className="w-full text-lg underline"><h3>Transactions</h3></div>
-              <div className="w-full">
-                {fromDateString(firstDate)} to {fromDateString(lastDate)}
-              </div>
-              <div className="w-full">
-                Total Days: {totalDays}
-              </div>
-              <div className="w-full">
-                Days Remaining: {daysRemaining}
-              </div>
-              <ButtonStyleInertiaLink href={visitPrevUrl}>
-                <Icon className="fas fa-angle-double-left" />
-                {" "}
-                {DateFormatter({ month: prevMonth.month, year: prevMonth.year, format: "shortMonthYear" })}
-              </ButtonStyleInertiaLink>
-              <ButtonStyleInertiaLink  href={visitNextUrl}>
-                {DateFormatter({ month: nextMonth.month, year: nextMonth.year, format: "shortMonthYear" })}
-                {" "}
-                <Icon className="fas fa-angle-double-right" />
-              </ButtonStyleInertiaLink>
-            </Cell>
+          <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white", padding: "pt-1 px-1 pb-24", overflow: "overflow-visible"}}>
+            <Row styling={{wrap: "flex-wrap", border: "border-b border-gray-800 border-solid", rounded: null, overflow: "overflow-visible", backgroundColor: "bg-gradient-to-b from-blue-200 to-white"}}>
+              <AccountTabs
+                accounts={accounts}
+                month={month}
+                selectedAccount={selectedAccount}
+                year={year}
+              />
+              <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2"}}>
+                <div className="w-full text-lg underline"><h3>Transactions</h3></div>
+                <div className="w-full">
+                  {fromDateString(firstDate)} to {fromDateString(lastDate)}
+                </div>
+                <div className="w-full">
+                  &#8226; Total Days: {totalDays}
+                </div>
+                {isCurrent && <div className="w-full">&#8226; Days Remaining: {daysRemaining}</div>}
+                <ButtonStyleInertiaLink href={visitPrevUrl}>
+                  <Icon className="fas fa-angle-double-left" />
+                  {" "}
+                  {DateFormatter({ month: prevMonth.month, year: prevMonth.year, format: "shortMonthYear" })}
+                </ButtonStyleInertiaLink>
+                <ButtonStyleInertiaLink  href={visitNextUrl}>
+                  {DateFormatter({ month: nextMonth.month, year: nextMonth.year, format: "shortMonthYear" })}
+                  {" "}
+                  <Icon className="fas fa-angle-double-right" />
+                </ButtonStyleInertiaLink>
+              </Cell>
+            </Row>
             {transactions.map(transaction => (
               <Transaction
                 key={transaction.id}
-                transaction={transaction}
+                transaction={{...transaction, accountId: selectedAccount.id}}
+                closeForm={closeForm}
                 detailFns={detailFns}
-                showDetailsForIds={pageState.showDetailsForIds}
+                interval={budget.interval}
+                isCashFlow={isCashFlow}
+                items={items}
+                renderForm={renderForm}
+                showDetailsForIds={showDetailsForIds}
+                showFormForId={showFormForId}
               />
             ))}
+              <NewTransaction
+                account={selectedAccount}
+                interval={{ isCurrent, firstDate, lastDate, month, year }}
+                isCashFlow={isCashFlow}
+                items={items}
+                showFormForId={showFormForId}
+                toggleNewForm={toggleNewForm}
+              />
           </Row>
         </div>
       </div>
@@ -125,104 +165,56 @@ export const App = ({ accounts, selectedAccount, ...props }) => {
   )
 }
 
-const Transaction = ({ transaction, showDetailsForIds, detailFns }) => {
+const NewTransaction = props => {
   const {
-    id,
-    amount,
-    balance,
-    budgetExclusion,
-    checkNumber,
-    clearanceDate,
-    description,
-    details,
-    notes,
-  } = transaction
-  const isDetailShown = showDetailsForIds.includes(id)
-  const noteLines = (notes || "").split("<br>")
+    account,
+    interval,
+    isCashFlow,
+    items,
+    showFormForId,
+    toggleNewForm,
+  } = props
 
-  return (
-    <StripedRow styling={{flexAlign: "justify-start"}}>
-      <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
-        <div className="w-1/12">
-          {details.length > 1 && <DetailToggleLink id={id} isDetailShown={isDetailShown} detailFns={detailFns} />}
-        </div>
-        <div className="w-5/12">
-          {clearanceDate || "pending"}
-        </div>
-        <div className="w-5/12">
-          {description || <BudgetItems details={details} />}
-          {isDetailShown && <BudgetItemList details={details} />}
-        </div>
-      </Cell>
-      <div className="w-1/12 text-right">
-        <AmountSpan amount={amount} />
-        {isDetailShown && <DetailAmounts key={id} details={details} />}
-      </div>
-      <div className="w-1/12 text-right">
-        <AmountSpan amount={balance} negativeColor="text-red-800" />
-      </div>
-      <div className="ml-4">
-        {description && !isDetailShown ? <BudgetItems details={details} /> : ""}
-      </div>
-      {checkNumber && <div className="ml-4"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
-      {budgetExclusion && <div className="ml-4 italic">budget exclusion</div>}
-      {notes && <Notes noteLines={noteLines} />}
-    </StripedRow>
-  )
-}
-
-const DetailToggleLink = ({ id, isDetailShown, detailFns }) => {
-  const className = `fas fa-caret-${isDetailShown ? "down" : "right"}`
-  const onClick = () => isDetailShown ? detailFns.hide(id) : detailFns.render(id)
-
-  return (
-    <Link onClick={onClick}>
-      <Icon className={className} />
-    </Link>
-  )
-}
-
-const DetailAmounts = ({ details }) => (
- details.map(detail => (
-   <div key={detail.id} className="w-full text-sm">
-     {MoneyFormatter(detail.amount)}
-   </div>
- ))
-)
-
-const BudgetItems = ({ details }) => (
-  details.map((detail, n) => {
-    return (
-      <span key={detail.id}>
-        { n > 0 && "; "}
-        {detail.categoryName || "Petty Cash"}
-        {" "}
-        <Icon className={detail.iconClassName} />
-      </span>
+  const { month, year } = interval
+  const makeRequest = (body, callbacks) => {
+    Inertia.post(`/transactions?month=${month}&year=${year}`,
+      { transaction: body },
+      { ...callbacks, forceFormData: true },
     )
-  })
-)
+  }
 
-const BudgetItemList = ({ details }) => (
-  details.map(detail => (
-    <div key={detail.id} className="w-full text-sm">
-      {detail.categoryName || "Petty Cash"}
-      {" "}
-      <Icon className={detail.iconClassName} />
-    </div>
-  ))
-)
+  if (showFormForId === "new") {
+    const model = newTransaction(account.id, !account.isCashFlow)
 
-const Notes = ({ noteLines }) => (
-  <div className="ml-4 w-4/12">
-    {noteLines.map((note, index) => (
-      <div key={index} className="w=full">
-        {index === 0 && <Icon className="fas fa-sticky-note" />}
-        {" "}
-        {note}
-      </div>
-    ))}
-  </div>
-)
+    return (
+      <NewForm
+        transaction={model}
+        account={account}
+        interval={interval}
+        items={items}
+        isCashFlow={isCashFlow}
+        makeRequest={makeRequest}
+        toggleForm={toggleNewForm}
+      />
+    )
+  } else {
+    return (
+      <StripedRow styling={{flexAlign: "justify-start"}}>
+        <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
+          <div className="w-1/12">
+            <Link color="text-blue-700" onClick={toggleNewForm}>
+              <Icon className="fas fa-plus" />
+            </Link>
+          </div>
+          <div className="w-4/12">
+            <Link color="text-blue-700" onClick={toggleNewForm}>
+              Add new transaction
+            </Link>
+          </div>
+        </Cell>
+      </StripedRow>
+    )
+  }
+}
 
 export default App;

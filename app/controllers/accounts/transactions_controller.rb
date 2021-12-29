@@ -45,6 +45,7 @@ module Accounts
               firstDate
               lastDate
               daysRemaining
+              isCurrent
               totalDays
               month
               year
@@ -52,14 +53,18 @@ module Accounts
                 id
                 name
                 remaining
+                isAccrual
                 isMonthly
                 isDeletable
+                maturityMonth
+                maturityYear
               }
             }
           }
           selectedAccount: account(slug: "#{slug}") {
             id
             slug
+            isCashFlow
             balancePriorTo(month: #{month}, year: #{year})
             transactions(month: #{month}, year: #{year}) {
               id
@@ -86,10 +91,6 @@ module Accounts
 
     def namespace
       'accounts'
-    end
-
-    def additional_props
-      { month: month, year: year }
     end
   end
 end

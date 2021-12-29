@@ -9,13 +9,13 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'graphql#execute'
 
-  get '/accounts/:slug/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
   get '/accounts', to: 'accounts/home#index', as: :accounts_home
   get '/accounts/admin', to: 'accounts/list#index', as: :accounts
 
-  resources :accounts, only: %i[create update destroy] do
-    resources :transactions, only: %i[create update destroy], controller: 'accounts/transactions'
-  end
+  get '/accounts/:slug/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
+  post '/transactions', to: 'transactions/create#call'
+  put '/transactions/:id', to: 'transactions/update#call'
+  delete '/transactions/:id', to: 'transactions/delete#call'
 
   namespace :budget do
     get '(/:month/:year)', to: 'items#index'

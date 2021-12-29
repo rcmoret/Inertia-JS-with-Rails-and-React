@@ -7,22 +7,35 @@ import { ButtonStyleInertiaLink } from "../shared/Link";
 
 const AccountTabs = ({ accounts, ...props}) => {
   const sortFn = (a, b) => a.priority - b.priority
+  const today = new Date()
+  const currentInterval = { month: today.getMonth() + 1, year: today.getFullYear() }
+  const interval = { month: props.month, year: props.year }
 
   return (
-    <Row>
-      {accounts.sort(sortFn).map(account => (
-        <AccountLink key={account.id} account={account} {...props} />
-      ))}
-    </Row>
+    <>
+      <Row>
+        {accounts.sort(sortFn).map(account => (
+          <AccountLink
+            key={account.id}
+            account={account}
+            currentInterval={currentInterval}
+            interval={interval}
+            {...props}
+          />
+        ))}
+      </Row>
+    </>
   )
 }
 
-const AccountLink = ({ account, selectedAccount, month, year }) => {
-  const href = `/accounts/${account.slug}/transactions/${month}/${year}`
+const AccountLink = ({ account, currentInterval, interval, selectedAccount }) => {
   const isSelected = account.id === selectedAccount.id
-  const hoverBgColor = `hover:bg-${isSelected ? "blue" : "gray"}-400`
+  const month = isSelected ? currentInterval.month : interval.month
+  const year = isSelected ? currentInterval.year : interval.year
+  const href = `/accounts/${account.slug}/transactions/${month}/${year}`
+  const hoverBgColor = isSelected ? `hover:bg-blue-400` : `hover:bg-gray-500`
   const styling = {
-    bgColor: `bg-${isSelected ? "blue" : "gray"}-200`,
+    bgColor: `bg-${isSelected ? "blue" : "gray"}-400`,
     padding: "pt-4 pb-4 pr-2 pl-2",
     width: "w-1/10"
   }

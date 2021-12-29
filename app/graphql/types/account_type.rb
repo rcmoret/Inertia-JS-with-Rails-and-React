@@ -12,6 +12,7 @@ module Types
       argument :month, Integer, required: true
       argument :year, Integer, required: true
     end
+    field :is_cash_flow, Boolean, 'Count toward available cash', null: false
     field :priority, Integer, 'Display order', null: false
     field :transactions, [Transactions::EntryType], null: false do
       description 'Transactions associated with the account'

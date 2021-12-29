@@ -1,4 +1,3 @@
-// import React, { useState } from "react";
 import React from "react";
 
 import { Inertia } from "@inertiajs/inertia";
@@ -8,11 +7,10 @@ import { InertiaLink } from "./Link"
 import Row from "./Row"
 
 const Header = ({ namespace, month, year }) => {
-  const bgColor = "bg-gray-200"
-  const selectedBgColor = "bg-blue-200"
+  const bgColor = "bg-gradient-to-b from-gray-200 to-gray-100"
+  const selectedBgColor = "bg-gradient-to-b from-green-400 to-green-300"
   const accountsBgColor = namespace === "accounts" ? selectedBgColor : bgColor
   const budgetBgColor = namespace === "budget" ? selectedBgColor : bgColor
-  const onClick = () => Inertia.get("/budget")
 
   return (
     <Row styling={{bgColor: "bg-blue-900", padding: "p-2", margin: "mb-2"}}>

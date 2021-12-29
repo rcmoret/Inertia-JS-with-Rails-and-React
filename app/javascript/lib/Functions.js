@@ -7,13 +7,15 @@ export const sortByLabel = (obj1, obj2) => (
 );
 
 export const sortByClearanceDate = (txn1, txn2) => {
-  const today = new Date()
-  if ((txn1.isCleared && txn2.isCleared) || (txn1.isPending && txn2.isPending)) {
-    return txn1.updatedAt > txn2.updatedAt ? 1 : -1
+  const today = new Date().toISOString()
+  if (txn1.clearanceDate === txn2.clearanceDate) {
+    return txn2.updatedAt - txn1.updatedAt
+  } else if (txn1.isCleared && txn2.isCleared) {
+    return txn2.clearanceDate - txn1.clearanceDate
   } else if (txn1.isPending) {
     return txn2.clearanceDate > today ? -1 : 1
   } else {
-    return txn1.clearanceDate > today ? 1 : -1
+    return txn1.clearanceDate < today ? -1 : 1
   }
 }
 

@@ -26,13 +26,20 @@ export const AmountInput = suppliedProps => {
 
 const TextInput = suppliedProps => {
   const defaultProps = {
-    className: "",
+    border: "border border-gray-400 border-solid",
+    classes: [],
     errors: [],
     label: null,
+    name: "",
+    onKeyDown: () => null,
     placeholder: "",
     value: "",
   }
-  const props = { ...defaultProps, ...suppliedProps }
+
+  const combinedProps = { ...defaultProps, ...suppliedProps, className }
+  const className = [combinedProps.border, ...combinedProps.classes].filter(klass => klass !== null && klass !== "").join(" ")
+  const props = { ...combinedProps, className }
+
   if (props.errors.length > 0) {
     return (
       <ErrorInput {...props} />
@@ -63,7 +70,9 @@ const Input = props => (
   <input
     type="text"
     className={props.className}
+    name={props.name}
     onChange={props.onChange}
+    onKeyDown={props.onKeyDown}
     placeholder={props.placeholder}
     value={props.value}
   />

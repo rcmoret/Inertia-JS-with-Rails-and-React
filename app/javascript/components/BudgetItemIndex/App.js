@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import { Inertia } from "@inertiajs/inertia";
-
 import { itemModel, transactionDetailModel } from "./Functions";
 import {
   clearedMonthly,
