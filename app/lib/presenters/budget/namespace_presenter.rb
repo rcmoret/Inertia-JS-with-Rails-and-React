@@ -4,7 +4,7 @@ module Presenters
   module Budget
     class NamespacePresenter
       def categories
-        ::Budget::Category.all.map(&:as_presenter)
+        ::Budget::Category.all.includes(:icon).map(&:as_presenter)
       end
 
       def category(id:)

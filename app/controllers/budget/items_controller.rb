@@ -56,6 +56,7 @@ module Budget
                 transactionsTotal
               }
               isCurrent
+              isSetUp
               totalDays
               firstDate
               lastDate

@@ -27,7 +27,7 @@ import CreateItemForm from "./CreateItemForm";
 import Header from "../shared/Header";
 import Icon from "../shared/Icons";
 import ItemGroup from "./ItemGroup";
-import Link, { ButtonStyleInertiaLink } from "../shared/Link";
+import Link, { ButtonStyleInertiaLink, InertiaLink } from "../shared/Link";
 import MultiItemAdjustForm from "./MultiItemAdjustForm";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
@@ -36,6 +36,7 @@ const App = ({ budget, ...props }) => {
   const {
     daysRemaining,
     isCurrent,
+    isSetUp,
     month,
     totalDays,
     year
@@ -181,6 +182,7 @@ const App = ({ budget, ...props }) => {
   const lastDate = fromDateString(budget.interval.lastDate)
   const visitNextUrl = `/budget/${nextMonth.month}/${nextMonth.year}`
   const visitPrevUrl = `/budget/${prevMonth.month}/${prevMonth.year}`
+  const isLastDay = isCurrent && daysRemaining === 1
   document.title = shortDateString
 
   return (
@@ -216,19 +218,27 @@ const App = ({ budget, ...props }) => {
                 <div className="w-4/12">
                   <div>
                     <Link onClick={toggleAccruals} color="text-blue-800">
+                      &#8226;
+                      {" "}
                       {titleize(accrualLinkText)}
                     </Link>
                   </div>
                   <div>
                     <Link onClick={toggleClearedMonthly} color="text-blue-800">
+                      &#8226;
+                      {" "}
                       {titleize(clearedMonthlyLinkText)}
                     </Link>
                   </div>
                   <div>
                     <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
+                      &#8226;
+                      {" "}
                       {titleize(adjustItemsFormLinkText)}
                     </Link>
                   </div>
+                  {!isSetUp && <SetUpLink month={month} year={year} />}
+                  {isLastDay && <FinalizeLink month={month} year={year} />}
                 </div>
               </Row>
             </div>
@@ -343,5 +353,21 @@ const ClearedMonthlySection = ({ collection, pageState }) => {
     </>
   )
 }
+
+const SetUpLink = ({ month, year }) => (
+  <InertiaLink href={`/budget/set-up/${month}/${year}`} color="text-blue-800">
+    &#8226;
+    {" "}
+    Set Up {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+  </InertiaLink>
+)
+
+const FinalizeLink = ({ month, year }) => (
+  <InertiaLink href={`/budget/finalize/${month}/${year}`} color="text-blue-800">
+    &#8226;
+    {" "}
+    Finalize {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+  </InertiaLink>
+)
 
 export default App;

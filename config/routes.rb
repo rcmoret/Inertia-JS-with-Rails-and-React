@@ -23,9 +23,9 @@ Rails.application.routes.draw do
     namespace :items do
       resources :events, only: :create
     end
-    get 'set-up', to: 'set_up#new'
+    get '/set-up/:month/:year', to: 'set_up#new'
     post 'set-up', to: 'set_up#create'
-    get 'finalize', to: 'finalize#new'
+    get '/finalize/:month/:year', to: 'finalize#new'
     post 'finalize', to: 'finalize#complete'
   end
 end

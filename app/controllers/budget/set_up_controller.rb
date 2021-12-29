@@ -10,7 +10,7 @@ module Budget
 
     def create
       if form.save
-        redirect_to "/budget/#{target_interval_month}/#{target_interval_year}"
+        redirect_to "/budget/#{month}/#{year}"
       else
         render inertia: 'BudgetSetupApp', props: props.merge(errors: form.errors)
       end
@@ -21,8 +21,8 @@ module Budget
     def form
       @form ||= Budget::Events::SetupForm.new(
         events: events,
-        month: target_interval_month,
-        year: target_interval_year
+        month: month,
+        year: year
       )
     end
 
@@ -30,28 +30,28 @@ module Budget
       Time.current
     end
 
-    def target_interval_month
-      if base_interval_month == 12
-        1
-      else
-        base_interval_month + 1
-      end
-    end
-
-    def target_interval_year
-      if base_interval_month == 12
-        base_interval_year + 1
-      else
-        base_interval_year
-      end
-    end
-
-    def base_interval_month
+    def month
       params.fetch(:month, today.month).to_i
     end
 
-    def base_interval_year
+    def year
       params.fetch(:year, today.year).to_i
+    end
+
+    def base_interval_month
+      if month == 1
+        12
+      else
+        month - 1
+      end
+    end
+
+    def base_interval_year
+      if month == 1
+        year - 1
+      else
+        year
+      end
     end
 
     def events
@@ -90,7 +90,7 @@ module Budget
                 isMonthly
               }
             }
-            targetInterval: interval(month: #{target_interval_month}, year: #{target_interval_year}) {
+            targetInterval: interval(month: #{month}, year: #{year}) {
               month
               year
               items {
