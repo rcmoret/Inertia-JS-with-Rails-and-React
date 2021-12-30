@@ -185,7 +185,6 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
           onChange={() => null}
           remaining={remaining}
         />
-
       </div>
       <div className="text-right w-5/12">
         <div>
@@ -193,7 +192,7 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
           {" "}
           <TextInput
             onChange={inputChange}
-            className="text-right rounded w-4/5 border border-gray-400 border-solid"
+            classes={["text-right", "rounded", "w-4/5 border border-gray-400 border-solid"]}
             value={inputAmount}
           />
         </div>

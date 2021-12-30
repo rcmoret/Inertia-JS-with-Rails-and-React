@@ -326,7 +326,7 @@ const FormRow = ({ model, removeItem, toggleDeletion, updateAdjustmentItem }) =>
         {isNewItem ? shared.new : MoneyFormatter(difference, { decorate: true })}
       </FormCell>
       <FormCell align="right">
-        <AmountInput onChange={onChange} value={inputAmount} className="w-8/12 text-right" />
+        <AmountInput onChange={onChange} value={inputAmount} classes={["w-8/12", "text-right"]} />
       </FormCell>
       <FormCell align="right">
         {MoneyFormatter(updatedBudgeted, { decorate: true })}
