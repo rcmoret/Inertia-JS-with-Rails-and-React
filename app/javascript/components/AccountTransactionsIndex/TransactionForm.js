@@ -365,13 +365,13 @@ const Details = props => {
 }
 
 const DetailForm = props => {
-  const { detail, iconClassName, interval, onClick, update } = props
+  const { detail, iconClassName, interval, items, onClick, update } = props
   const originalBudgetItemId = detail.budgetItemId
   const { uuid, amount, budgetItemId, categoryName, isMarkedForDelete } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
 
   const labelFn = item => `${item.name} ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
-  const baseOptions = props.items.filter(item => {
+  const baseOptions = items.filter(item => {
     if (item.id === originalBudgetItemId) {
       return true
     } else if (item.isAccrual && isMatureAccrual(item, month, year)) {
@@ -398,7 +398,7 @@ const DetailForm = props => {
     update(uuid, { amount: event.target.value })
   }
   const handleItemChange = event => {
-    const selectedItem = items.find(item => item.id === event.value)
+    const selectedItem = props.items.find(item => item.id === event.value)
     if (selectedItem && selectedItem.isMonthly && amount === "") {
       update(uuid, { budgetItemId: event.value, amount: MoneyFormatter(selectedItem.remaining) })
     } else {

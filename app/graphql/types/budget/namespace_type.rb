@@ -5,6 +5,7 @@ module Types
     class NamespaceType < BaseObject
       field :categories, [Budget::CategoryType], null: false do
         description 'Budget Categories available'
+        argument :include_archived, Boolean, required: false
       end
 
       field :category, Budget::CategoryType, null: false do

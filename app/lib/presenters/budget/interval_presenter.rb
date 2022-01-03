@@ -14,8 +14,7 @@ module Presenters
       alias is_future future?
 
       def items(include_deleted: false, reviewable_only: false)
-        items_query = item_views.includes(:transactions).includes(events: :type)
-        items_query = items_query.active unless include_deleted
+        items_query = include_deleted ? item_views : item_views.active
 
         items_query.map(&:as_presenter).then do |item_presenters|
           item_presenters.select!(&:reviewable?) if reviewable_only
@@ -84,6 +83,13 @@ module Presenters
       end
 
       private
+
+      def item_views
+        super
+          .includes(:transactions)
+          .includes(events: :type)
+          .includes(:maturity_intervals)
+      end
 
       def today
         @today ||= Date.today

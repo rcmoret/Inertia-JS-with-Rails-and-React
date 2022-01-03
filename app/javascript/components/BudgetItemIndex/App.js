@@ -237,6 +237,16 @@ const App = ({ budget, ...props }) => {
                       {titleize(adjustItemsFormLinkText)}
                     </Link>
                   </div>
+                  <div>
+                    <InertiaLink href="/budget/categories" color="text-blue-800">
+                      &#8226;
+                      {" "}
+                      Manage Categories
+                    </InertiaLink>
+                  </div>
+                  <div>
+                    <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
+                  </div>
                   {!isSetUp && <SetUpLink month={month} year={year} />}
                   {isLastDay && <FinalizeLink month={month} year={year} />}
                 </div>
@@ -369,5 +379,16 @@ const FinalizeLink = ({ month, year }) => (
     Finalize {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
   </InertiaLink>
 )
+
+const ToggleDeletedLink = ({ includesDeleted, month, year }) => {
+  const href = `/budget/${month}/${year}${includesDeleted ? "" : "?include_deleted=true"}`
+  return (
+    <InertiaLink href={href} color="text-blue-800">
+      &#8226;
+      {" "}
+      {includesDeleted ? "Hide" : "Show"} Deleted Items
+    </InertiaLink>
+  )
+}
 
 export default App;
