@@ -4,7 +4,7 @@ import { eventAndTransactionDetailSort, eventTransactionReducer, postItemAdjustE
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 
 import BudgetItemDetails from "./ItemDetails";
-import { FormRow, NameRow } from "./shared";
+import { AccrualMaturityInfo, FormRow, NameRow } from "./shared";
 import { StripedRow } from "../shared/Row"
 
 const PendingMonthlyItem = ({ model, fns, month, year }) => {
@@ -24,6 +24,7 @@ const PendingMonthlyItem = ({ model, fns, month, year }) => {
 const Show = ({ details, model, fns, month, year }) => (
   <StripedRow styling={{ wrap: "flex-wrap"}}>
     <NameRow model={model} fns={fns} month={month} year={year} />
+    <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
     {model.showDetails && <BudgetItemDetails id={model.id} details={details} />}
   </StripedRow>
 );

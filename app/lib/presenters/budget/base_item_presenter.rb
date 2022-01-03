@@ -64,11 +64,15 @@ module Presenters
       end
 
       def maturity_month
-        attributes.fetch(:maturity_month) { category.maturity_intervals.first&.month }
+        return unless accrual?
+
+        category.maturity_intervals.on_or_after(month, year)&.first&.month
       end
 
       def maturity_year
-        attributes.fetch(:maturity_year) { category.maturity_intervals.first&.year }
+        return unless accrual?
+
+        category.maturity_intervals.on_or_after(month, year)&.first&.year
       end
 
       private

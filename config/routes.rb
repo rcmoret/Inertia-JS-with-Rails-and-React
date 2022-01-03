@@ -27,5 +27,7 @@ Rails.application.routes.draw do
     post 'set-up', to: 'set_up#create'
     get '/finalize/:month/:year', to: 'finalize#new'
     post 'finalize', to: 'finalize#complete'
+
+    post '/categories/:id/maturity_intervals', to: 'categories/maturity_intervals/create#call'
   end
 end

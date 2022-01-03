@@ -162,7 +162,7 @@ const App = ({ budget, ...props }) => {
   }
 
   const accrualFilter = item => {
-    if (renderAccruals || isNonAccrual(item)) {
+    if (renderAccruals || !item.isAccrual) {
       return true
     } else {
       return isMatureAccrual(item, month, year)

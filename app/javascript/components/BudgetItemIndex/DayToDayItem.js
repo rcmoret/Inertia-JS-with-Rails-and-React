@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { StripedRow } from "../shared/Row"
+import Row, { StripedRow } from "../shared/Row"
 
 import { decimalToInt } from "../../lib/MoneyFormatter";
 import { shared } from "../../lib/copy/budget";
 import { titleize } from "../../lib/copy/functions";
 
-import { eventAndTransactionDetailSort, eventTransactionReducer, postItemAdjustEvent } from "./Functions";
+import {
+  eventAndTransactionDetailSort,
+  eventTransactionReducer,
+  postItemAdjustEvent,
+} from "./Functions";
 
 import AmountSpan from "../shared/AmountSpan";
 import BudgetItemDetails from "./ItemDetails";
 import Icon from "../shared/Icons";
 import Cell from "../shared/Cell";
-import { FormRow, NameRow, Links } from "./shared";
+import { AccrualMaturityInfo, FormRow, NameRow, Links } from "./shared";
 import Link from "../shared/Link";
 
 const DayToDayItem = ({ model, fns, month, year }) => {
@@ -78,6 +82,7 @@ const Form = ({ model, fns, details, month, year }) => {
         <div className="w-1/12">
         </div>
       </Cell>
+      <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
       {showDetails && <BudgetItemDetails id={id} details={details} />}
      </StripedRow>
   )
@@ -96,6 +101,7 @@ const Show = ({ model, fns, details, month, year }) => {
       <NameRow model={model} fns={fns} month={month} year={year} />
       <SpentOrDeposited isExpense={isExpense} spent={spent} />
       <DifferenceOrRemaining {...model} />
+      <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
       {showDetails && <BudgetItemDetails id={id} details={details} />}
      </StripedRow>
   )

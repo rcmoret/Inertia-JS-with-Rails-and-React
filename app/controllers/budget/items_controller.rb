@@ -61,7 +61,7 @@ module Budget
               firstDate
               lastDate
               daysRemaining
-              items {
+              items(includeDeleted: #{include_deleted?}) {
                 id
                 budgetCategoryId
                 name
@@ -100,8 +100,16 @@ module Budget
       GQL
     end
 
+    def include_deleted?
+      params.fetch(:include_deleted, false) == 'true'
+    end
+
     def namespace
       'budget'
+    end
+
+    def additional_props
+      { includesDeleted: include_deleted? }
     end
   end
 end

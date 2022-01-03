@@ -1,4 +1,5 @@
 import React from "react";
+import { Inertia } from "@inertiajs/inertia";
 
 import { AmountInput } from "../shared/TextInput";
 import AmountSpan from "../shared/AmountSpan";
@@ -7,6 +8,7 @@ import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Row from "../shared/Row";
 
+import { isMatureAccrual } from "../../lib/Functions";
 import { postItemDeleteEvent } from "./Functions"
 import { fromDateString } from "../../lib/DateFormatter";
 import { index as copy } from " ../../lib/copy/budget"
@@ -148,6 +150,33 @@ const DeleteLink = ({ id, isDeletable, fns, name, month, year }) => {
       <span className="text-gray-500">
         <Icon className="fa fa-trash" />
       </span>
+    )
+  }
+}
+
+export  const AccrualMaturityInfo = ({ model, fns, month, year }) => {
+  if (!model.isAccrual || isMatureAccrual(model, month, year)) {
+    return null
+  } else {
+    const { budgetCategoryId, maturityMonth, maturityYear } = model
+    const copy = maturityMonth ? `Maturing ${maturityMonth}/${maturityYear}` : "No upcoming maturity date"
+    const returnUrl = `/budget/${month}/${year}`
+    const post = () => Inertia.post(`/budget/categories/${budgetCategoryId}/maturity_intervals?redirect_to=${returnUrl}`,
+      { interval: { month, year } },
+      { onSuccess: fns.onPostSuccess }
+    )
+
+    return (
+      <Row>
+        <Cell styling={{width: "w-6/12", padding: "pl-1 pr-1"}}>
+          <span className="italic">{copy}</span>
+        </Cell>
+        <div className="w-6/12 pl-1 pr-1 italic text-right">
+          <Link color="text-blue-700" onClick={post}>
+            Mark as mature for {month}/{year}
+          </Link>
+        </div>
+     </Row>
     )
   }
 }
