@@ -2,7 +2,7 @@
 
 module Budget
   class ItemView < ApplicationRecord
-    include Budget::Shared
+    include Budget::SharedItem
     include Presentable
 
     self.primary_key = :id

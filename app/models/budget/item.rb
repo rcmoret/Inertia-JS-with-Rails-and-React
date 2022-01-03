@@ -2,22 +2,13 @@
 
 module Budget
   class Item < ApplicationRecord
-    include Budget::Shared
+    include Budget::SharedItem
     include Presentable
 
     validates_uniqueness_of :budget_category_id,
                             scope: :budget_interval_id,
                             conditions: -> { active },
                             if: :weekly?
-
-    # if nothing else these are helpful in the console
-    scope :current, -> { where(budget_interval: Interval.current) }
-    scope :expenses, -> { joins(:category).merge(Category.expenses) }
-    scope :revenues, -> { joins(:category).merge(Category.revenues) }
-    scope :weekly, -> { joins(:category).merge(Category.weekly) }
-    scope :monthly, -> { joins(:category).merge(Category.monthly) }
-
-    PUBLIC_ATTRS = %w[amount budget_category_id budget_interval_id].freeze
 
     delegate :accrual,
              :expense?,
