@@ -3,7 +3,7 @@
 module Transactions
   class UpdateController < ApplicationController
     def call
-      if transaction.update(update_params)
+      if transaction.update(update_params.to_h.deep_transform_keys(&:underscore))
         redirect_to account_transactions_path(transaction.account.slug, month: month, year: year)
       else
         render inertia: 'AccountTransactionsIndexApp', props: transaction.errors
@@ -33,13 +33,14 @@ module Transactions
     end
 
     PERMITTED_ATTRIBUTES = [
-      :account_id,
-      :budget_exclusion,
-      :check_number,
-      :clearance_date,
+      :accountId,
+      :budgetExclusion,
+      :checkNumber,
+      :clearanceDate,
       :description,
       :notes,
-      { details_attributes: %i[id amount budget_item_id _destroy].freeze },
+      :receipt,
+      { detailsAttributes: %i[id amount budgetItemId _destroy].freeze },
     ].freeze
   end
 end

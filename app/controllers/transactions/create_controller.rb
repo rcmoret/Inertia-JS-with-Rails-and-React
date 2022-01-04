@@ -13,7 +13,7 @@ module Transactions
     private
 
     def transaction
-      @transaction ||= Transaction::Entry.new(create_params)
+      @transaction ||= Transaction::Entry.new(create_params.to_h.deep_transform_keys(&:underscore))
     end
 
     def today
@@ -30,13 +30,14 @@ module Transactions
 
     def create_params
       params.require(:transaction).permit(
-        :account_id,
-        :budget_exclusion,
-        :check_number,
-        :clearance_date,
+        :accountId,
+        :budgetExclusion,
+        :checkNumber,
+        :clearanceDate,
         :description,
         :notes,
-        details_attributes: %i[amount budget_item_id]
+        :receipt,
+        detailsAttributes: %i[id amount budgetItemId _destroy]
       )
     end
   end

@@ -19,6 +19,12 @@ module Transaction
       attributes.deep_symbolize_keys
     end
 
+    def receipt_blob
+      return if receipt_blob_id.nil?
+
+      @receipt_blob ||= ActiveStorage::Blob.find(receipt_blob_id)
+    end
+
     def presenter_class
       Presenters::Transactions::EntryPresenter
     end

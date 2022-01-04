@@ -20,19 +20,9 @@ module Transaction
     validate :single_detail!, if: -> { transfer? || budget_exclusion? }
     validate :detail_present!
 
-    scope :total, -> { joins(:details).sum(:amount) }
+    has_one_attached :receipt
 
-    PUBLIC_ATTRS = %w[
-      account_id
-      budget_exclusion
-      check_number
-      clearance_date
-      description
-      details_attributes
-      notes
-      receipt
-      transfer_id
-    ].freeze
+    scope :total, -> { joins(:details).sum(:amount) }
 
     delegate :name, to: :account, prefix: true
 

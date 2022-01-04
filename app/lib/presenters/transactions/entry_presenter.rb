@@ -8,13 +8,17 @@ module Presenters
       end
 
       def details
-        attributes.fetch(:details) { super }.then do |collection|
-          collection.map { |detail| Detail.new(detail).as_presenter }
-        end
+        attributes.fetch(:details) { super }.map { |detail| Detail.new(detail) }
       end
 
       def amount
         details.map(&:amount).reduce(:+)
+      end
+
+      def receipt_blob
+        return if super.nil?
+
+        AttachmentBlobPresenter.new(super)
       end
 
       private
@@ -25,20 +29,13 @@ module Presenters
 
       Detail = Struct.new(
         :id,
-        :budget_category,
+        :budget_category_name,
+        :budget_category_id,
         :budget_item_id,
         :amount,
         :icon_class_name,
         keyword_init: true
-      ) do
-        def as_presenter
-          DetailPresenter.new(self)
-        end
-
-        def category_name
-          budget_category
-        end
-      end
+      )
     end
   end
 end

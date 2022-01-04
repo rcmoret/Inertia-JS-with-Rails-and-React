@@ -12,7 +12,7 @@ module Types
       field :description, String, 'Description of the transaction', null: true
       field :details, [DetailType], 'Amount and budget info', null: false
       field :notes, String, 'Extra information regarding the transaction', null: true
-      # field :receipt
+      field :receipt_blob, AttachmentBlobType, 'Receipt uploaded for the transaction', null: true
       field :transfer_id, ID, 'ID associated with a transfer', null: true
       field :updated_at, GraphQL::Types::ISO8601DateTime, 'Time the entry was last updated', null: false
     end

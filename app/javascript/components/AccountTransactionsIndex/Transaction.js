@@ -35,6 +35,7 @@ const Transaction = props => {
     isEditable,
     isPending,
     notes,
+    receiptBlob,
     transferId,
   } = transaction
   const { month, year } = interval
@@ -55,7 +56,7 @@ const Transaction = props => {
     const makeRequest = body => {
       Inertia.put(`/transactions/${id}?month=${month}&year=${year}`,
         { transaction: body },
-        { onSuccess: closeForm },
+        { onSuccess: closeForm, forceFormData: true },
       )
     }
 
@@ -72,6 +73,7 @@ const Transaction = props => {
   } else {
     return (
       <StripedRow styling={{flexAlign: "justify-start"}}>
+        <div className="hidden">{id}</div>
         <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
           <div className="w-1/12">
             {details.length > 1 && <DetailToggleLink id={id} isDetailShown={isDetailShown} detailFns={detailFns} />}
@@ -96,7 +98,7 @@ const Transaction = props => {
           <AmountSpan amount={balance} negativeColor="text-red-800" />
         </div>
         <div className="w-5/12 flex">
-          {description && !isDetailShown && details.filter(detail => detail.categoryName).length > 0 &&
+          {description && !isDetailShown && details.filter(detail => detail.budgetCategoryName).length > 0 &&
             <div className="ml-4 max-w-4/12">
               <BudgetItems details={details} />
             </div>}
@@ -104,6 +106,7 @@ const Transaction = props => {
           {checkNumber && <div className="ml-4 max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
           {transferId && <div className="ml-4 max-w-2/12 italic">transfer</div>}
           {notes && <Notes noteLines={noteLines} />}
+          {receiptBlob && <Receipt attachment={receiptBlob} />}
         </div>
         <div className="w-1/12 ml-4 flex flex-row-reverse">
           {isEditable && <ModifyLinks modifyFns={modifyFns} />}
@@ -148,12 +151,12 @@ const DetailAmounts = ({ details }) => (
 )
 
 const BudgetItems = ({ details }) => {
-  const sortFn = (a, b) => a.categoryName < b.categoryName ? -1 : 1
+  const sortFn = (a, b) => a.budgetCategoryName < b.budgetCategoryName ? -1 : 1
 
-  return details.filter(detail => detail.categoryName).sort(sortFn).map((detail, n) => (
+  return details.filter(detail => detail.budgetCategoryName).sort(sortFn).map((detail, n) => (
     <span key={detail.id}>
       { n > 0 && "; "}
-      {detail.categoryName}
+      {detail.budgetCategoryName}
       {" "}
       <Icon className={detail.iconClassName} />
     </span>
@@ -165,7 +168,7 @@ const BudgetItemList = ({ details }) => {
 
   return details.sort(sortFn).map(detail => (
     <div key={detail.id} className="w-full text-sm">
-      {detail.categoryName || "Petty Cash"}
+      {detail.budgetCategoryName || "Petty Cash"}
       {" "}
       <Icon className={detail.iconClassName} />
     </div>
@@ -200,5 +203,15 @@ const ModifyLinks = ({ modifyFns }) => {
     </>
   )
 }
+
+const Receipt = ({ attachment }) => (
+  <div className="ml-2">
+    <Link color="text-blue-700" target="_blank" href={attachment.path}>
+      <Icon className="fa fa-paperclip" />
+      {" "}
+      {attachment.filename}
+    </Link>
+  </div>
+)
 
 export default Transaction;

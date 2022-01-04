@@ -80,9 +80,11 @@ module Accounts
                 id
                 amount
                 budgetItemId
-                categoryName
+                budgetCategoryId
+                budgetCategoryName
                 iconClassName
               }
+              receiptBlob { filename contentType path }
             }
           }
         }

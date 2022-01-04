@@ -36,6 +36,7 @@ export const newTransaction = (accountId, budgetExclusion) => ({
   details: [{ ...newDetail() }],
   isEditable: false,
   notes: "",
+  receipt: null,
   updatedAttributes: {},
 })
 
@@ -170,6 +171,7 @@ const Form = props => {
 
   const handleDatePickChange = date => updateEntry({ clearanceDate: date.toISOString() })
   const handleInputChange = event => updateEntry({ [event.target.name]: event.target.value })
+  const handleFileUpload = event => updateEntry({ receipt: event.target.files[0] })
   const selected = clearanceDate === null ? null : parseISO(clearanceDate)
   const openToDate = () => {
     if (clearanceDate) {
@@ -225,6 +227,7 @@ const Form = props => {
           {!isCashFlow && <BudgetExclusion value={budgetExclusion} updateEntry={updateEntry} />}
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
+          <Receipt value={receipt} onChange={handleFileUpload} />
         </div>
         <div className="w-2/12 flex flex-row-reverse items-start">
           <Button
@@ -367,7 +370,7 @@ const Details = props => {
 const DetailForm = props => {
   const { detail, iconClassName, interval, items, onClick, update } = props
   const originalBudgetItemId = detail.budgetItemId
-  const { uuid, amount, budgetItemId, categoryName, isMarkedForDelete } = { ...detail, ...detail.updatedAttributes }
+  const { uuid, amount, budgetItemId, budgetCategoryName, isMarkedForDelete } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
 
   const labelFn = item => `${item.name} ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
@@ -388,7 +391,7 @@ const DetailForm = props => {
     if (baseOptions.map(o => o.value).includes(originalBudgetItemId)) {
       return [nullOption, ...baseOptions.sort(sortByLabel)]
     } else {
-      return [nullOption, ...[{ value: originalBudgetItemId, label: categoryName }, ...baseOptions].sort(sortByLabel)]
+      return [nullOption, ...[{ value: originalBudgetItemId, label: budgetCategoryName }, ...baseOptions].sort(sortByLabel)]
     }
   }
   const availableOptions = optionsFn()
@@ -452,5 +455,11 @@ const CalculatorButton = ({ onClick }) => (
     </Link>
   </div>
 )
+
+const Receipt = ({ receipt, onChange }) => {
+  return (
+    <input type="file" value={receipt} onChange={onChange} name="receipt" multiple />
+  )
+}
 
 export default Form;
