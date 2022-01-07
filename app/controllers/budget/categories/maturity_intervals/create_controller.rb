@@ -8,14 +8,17 @@ module Budget
           if maturity_interval.save
             redirect_to redirect_url
           else
-            fuck.off
+            render inertia: 'BudgetCategoryIndexApp', props: maturity_interval.errors
           end
         end
 
         private
 
         def maturity_interval
-          Budget::CategoryMaturityInterval.new(budget_category_id: budget_category_id, interval: interval)
+          @maturity_interval ||= Budget::CategoryMaturityInterval.new(
+            interval: interval,
+            budget_category_id: budget_category_id
+          )
         end
 
         def post_params

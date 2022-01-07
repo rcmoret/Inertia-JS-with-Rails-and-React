@@ -215,40 +215,44 @@ const App = ({ budget, ...props }) => {
                     </ButtonStyleInertiaLink>
                   </Row>
                 </Cell>
-                <div className="w-4/12">
-                  <div>
-                    <Link onClick={toggleAccruals} color="text-blue-800">
-                      &#8226;
-                      {" "}
-                      {titleize(accrualLinkText)}
-                    </Link>
+                <div className="w-6/12 flex justify-between flex-wrap">
+                  <div className="w-6/12">
+                    <div>
+                      <Link onClick={toggleAccruals} color="text-blue-800">
+                        &#8226;
+                        {" "}
+                        {titleize(accrualLinkText)}
+                      </Link>
+                    </div>
+                    <div>
+                      <Link onClick={toggleClearedMonthly} color="text-blue-800">
+                        &#8226;
+                        {" "}
+                        {titleize(clearedMonthlyLinkText)}
+                      </Link>
+                    </div>
+                    <div>
+                      <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
+                        &#8226;
+                        {" "}
+                        {titleize(adjustItemsFormLinkText)}
+                      </Link>
+                    </div>
+                    <div>
+                      <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
+                    </div>
                   </div>
-                  <div>
-                    <Link onClick={toggleClearedMonthly} color="text-blue-800">
-                      &#8226;
-                      {" "}
-                      {titleize(clearedMonthlyLinkText)}
-                    </Link>
+                  <div className="w-6/12">
+                    <div>
+                      <InertiaLink href="/budget/categories" color="text-blue-800">
+                        &#8226;
+                        {" "}
+                        Manage Categories
+                      </InertiaLink>
+                    </div>
+                    {!isSetUp && <SetUpLink month={month} year={year} />}
+                    {isLastDay && <FinalizeLink month={month} year={year} />}
                   </div>
-                  <div>
-                    <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
-                      &#8226;
-                      {" "}
-                      {titleize(adjustItemsFormLinkText)}
-                    </Link>
-                  </div>
-                  <div>
-                    <InertiaLink href="/budget/categories" color="text-blue-800">
-                      &#8226;
-                      {" "}
-                      Manage Categories
-                    </InertiaLink>
-                  </div>
-                  <div>
-                    <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
-                  </div>
-                  {!isSetUp && <SetUpLink month={month} year={year} />}
-                  {isLastDay && <FinalizeLink month={month} year={year} />}
                 </div>
               </Row>
             </div>

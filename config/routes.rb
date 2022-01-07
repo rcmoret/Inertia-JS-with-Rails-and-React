@@ -28,6 +28,11 @@ Rails.application.routes.draw do
     get '/finalize/:month/:year', to: 'finalize#new'
     post 'finalize', to: 'finalize#complete'
 
+    get '/categories', to: 'categories/index#call', as: :categories
+    post '/categories', to: 'categories/create#call'
+    put '/categories/:id', to: 'categories/update#call'
+    delete '/categories/:id', to: 'categories/delete#call'
     post '/categories/:id/maturity_intervals', to: 'categories/maturity_intervals/create#call'
+    delete '/categories/maturity_intervals/:id', to: 'categories/maturity_intervals/delete#call'
   end
 end

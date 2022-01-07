@@ -175,4 +175,18 @@ export const isToday = (date) => {
   return JSON.stringify(today("object")) === JSON.stringify(simpleObject(date))
 }
 
+const monthOptionDefaults = {
+  formatFn: (n) => MonthDictionary(n).long,
+  includeNullOption: true,
+}
+
+export const monthOptions = (suppliedOptions = {}) => {
+  const options = { ...monthOptionDefaults, ...suppliedOptions }
+  const initialArray = options.includeNullOption ? [{ value: null, label: "" }] : []
+
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].reduce((array, number) => (
+    [...array, { label: options.formatFn(number), value: number }]
+  ), initialArray)
+}
+
 export default formatted

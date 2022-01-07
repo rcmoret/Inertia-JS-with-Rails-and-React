@@ -20,6 +20,12 @@ module Budget
       where(query, date_hash)
     }
 
+    scope :on_or_after, lambda { |month, year|
+      where('year > ?', year)
+        .or(where('year = ? AND month >= ?', year, month))
+        .ordered
+    }
+
     # rubocop:disable Metric/BlockLength
     scope :in_range, lambda { |beginning_month:, beginning_year:, ending_month:, ending_year:|
       if beginning_year > ending_year || (beginning_year == ending_year && beginning_month > ending_month)

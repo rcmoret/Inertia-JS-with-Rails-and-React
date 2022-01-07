@@ -9,6 +9,7 @@ module Budget
     validate :category_accrual?
 
     scope :ordered, -> { joins(:interval).merge(Interval.ordered) }
+    scope :on_or_after, ->(month, year) { joins(:interval).merge(Interval.on_or_after(month, year)) }
 
     delegate :month, :year, to: :interval
 

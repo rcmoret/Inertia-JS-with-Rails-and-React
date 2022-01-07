@@ -22,6 +22,11 @@ module Presenters
         super
       end
       alias is_day_to_day weekly?
+
+      def archived?
+        super
+      end
+      alias is_archived archived?
     end
   end
 end

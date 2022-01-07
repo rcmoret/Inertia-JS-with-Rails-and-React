@@ -17,6 +17,10 @@ module Presenters
         ::Budget::Category.find(id).as_presenter
       end
 
+      def icons
+        Icon.all
+      end
+
       def interval(month: Time.current.month, year: Time.current.year)
         ::Budget::Interval.for(month: month, year: year).as_presenter
       end
