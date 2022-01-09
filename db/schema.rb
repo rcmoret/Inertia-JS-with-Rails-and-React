@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_04_153819) do
+ActiveRecord::Schema.define(version: 2022_01_09_183748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(version: 2022_01_04_153819) do
     t.datetime "close_out_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "start_date"
-    t.date "end_date"
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   create_table "budget_item_event_types", force: :cascade do |t|
@@ -89,9 +89,9 @@ ActiveRecord::Schema.define(version: 2022_01_04_153819) do
     t.bigint "budget_item_id"
     t.bigint "budget_item_event_type_id"
     t.integer "amount", null: false
+    t.json "data"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.jsonb "data"
     t.index ["budget_item_event_type_id"], name: "index_budget_item_events_on_budget_item_event_type_id"
     t.index ["budget_item_id"], name: "index_budget_item_events_on_budget_item_id"
   end
@@ -138,8 +138,8 @@ ActiveRecord::Schema.define(version: 2022_01_04_153819) do
   end
 
   create_table "transfers", force: :cascade do |t|
-    t.integer "to_transaction_id", null: false
-    t.integer "from_transaction_id", null: false
+    t.integer "to_transaction_id"
+    t.integer "from_transaction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

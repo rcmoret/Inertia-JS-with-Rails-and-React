@@ -25,10 +25,15 @@ module Presenters
     end
     alias is_cash_flow cash_flow?
 
+    def archived?
+      archived_at.present?
+    end
+    alias is_archived archived?
+
     private
 
-    def attributes
-      @attributes ||= super.symbolize_keys
+    def attributes(key, &block)
+      super().symbolize_keys.fetch(key, &block)
     end
   end
 end

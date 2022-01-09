@@ -1,6 +1,7 @@
 import React from "react";
 
 import AccountTabs from "./AccountTransactionsIndex/AccountTabs";
+import { InertiaLink } from "./shared/Link";
 import PageHeader from "./shared/Header";
 import Row from "./shared/Row";
 
@@ -20,6 +21,11 @@ const App = ({ accounts, interval, namespace }) => {
               selectedAccount={selectedAccount}
               year={year}
             />
+           <Row>
+             <InertiaLink color="text-blue-700" href="/accounts/admin">
+               Manage Accounts
+              </InertiaLink>
+           </Row>
           </Row>
         </div>
       </div>

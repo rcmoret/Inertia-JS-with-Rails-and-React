@@ -1,12 +1,12 @@
 import React from "react";
 
 import MoneyFormatter from "../../lib/MoneyFormatter";
+import { sortByPriorty as sortFn } from "../../lib/Functions"
 
 import Row from "../shared/Row";
 import { ButtonStyleInertiaLink } from "../shared/Link";
 
 const AccountTabs = ({ accounts, ...props}) => {
-  const sortFn = (a, b) => a.priority - b.priority
   const today = new Date()
   const currentInterval = { month: today.getMonth() + 1, year: today.getFullYear() }
   const interval = { month: props.month, year: props.year }

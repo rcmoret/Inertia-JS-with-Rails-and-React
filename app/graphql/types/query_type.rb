@@ -17,7 +17,7 @@ module Types
     def accounts(include_inactive: false)
       scope = AccountWithBalanceView.all
       scope = scope.where(archived_at: nil) unless include_inactive
-      scope
+      scope.map(&:as_presenter)
     end
 
     field :account, AccountType, null: true do

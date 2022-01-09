@@ -6,6 +6,8 @@ export const sortByLabel = (obj1, obj2) => (
   obj1.label.toLowerCase() < obj2.label.toLowerCase() ? -1 : 1
 );
 
+export const sortByPriorty = (a, b) => a.priority - b.priority;
+
 export const sortByClearanceDate = (txn1, txn2) => {
   const today = new Date().toISOString().split("T")[0]
   if (txn1.clearanceDate === txn2.clearanceDate) {
