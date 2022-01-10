@@ -28,6 +28,7 @@ import Header from "../shared/Header";
 import Icon from "../shared/Icons";
 import ItemGroup from "./ItemGroup";
 import Link, { ButtonStyleInertiaLink, InertiaLink } from "../shared/Link";
+import MonthYearSelect from "../shared/MonthYearSelect";
 import MultiItemAdjustForm from "./MultiItemAdjustForm";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
@@ -192,7 +193,7 @@ const App = ({ budget, ...props }) => {
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white"}}>
             <div className="w-full p-2 border-b-2 border-blue-900 border-solid">
-              <Row>
+              <Row styling={{alignItem: "items-start"}}>
                 <Cell styling={{width: "w-4/12", wrap: "flex-wrap"}}>
                   <div className="text-2xl w-full">
                     <strong>{copy.title(longDateString)} </strong>
@@ -253,6 +254,9 @@ const App = ({ budget, ...props }) => {
                     {!isSetUp && <SetUpLink month={month} year={year} />}
                     {isLastDay && <FinalizeLink month={month} year={year} />}
                   </div>
+                  <Row>
+                    <MonthYearSelect baseUrl="/budget" month={month} year={year} />
+                  </Row>
                 </div>
               </Row>
             </div>

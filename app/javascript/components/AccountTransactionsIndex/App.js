@@ -12,6 +12,7 @@ import AccountTabs from "./AccountTabs";
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link, { ButtonStyleInertiaLink } from "../shared/Link";
+import MonthYearSelect from "../shared/MonthYearSelect";
 import PageHeader from "../shared/Header";
 import Row, { StripedRow } from "../shared/Row";
 import Transaction from "./Transaction";
@@ -108,7 +109,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
       <div className="mb-1 h-5/6 rounded">
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white", padding: "pt-1 px-1 pb-24", overflow: "overflow-visible"}}>
-            <Row styling={{wrap: "flex-wrap", border: "border-b border-gray-800 border-solid", rounded: null, overflow: "overflow-visible", backgroundColor: "bg-gradient-to-b from-blue-200 to-white"}}>
+            <Row styling={{flexAlign: "flex-start", wrap: "flex-wrap", border: "border-b border-gray-800 border-solid", rounded: null, overflow: "overflow-visible", backgroundColor: "bg-gradient-to-b from-blue-200 to-white"}}>
               <AccountTabs
                 accounts={accounts}
                 month={month}
@@ -134,6 +135,9 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                   {" "}
                   <Icon className="fas fa-angle-double-right" />
                 </ButtonStyleInertiaLink>
+              </Cell>
+              <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2 ml-2", overflow: "overflow-visible"}}>
+                <MonthYearSelect baseUrl={`/accounts/${selectedAccount.slug}/transactions`} month={month} year={year} />
               </Cell>
             </Row>
             {transactions.map(transaction => (
