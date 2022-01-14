@@ -87,7 +87,7 @@ const CreateItemForm = (props) => {
         </div>
         <div className="ml-2 w-3/12">
           <AmountInput
-            classes={["h-full", "w-full"]}
+            classes={["text-right", "h-full", "w-full"]}
             onChange={handleInputChange}
             value={form.amount}
           />

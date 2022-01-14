@@ -132,7 +132,7 @@ const IconSelect = ({ iconId, handleChange, ...props }) => {
   )
 }
 
-const FormLinks = ({ onSubmit, closeForm }) => (
+const FormLinks = ({ closeForm, onSubmit, updatedAttributes }) => (
   <Row>
     <div>
       <SubmitButton onSubmit={onSubmit} updatedAttributes={updatedAttributes}>
@@ -151,11 +151,11 @@ const FormLinks = ({ onSubmit, closeForm }) => (
   </Row>
 )
 
-const SubmitButton = ({ onSubmit, updatedAttributes }) => {
+const SubmitButton = ({ children, onSubmit, updatedAttributes }) => {
   if (Object.entries(updatedAttributes).length) {
     return (
       <Button bgColor="bg-green-700" hoverBgColor="bg-green-800" onClick={onSubmit}>
-        Submit
+        {children}
       </Button>
     )
   } else {

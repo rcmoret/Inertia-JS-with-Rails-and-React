@@ -51,7 +51,6 @@ export const ButtonStyleInertiaLink = suppliedProps => {
   }
 
   const classes = Object.values({ ...defaultStyling, ...styling }).filter(val => val && val !== "")
-  const onClick = () => Inertia.get(props.href)
 
   return (
     <InertiaLink {...defaultProps} {...props} classes={classes} />
@@ -59,8 +58,10 @@ export const ButtonStyleInertiaLink = suppliedProps => {
 };
 
 export const InertiaLink = ({ href, ...suppliedProps }) => {
+  const props = { onClick: () => null, ...suppliedProps }
   const onClick = event => {
     event.preventDefault()
+    props.onClick(event)
     Inertia.get(href)
   }
   return (

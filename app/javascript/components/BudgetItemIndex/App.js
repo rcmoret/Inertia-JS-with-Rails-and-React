@@ -233,17 +233,17 @@ const App = ({ budget, ...props }) => {
                       </Link>
                     </div>
                     <div>
+                      <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
+                    </div>
+                  </div>
+                  <div className="w-6/12">
+                    <div>
                       <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
                         &#8226;
                         {" "}
                         {titleize(adjustItemsFormLinkText)}
                       </Link>
                     </div>
-                    <div>
-                      <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
-                    </div>
-                  </div>
-                  <div className="w-6/12">
                     <div>
                       <InertiaLink href="/budget/categories" color="text-blue-800">
                         &#8226;

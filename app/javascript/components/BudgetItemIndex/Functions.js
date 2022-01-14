@@ -165,8 +165,6 @@ export const eventsFrom = (items, month, year) => {
     bottomLineChange: MoneyFormatter(items.reduce((sum, i) => sum + i.bottomLineChange, 0), { decorate: true }),
   }
 
-  console.log(data)
-
   return items.map(item => {
     const {
       id,
