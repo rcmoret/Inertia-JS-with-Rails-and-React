@@ -43,6 +43,7 @@ const MultiItemAdjustForm = (props) => {
   const { availableCategories, clearAdjustItemsForm, interval, items, fns, formData, updateAdjustItemsForm } = props
   const {
     adjustmentItems,
+    notes,
     selectedCategoryId,
     selectedItemId,
   } = formData
@@ -70,6 +71,7 @@ const MultiItemAdjustForm = (props) => {
     .map(category => asOption(category, { labelFn: categoryLabelFn }))
   ]
   const handleCategorySelectChange = event => updateAdjustItemsForm({ selectedCategoryId: event.value })
+  const handleNotesChange = event => updateAdjustItemsForm({ notes: event.target.value })
   const selectedCategory = categoryOptions.find(category => category.value ===  selectedCategoryId)
   const bottomLineChange = adjustmentItems.reduce((sum, item) => sum + item.bottomLineChange, 0)
   const addCategoryItem = () => {
@@ -120,7 +122,7 @@ const MultiItemAdjustForm = (props) => {
   })
 
   const onSubmit = () => {
-    const events = eventsFrom(adjustmentItems, month, year)
+    const events = eventsFrom(adjustmentItems, month, notes, year)
     const onSuccess = page => {
       fns.onPostSuccess(page)
       clearAdjustItemsForm()
@@ -185,7 +187,7 @@ const MultiItemAdjustForm = (props) => {
           updateAdjustmentItem={updateAdjustmentItem}
         />
       ))}
-      <BottomLine amount={bottomLineChange} onSubmit={onSubmit} />
+      <BottomLine amount={bottomLineChange} handleChange={handleNotesChange} onSubmit={onSubmit} notes={notes} />
     </Row>
   )
 }
@@ -219,7 +221,7 @@ const ItemSelect = ({ addItem, onChange, options, selectedOption }) => {
   }
 }
 
-const BottomLine = ({ amount, onSubmit }) => {
+const BottomLine = ({ amount, notes, handleChange, onSubmit }) => {
   const colorStyles = () => {
     if (amount > 0) {
       return [
@@ -248,11 +250,24 @@ const BottomLine = ({ amount, onSubmit }) => {
   const className = styling.join(" ")
   return (
     <Row styling={{border: borderTop, rounded: null}}>
-      <div>{titleize(copy.multiItemAdjustForm.bottomLineChange)}</div>
-      <div className={className}>{MoneyFormatter(amount, { decorate: true, absolute: true })}</div>
-      <Button onClick={onSubmit} color="text-white" bgColor="bg-green-700" hoverBgColor="bg-green-800">
-        {titleize(copy.multiItemAdjustForm.submitText)}
-      </Button>
+      <Cell styling={{width: "w-4/12"}}>
+        <textarea
+          className="w-6/12"
+          onChange={handleChange}
+          placeholder="notes"
+          style={{minHeight: "100px"}}
+          value={notes}
+        />
+      </Cell>
+      <Cell styling={{width: "w-4/12", alignItems: "items-start"}}>
+        <div>{titleize(copy.multiItemAdjustForm.bottomLineChange)}</div>
+        <div className={className}>{MoneyFormatter(amount, { decorate: true, absolute: true })}</div>
+      </Cell>
+      <div className="items-start">
+        <Button onClick={onSubmit} color="text-white" bgColor="bg-green-700" hoverBgColor="bg-green-800">
+          {titleize(copy.multiItemAdjustForm.submitText)}
+        </Button>
+      </div>
     </Row>
   )
 }

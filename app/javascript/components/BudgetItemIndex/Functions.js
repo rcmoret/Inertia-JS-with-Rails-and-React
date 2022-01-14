@@ -139,7 +139,7 @@ export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbac
   postEvents({ events: [event], month, year }, callbacks)
 }
 
-export const eventsFrom = (items, month, year) => {
+export const eventsFrom = (items, month, notes, year) => {
   const data = {
     items: items.map(item => {
       const {
@@ -163,6 +163,7 @@ export const eventsFrom = (items, month, year) => {
       }
     }),
     bottomLineChange: MoneyFormatter(items.reduce((sum, i) => sum + i.bottomLineChange, 0), { decorate: true }),
+    notes,
   }
 
   return items.map(item => {

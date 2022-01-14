@@ -47,6 +47,7 @@ const App = ({ budget, ...props }) => {
     adjustItemsForm: {
       adjustmentItems: [],
       isRendered: false,
+      notes: "",
       selectedItemId: null,
       selectedCategoryId: null,
     },
