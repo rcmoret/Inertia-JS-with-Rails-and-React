@@ -26,16 +26,16 @@ module Budget
       )
     end
 
-    def today
-      Time.current
+    def current_interval
+      Budget::Interval.current
     end
 
     def month
-      params.fetch(:month, today.month).to_i
+      params.fetch(:month, current_interval.month).to_i
     end
 
     def year
-      params.fetch(:year, today.year).to_i
+      params.fetch(:year, current_interval.year).to_i
     end
 
     def base_interval_month

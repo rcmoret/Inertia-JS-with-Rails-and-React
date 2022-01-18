@@ -16,16 +16,16 @@ module Transactions
       @transaction ||= Transaction::Entry.find(params.fetch(:id))
     end
 
-    def today
-      Time.current
+    def current_interval
+      Budget::Interval.current
     end
 
     def month
-      params.fetch(:month, today.month)
+      params.fetch(:month, current_interval.month)
     end
 
     def year
-      params.fetch(:year, today.year)
+      params.fetch(:year, current_interval.year)
     end
 
     def update_params

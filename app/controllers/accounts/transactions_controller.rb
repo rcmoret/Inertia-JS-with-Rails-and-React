@@ -6,7 +6,7 @@ module Accounts
 
     def index
       if month.nil? || year.nil?
-        redirect_to account_transactions_path(slug, month: today.month, year: today.year)
+        redirect_to account_transactions_path(slug, month: current_interval.month, year: current_interval.year)
       else
         render inertia: 'AccountTransactionsIndexApp', props: props
       end
@@ -14,8 +14,8 @@ module Accounts
 
     private
 
-    def today
-      Time.current
+    def current_interval
+      Budget::Interval.current
     end
 
     def slug

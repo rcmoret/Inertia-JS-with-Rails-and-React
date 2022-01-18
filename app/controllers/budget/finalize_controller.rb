@@ -24,8 +24,8 @@ module Budget
       Budget::Interval.for(month: base_interval_month, year: base_interval_year)
     end
 
-    def today
-      Time.current
+    def current_interval
+      Budget::Interval.current
     end
 
     def target_interval_month
@@ -45,11 +45,11 @@ module Budget
     end
 
     def base_interval_month
-      params.fetch(:month, today.month).to_i
+      params.fetch(:month, current_interval.month).to_i
     end
 
     def base_interval_year
-      params.fetch(:year, today.year).to_i
+      params.fetch(:year, current_interval.year).to_i
     end
 
     def events_params
