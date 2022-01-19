@@ -204,14 +204,23 @@ const ModifyLinks = ({ modifyFns }) => {
   )
 }
 
-const Receipt = ({ attachment }) => (
-  <div className="ml-2">
-    <Link color="text-blue-700" target="_blank" href={attachment.path}>
-      <Icon className="fa fa-paperclip" />
-      {" "}
-      {attachment.filename}
-    </Link>
-  </div>
-)
+const Receipt = ({ attachment }) => {
+  const truncate = filename => {
+    const initial = filename.slice(0, 10)
+    const terminus = filename.slice(-4)
+    return `${initial}...${terminus}`
+  }
+
+  const filename = attachment.filename.length > 20 ? truncate(attachment.filename) : attachment.filename
+  return (
+    <div className="ml-2">
+      <Link color="text-blue-700" target="_blank" href={attachment.path}>
+        <Icon className="fa fa-paperclip" />
+        {" "}
+        {filename}
+      </Link>
+    </div>
+  )
+}
 
 export default Transaction;
