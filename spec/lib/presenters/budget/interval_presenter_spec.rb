@@ -99,7 +99,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
         subject = described_class.new(interval)
 
-        expect(subject.days_remaining).to be 17
+        expect(subject.days_remaining).to be 16
       end
 
       # context 'when using a calendar month month'
@@ -108,7 +108,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
         subject = described_class.new(interval)
 
-        expect(subject.days_remaining).to be 16
+        expect(subject.days_remaining).to be 17
       end
     end
 

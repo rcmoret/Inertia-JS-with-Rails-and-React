@@ -183,8 +183,8 @@ RSpec.describe Budget::Events::SetupForm do
         )
       end
       let(:today) { Date.today }
-      let(:start_date) { Date.new(today.year, today.month, 2) }
-      let(:end_date) { Date.new(today.year, today.month, -2) }
+      let(:start_date) { DateTime.new(today.year, today.month, 2) }
+      let(:end_date) { DateTime.new(today.year, today.month, -2) }
 
       it 'updates the interval\'s start date' do
         expect { subject.save }

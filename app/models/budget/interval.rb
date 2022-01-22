@@ -74,7 +74,7 @@ module Budget
     def last_date
       return end_date if end_date.present?
 
-      last = Date.new(year, month, -1)
+      last = DateTime.new(year, month, -1)
       last -= 1.day while last.saturday? || last.sunday?
       last - 1.day
     end
