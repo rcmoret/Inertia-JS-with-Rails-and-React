@@ -33,6 +33,7 @@ Metrics/BlockLength:
     - config/environments/*
     - config/initializers/*
     - config/routes.rb
+    - spec/*_helper.rb
 
 Style/Documentation:
   Enabled: false
