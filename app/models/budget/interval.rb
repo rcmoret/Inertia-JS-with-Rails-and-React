@@ -15,16 +15,14 @@ module Budget
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
 
     scope :prior_to, lambda { |date_hash|
-      query =  '"budget_intervals"."year" < :year OR '
-      query += '("budget_intervals"."month" < :month AND "budget_intervals"."year" = :year)'
-      where(query, date_hash)
+      month, year = date_hash.symbolize_keys.values_at(:month, :year)
+      where(year: ...year).or(where(year: year, month: ...month))
     }
 
     scope :on_or_after, lambda { |month, year|
-      where('year > ?', year)
-        .or(where('year = ? AND month >= ?', year, month))
-        .ordered
+      where(year: year..).or(where(year: year, month: month..)).ordered
     }
+    scope :unclosed, -> { where(close_out_completed_at: nil) }
 
     # rubocop:disable Metric/BlockLength
     scope :in_range, lambda { |beginning_month:, beginning_year:, ending_month:, ending_year:|
@@ -33,15 +31,14 @@ module Budget
       end
 
       if ending_year == beginning_year
-        where('"budget_intervals".year = ? AND "budget_intervals".month >= ? AND "budget_intervals".month <= ?',
-              beginning_year, beginning_month, ending_month)
+        where(year: beginning_year, month: beginning_month..ending_month)
       elsif ending_year - beginning_year > 1
-        where('"budget_intervals".year = ? AND "budget_intervals".month >= ?', beginning_year, beginning_month)
-          .or(where('"budget_intervals".year = ? AND "budget_intervals".month <= ?', ending_year, ending_month))
-          .or(where(year: ((beginning_year + 1)...ending_year)))
+        where(year: beginning_year, month: ..beginning_month)
+          .or(where(year: ending_year, month: ..ending_month))
+          .or(where(year: (beginning_year + 1)...ending_year))
       else
-        where('"budget_intervals".year = ? AND "budget_intervals".month >= ?', beginning_year, beginning_month)
-          .or(where('"budget_intervals".year = ? AND "budget_intervals".month <= ?', ending_year, ending_month))
+        where(year: beginning_year, month: beginning_month..)
+          .or(where(year: ending_year, month: ..ending_month))
       end
     }
     # rubocop:enable Metric/BlockLength
@@ -58,7 +55,7 @@ module Budget
     end
 
     def self.current
-      self.for
+      unclosed.ordered.take
     end
 
     def set_up?
