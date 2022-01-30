@@ -31,13 +31,12 @@ export const newTransaction = (accountId, budgetExclusion) => ({
   accountId,
   checkNumber: "",
   clearanceDate: null,
-  budgetExclusion,
   description: "",
   details: [{ ...newDetail() }],
   isEditable: false,
   notes: "",
   receipt: null,
-  updatedAttributes: {},
+  updatedAttributes: { budgetExclusion },
 })
 
 export const NewForm = ({ account, transaction, ...props }) => {
@@ -169,7 +168,10 @@ const Form = props => {
     }),
   }
 
-  const handleDatePickChange = date => updateEntry({ clearanceDate: date.toISOString() })
+  const handleDatePickChange = input => {
+    const date = input === null ? null : input.toISOString()
+    updateEntry({ clearanceDate: date })
+  }
   const handleInputChange = event => updateEntry({ [event.target.name]: event.target.value })
   const handleFileUpload = event => updateEntry({ receipt: event.target.files[0] })
   const selected = clearanceDate === null ? null : parseISO(clearanceDate)
