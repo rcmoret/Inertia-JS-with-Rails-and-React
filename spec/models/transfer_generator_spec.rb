@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Transfer::Generator do
-  subject { described_class.create(args) }
+  subject { described_class.create(**args) }
 
   describe 'happy path' do
     let(:to_account) { FactoryBot.create(:account) }
