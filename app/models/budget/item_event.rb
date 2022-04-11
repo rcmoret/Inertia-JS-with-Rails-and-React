@@ -36,7 +36,7 @@ module Budget
         .merge(
           name: type.name,
           month: month,
-          year: year
+          year: year,
         )
     end
 

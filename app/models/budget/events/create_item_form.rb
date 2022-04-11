@@ -93,10 +93,12 @@ module Budget
       end
 
       def event
-        @event ||= Budget::ItemEvent.new(item: item,
-                                         type: ItemEventType.send(budget_item_event_type),
-                                         data: data,
-                                         amount: amount)
+        @event ||= Budget::ItemEvent.new(
+          item: item,
+          type: ItemEventType.send(budget_item_event_type),
+          data: data,
+          amount: amount,
+        )
       end
 
       def item
@@ -135,7 +137,7 @@ module Budget
           amount: amount,
           monthly: category.monthly,
           transaction_count: 0,
-          spent: 0
+          spent: 0,
         )
       end
 

@@ -56,7 +56,7 @@ RSpec.describe Budget::Item, type: :model do
           .to(
             change { subject.reload.deleted_at }
             .from(nil)
-            .to(Time.current)
+            .to(Time.current),
           )
       end
     end

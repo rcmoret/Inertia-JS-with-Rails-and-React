@@ -67,7 +67,7 @@ module Budget
           type_id: type_id,
           item_id: budget_item.id,
           data: data,
-          amount: adjustment_amount
+          amount: adjustment_amount,
         )
       end
 

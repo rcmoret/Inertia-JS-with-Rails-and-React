@@ -37,7 +37,7 @@ module Transactions
         :description,
         :notes,
         :receipt,
-        detailsAttributes: %i[id amount budgetItemId _destroy]
+        detailsAttributes: %i[id amount budgetItemId _destroy],
       )
     end
   end

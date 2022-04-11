@@ -34,7 +34,7 @@ RSpec.describe Budget::Events::SetupForm do
       interval_double = instance_double(
         Budget::Interval,
         persisted?: true,
-        set_up?: true
+        set_up?: true,
       )
       allow(Budget::Interval)
         .to receive(:for)
@@ -158,9 +158,11 @@ RSpec.describe Budget::Events::SetupForm do
     context 'when the start and end dates are pre-popluated' do
       let(:today) { Date.today }
       let(:interval) do
-        FactoryBot.create(:budget_interval,
-                          start_date: Date.new(today.year, today.month, 2),
-                          end_date: Date.new(today.year, today.month, -2))
+        FactoryBot.create(
+          :budget_interval,
+          start_date: Date.new(today.year, today.month, 2),
+          end_date: Date.new(today.year, today.month, -2),
+        )
       end
 
       it 'does not change the interval\'s start date' do
@@ -179,7 +181,7 @@ RSpec.describe Budget::Events::SetupForm do
           year: interval.year,
           events: events_params,
           start_date: start_date,
-          end_date: end_date
+          end_date: end_date,
         )
       end
       let(:today) { Date.today }

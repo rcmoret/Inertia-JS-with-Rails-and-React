@@ -69,7 +69,7 @@ RSpec.describe Transaction::Entry, type: :model do
           FactoryBot.build(
             :transaction_entry,
             :budget_exclusion,
-            details_attributes: []
+            details_attributes: [],
           )
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Transaction::Entry, type: :model do
           FactoryBot.build(
             :transaction_entry,
             transfer_id: 1,
-            details_attributes: []
+            details_attributes: [],
           )
         end
 
@@ -164,7 +164,7 @@ RSpec.describe Transaction::Entry, type: :model do
       :transaction_entry,
       2,
       account: account,
-      clearance_date: date
+      clearance_date: date,
     )
   end
 end

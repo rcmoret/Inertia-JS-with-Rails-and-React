@@ -17,7 +17,7 @@ module Budget
         def maturity_interval
           @maturity_interval ||= Budget::CategoryMaturityInterval.new(
             interval: interval,
-            budget_category_id: budget_category_id
+            budget_category_id: budget_category_id,
           )
         end
 

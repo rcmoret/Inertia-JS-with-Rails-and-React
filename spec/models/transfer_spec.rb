@@ -23,7 +23,7 @@ RSpec.describe Transfer, type: :model do
       Transfer::Generator.create(
         from_account: checking_account,
         to_account: savings_account,
-        amount: amount
+        amount: amount,
       )
     end
 

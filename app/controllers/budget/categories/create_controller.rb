@@ -30,7 +30,7 @@ module Budget
           :icon_id,
           :monthly,
           :name,
-          :slug
+          :slug,
         )
       end
 

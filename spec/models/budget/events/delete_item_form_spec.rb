@@ -171,12 +171,15 @@ RSpec.describe Budget::Events::DeleteItemForm do
   end
 
   def budget_item_error_double
-    @budget_item_error_double ||= instance_double(Budget::Item,
-                                                  update: false,
-                                                  amount: 0,
-                                                  transaction_details: [],
-                                                  id: rand(100),
-                                                  errors: item_errors)
+    @budget_item_error_double ||=
+      instance_double(
+        Budget::Item,
+        update: false,
+        amount: 0,
+        transaction_details: [],
+        id: rand(100),
+        errors: item_errors,
+      )
   end
 
   def stub_item_find_by_with_error!

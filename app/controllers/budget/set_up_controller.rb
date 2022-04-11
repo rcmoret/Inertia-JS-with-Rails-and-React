@@ -22,7 +22,7 @@ module Budget
       @form ||= Budget::Events::SetupForm.new(
         events: events,
         month: month,
-        year: year
+        year: year,
       )
     end
 

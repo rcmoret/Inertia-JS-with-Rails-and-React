@@ -18,7 +18,7 @@ module Accounts
         :archived_at,
         :cash_flow,
         :priority,
-        :slug
+        :slug,
       )
     end
 

@@ -288,7 +288,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       id: id,
       amount: amount,
       expense?: expense,
-      revenue?: !expense
+      revenue?: !expense,
     )
   end
 

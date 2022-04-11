@@ -40,7 +40,7 @@ RSpec.describe Transaction::EntryView, type: :model do
         :weekly,
         :expense,
         name: 'Grocery',
-        icon: icon
+        icon: icon,
       )
     end
     let(:budget_item) do
@@ -54,7 +54,7 @@ RSpec.describe Transaction::EntryView, type: :model do
         details_attributes: [{
           amount: amount,
           budget_item: budget_item,
-        }]
+        }],
       )
     end
 
@@ -66,10 +66,12 @@ RSpec.describe Transaction::EntryView, type: :model do
 
     context 'subtransactions exist' do
       let!(:detail) do
-        FactoryBot.create(:transaction_detail,
-                          entry: entry,
-                          amount: amount,
-                          budget_item: budget_item)
+        FactoryBot.create(
+          :transaction_detail,
+          entry: entry,
+          amount: amount,
+          budget_item: budget_item,
+        )
       end
       let(:details_hash) do
         {

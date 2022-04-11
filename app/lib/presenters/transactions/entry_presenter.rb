@@ -34,7 +34,7 @@ module Presenters
         :budget_item_id,
         :amount,
         :icon_class_name,
-        keyword_init: true
+        keyword_init: true,
       )
     end
   end

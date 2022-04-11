@@ -17,7 +17,7 @@ class Transfer < ApplicationRecord
   def to_hash
     attributes.symbolize_keys.merge(
       to_transaction: to_transaction.attributes,
-      from_transaction: from_transaction.attributes
+      from_transaction: from_transaction.attributes,
     )
   end
 
@@ -78,7 +78,7 @@ class Transfer < ApplicationRecord
           account: from_account,
           details_attributes: [
             { amount: -amount },
-          ]
+          ],
         )
     end
 
@@ -93,7 +93,7 @@ class Transfer < ApplicationRecord
           account: to_account,
           details_attributes: [
             { amount: amount },
-          ]
+          ],
         )
     end
 

@@ -31,7 +31,7 @@ module Transaction
         .symbolize_keys
         .merge(account_name: account.name)
         .merge(
-          details: details.map { |detail| detail.attributes.symbolize_keys }
+          details: details.map { |detail| detail.attributes.symbolize_keys },
         )
     end
 
@@ -44,8 +44,7 @@ module Transaction
     def eligible_for_exclusion!
       return unless account.cash_flow?
 
-      errors.add(:budget_exclusion,
-                 'Budget Exclusions only applicable for non-cashflow accounts')
+      errors.add(:budget_exclusion, 'Budget Exclusions only applicable for non-cashflow accounts')
     end
 
     def single_detail!
@@ -60,11 +59,9 @@ module Transaction
 
     def record_multiple_details!
       if transfer?
-        errors.add(:transfer,
-                   'Cannot have multiple details for transfer')
+        errors.add(:transfer, 'Cannot have multiple details for transfer')
       else # budget_exclusion
-        errors.add(:budget_exclusion,
-                   'Cannot have multiple details for budget exclusion')
+        errors.add(:budget_exclusion, 'Cannot have multiple details for budget exclusion')
       end
     end
 
@@ -80,7 +77,7 @@ module Transaction
           :details,
           'This type of transaction '\
           "(#{transfer? ? :transfer : :budget_exclusion}) "\
-          'must have exactly 1 detail'
+          'must have exactly 1 detail',
         )
       else # non-tranfer; budget included
         errors.add(:details, 'Must have at least one detail for this entry')

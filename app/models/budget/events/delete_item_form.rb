@@ -58,7 +58,7 @@ module Budget
           type_id: event_type_id,
           item: budget_item,
           amount: (-1 * budget_item.amount),
-          data: data
+          data: data,
         )
       end
 

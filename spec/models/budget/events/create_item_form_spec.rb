@@ -147,7 +147,7 @@ RSpec.describe Budget::Events::CreateItemForm do
           amount: -22_50,
           budget_category_id: category.id,
           month: interval.month,
-          year: interval.year
+          year: interval.year,
         )
         expect(form.save).to be false
       end
@@ -160,7 +160,7 @@ RSpec.describe Budget::Events::CreateItemForm do
           amount: -22_50,
           budget_category_id: category.id,
           month: interval.month,
-          year: interval.year
+          year: interval.year,
         )
         form.save
         expect(form.errors['budget_category_id']).to include 'has already been taken'
