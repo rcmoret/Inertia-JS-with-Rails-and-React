@@ -104,7 +104,7 @@ const Transaction = props => {
             </div>}
           {budgetExclusion && <div className="ml-4 max-w-2/12 italic">budget exclusion</div>}
           {checkNumber && <div className="ml-4 max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
-          {transferId && <div className="ml-4 max-w-2/12 italic">transfer</div>}
+          {transferId && <div className="ml-4 max-w-2/12 italic"><span className="hidden">{transferId}</span>transfer</div>}
           {notes && <Notes noteLines={noteLines} />}
           {receiptBlob && <Receipt attachment={receiptBlob} />}
         </div>

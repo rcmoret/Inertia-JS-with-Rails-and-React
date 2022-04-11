@@ -33,6 +33,7 @@ const BudgetItemDetail = ({ model }) => {
   if (model.isTransactionDetail) {
     return (
       <TransactionDetail model={model}>
+        <div className="hidden">id: {model.id} - entryId: {model.entryId}</div>
         <Row styling={{fontSize: "text-xs"}}>
           <Cell styling={{width: "w-6/12"}}>
             <div>{titleize(shared.budgeted)}:</div>
@@ -58,6 +59,7 @@ const BudgetItemEvent = ({ event }) => {
   const toggleData = () => setEventState({ renderData: !eventState.renderData })
 
   const {
+    id,
     amount,
     budgeted,
     createdAt,
@@ -71,6 +73,7 @@ const BudgetItemEvent = ({ event }) => {
   return (
     <>
       <Row styling={{wrap: "flex-wrap", rounded: null, fontSize: "text-sm", border: "border-b border-gray-500 border-solid"}}>
+        <div className="hidden">{id}</div>
         <div className="w-3/12">{createdAt}</div>
         <div className="w-6/12">Event: {titleize(typeDescription)}</div>
         <div className="w-3/12 text-right">
