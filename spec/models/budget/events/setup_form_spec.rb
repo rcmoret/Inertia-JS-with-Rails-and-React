@@ -48,15 +48,15 @@ RSpec.describe Budget::Events::SetupForm do
       events_params = [{ event_type: valid_create_event }]
       form = described_class.new(month: month, year: year, events: events_params)
 
-      form.save
-
-      expect(form.errors['interval']).to include 'has already been set up'
+      form.save do |result|
+        expect(result).to match [:error, hash_including(errors: { interval: 'has already been set up' })]
+      end
     end
 
-    it 'returns false' do
+    it 'returns an error tuple' do
       events_params = [{ event_type: valid_create_event }]
       form = described_class.new(month: month, year: year, events: events_params)
-      expect(form.save).to be false
+      expect(form.save).to match [:error, hash_including(errors: { interval: 'has already been set up' })]
     end
   end
 
@@ -79,14 +79,14 @@ RSpec.describe Budget::Events::SetupForm do
     end
     let(:events_params) { [{ event_type: valid_create_event }] }
 
-    it 'returns false' do
-      expect(subject.save).to be false
+    fit 'returns an error tuple' do
+      expect(subject.save).to match [:error, anything]
     end
 
     it 'has the promoted errors' do
-      subject.save
+      result = subject.save
 
-      expect(subject.errors['event_type']).to include 'No registered handler'
+      expect(result.dig(1, :errors, :event_type)).to include 'No registered handler'
     end
   end
 
@@ -109,7 +109,7 @@ RSpec.describe Budget::Events::SetupForm do
     end
     let(:events_params) { [{ event_type: valid_create_event }] }
 
-    it 'returns false' do
+    fit 'returns false' do
       expect(subject.save).to be false
     end
 
