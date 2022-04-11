@@ -41,7 +41,7 @@ export default ({ budget, ...props }) => {
   const onSubmit = event => {
     event.preventDefault()
     const body = { events: formReducer(formObject) }
-    postEvents(body)
+    postEvents({ month: baseInterval.month, year: baseInterval.year, body })
   }
   const totalExtra = rolloverItem.discretionary + rolloverItem.extraBalance
   const isEnabled = isSubmittable({ models, rolloverItem })

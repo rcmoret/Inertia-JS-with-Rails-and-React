@@ -115,14 +115,28 @@ RSpec.describe Budget::Interval, type: :model do
       context 'when the first day lands normally' do # (2/28/19 is a Thursday)
         specify do
           subject = FactoryBot.build(:budget_interval, month: 3, year: 2019)
-          expect(subject.first_date).to eq Date.new(2019, 2, 28)
+          expect(subject.first_date).to eq Date.new(2019, 3, 1)
         end
       end
 
-      context 'when the first day lands on a Fri but would be on the weekend' do # (1/31/21 is a Sunday)
+      context 'when the first day lands on a Sunday' do # (8/1/21 is a Sunday)
         specify do
-          subject = FactoryBot.build(:budget_interval, month: 2, year: 2021)
-          expect(subject.first_date).to eq Date.new(2021, 1, 29)
+          subject = FactoryBot.build(:budget_interval, month: 8, year: 2021)
+          expect(subject.first_date).to eq Date.new(2021, 7, 30)
+        end
+      end
+
+      context 'when the first day lands on a Saturday' do # (5/1/21 is a Saturday)
+        specify do
+          subject = FactoryBot.build(:budget_interval, month: 5, year: 2021)
+          expect(subject.first_date).to eq Date.new(2021, 4, 30)
+        end
+      end
+
+      context 'when the first is New Year\'s Day' do # (1/1/24 is a Monday which is the most edge case)
+        specify do
+          subject = FactoryBot.build(:budget_interval, month: 1, year: 2024)
+          expect(subject.first_date).to eq Date.new(2023, 12, 29)
         end
       end
     end
@@ -131,14 +145,28 @@ RSpec.describe Budget::Interval, type: :model do
       context 'when the last day lands normally' do
         specify do
           subject = FactoryBot.build(:budget_interval, month: 2, year: 2019)
-          expect(subject.last_date).to eq Date.new(2019, 2, 27)
+          expect(subject.last_date).to eq Date.new(2019, 2, 28)
         end
       end
 
-      context 'when the last day lands on the weekend' do
+      context 'when the first day of the next month lands on a Sunday' do # (8/1/21 is a Sunday)
         specify do
-          subject = FactoryBot.build(:budget_interval, month: 2, year: 2021)
-          expect(subject.first_date).to eq Date.new(2021, 1, 29)
+          subject = FactoryBot.build(:budget_interval, month: 7, year: 2021)
+          expect(subject.last_date).to eq Date.new(2021, 7, 29)
+        end
+      end
+
+      context 'when the first day of the next month lands on a Saturday' do # (5/1/21 is a Saturday)
+        specify do
+          subject = FactoryBot.build(:budget_interval, month: 4, year: 2021)
+          expect(subject.last_date).to eq Date.new(2021, 4, 29)
+        end
+      end
+
+      context 'when the first of the next month is New Year\'s Day' do # (1/1/24 is a Monday)
+        specify do
+          subject = FactoryBot.build(:budget_interval, month: 12, year: 2023)
+          expect(subject.last_date).to eq Date.new(2023, 12, 28)
         end
       end
     end

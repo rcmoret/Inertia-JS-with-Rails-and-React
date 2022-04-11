@@ -21,11 +21,11 @@ module Budget
     private
 
     def interval
-      Budget::Interval.for(month: base_interval_month, year: base_interval_year)
+      @interval ||= Budget::Interval.for(month: base_interval_month, year: base_interval_year)
     end
 
     def current_interval
-      Budget::Interval.current
+      @current_interval ||= Budget::Interval.current
     end
 
     def target_interval_month
@@ -45,15 +45,15 @@ module Budget
     end
 
     def base_interval_month
-      params.fetch(:month, current_interval.month).to_i
+      @base_interval_month ||= params.fetch(:month, current_interval.month).to_i
     end
 
     def base_interval_year
-      params.fetch(:year, current_interval.year).to_i
+      @base_interval_year ||= params.fetch(:year, current_interval.year).to_i
     end
 
     def events_params
-      params.require(:events).map do |event_params|
+      @events_params ||= params.require(:events).map do |event_params|
         event_params.permit(:budget_item_id, :amount, :event_type, :month, :year, :budget_category_id, :data)
       end
     end

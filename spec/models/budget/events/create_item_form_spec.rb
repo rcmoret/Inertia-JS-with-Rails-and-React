@@ -85,7 +85,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       context 'when the interval does exist' do
         it 'does not create an interval - not needed' do
-          interval = Budget::Interval.current
+          interval = Budget::Interval.for
           form = new_object(month: interval.month, year: interval.year)
           expect { form.save }.not_to(change { Budget::Interval.count })
         end

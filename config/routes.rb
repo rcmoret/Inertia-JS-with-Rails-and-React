@@ -27,9 +27,9 @@ Rails.application.routes.draw do
       resources :events, only: :create
     end
     get '/set-up/:month/:year', to: 'set_up#new'
-    post 'set-up', to: 'set_up#create'
+    post 'set-up/:month/:year', to: 'set_up#create'
     get '/finalize/:month/:year', to: 'finalize#new'
-    post 'finalize', to: 'finalize#complete'
+    post 'finalize/:month/:year', to: 'finalize#complete'
 
     get '/categories', to: 'categories/index#call', as: :categories
     post '/categories', to: 'categories/create#call'

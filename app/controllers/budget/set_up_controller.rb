@@ -27,35 +27,31 @@ module Budget
     end
 
     def current_interval
-      Budget::Interval.current
+      @current_interval ||= Budget::Interval.current
     end
 
     def month
-      params.fetch(:month, current_interval.month).to_i
+      @month ||= params.fetch(:month, current_interval.month).to_i
     end
 
     def year
-      params.fetch(:year, current_interval.year).to_i
+      @year ||= params.fetch(:year, current_interval.year).to_i
     end
 
     def base_interval_month
-      if month == 1
-        12
-      else
-        month - 1
-      end
+      return 12 if month == 1
+
+      month - 1
     end
 
     def base_interval_year
-      if month == 1
-        year - 1
-      else
-        year
-      end
+      return year unless month == 1
+
+      year - 1
     end
 
     def events
-      params.require(:events).map do |event_params|
+      @events ||= params.require(:events).map do |event_params|
         event_params.permit(:budget_item_id, :amount, :event_type, :month, :year, :budget_category_id, :data)
       end
     end

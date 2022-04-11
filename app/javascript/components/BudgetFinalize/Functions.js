@@ -65,8 +65,8 @@ export const formReducer = ({ models, month, rolloverItem, year }) => {
   )
 }
 
-export const postEvents = eventsBody => {
-  Inertia.post("/budget/finalize", eventsBody)
+export const postEvents = ({ month, year, body }) => {
+  Inertia.post(`/budget/finalize/${month}/${year}`, body)
 }
 
 export const extraFrom = model => (

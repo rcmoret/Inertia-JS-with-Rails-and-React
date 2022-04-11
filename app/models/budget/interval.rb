@@ -19,8 +19,10 @@ module Budget
       where(year: ...year).or(where(year: year, month: ...month))
     }
 
+    # there's some wierdness where I would expect (year: year...)
+    # to produce year > $1 in the sql it does not ( >= instead) thus + 1
     scope :on_or_after, lambda { |month, year|
-      where(year: year..).or(where(year: year, month: month..)).ordered
+      where(year: (year + 1)..).or(where(year: year, month: month..)).ordered
     }
     scope :unclosed, -> { where(close_out_completed_at: nil) }
 
@@ -65,15 +67,16 @@ module Budget
     def first_date
       return start_date if start_date.present?
 
-      prev.last_date + 1.day
+      DateTime.new(year, month, 1).then do |first|
+        first -= 1.day while first.saturday? || first.sunday? || first.month == 1
+        first
+      end
     end
 
     def last_date
       return end_date if end_date.present?
 
-      last = DateTime.new(year, month, -1)
-      last -= 1.day while last.saturday? || last.sunday?
-      last - 1.day
+      next_month.first_date - 1.day
     end
 
     def date_hash
