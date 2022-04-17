@@ -189,7 +189,7 @@ const App = ({ budget, ...props }) => {
 
   return (
     <div>
-      <Header namespace={props.namespace} month={month} year={year} />
+      <Header namespace={props.namespace} selectedAccountPath={props.selectedAccountPath} month={month} year={year} />
       <div className="mb-1 h-5/6 rounded">
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white"}}>

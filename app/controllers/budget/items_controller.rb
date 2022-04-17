@@ -2,10 +2,12 @@
 
 module Budget
   class ItemsController < ApplicationController
+    include AccountsHelper
     include GraphQuery
 
     def index
       if month.nil? || year.nil?
+        current_interval = Budget::Interval.current
         redirect_to budget_path(month: current_interval.month, year: current_interval.year)
       else
         render inertia: 'BudgetItemIndexApp', props: props
@@ -13,10 +15,6 @@ module Budget
     end
 
     private
-
-    def current_interval
-      Budget::Interval.current
-    end
 
     def month
       params[:month]
@@ -109,7 +107,7 @@ module Budget
     end
 
     def additional_props
-      { includesDeleted: include_deleted? }
+      { includesDeleted: include_deleted?, selectedAccountPath: selected_account_path }
     end
   end
 end

@@ -2,6 +2,7 @@
 
 module Budget
   class SetUpController < ApplicationController
+    include AccountsHelper
     include GraphQuery
 
     def new
@@ -102,6 +103,10 @@ module Budget
           }
         }
       GQL
+    end
+
+    def additional_props
+      { selectedAccountPath: selected_account_path }
     end
   end
 end

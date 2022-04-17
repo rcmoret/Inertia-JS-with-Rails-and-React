@@ -3,6 +3,7 @@
 module Budget
   module Categories
     class IndexController < ApplicationController
+      include AccountsHelper
       include GraphQuery
 
       def call
@@ -44,6 +45,10 @@ module Budget
 
       def namespace
         'budget'
+      end
+
+      def additional_props
+        { selectedAccountPath: selected_account_path }
       end
     end
   end

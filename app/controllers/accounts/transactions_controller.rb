@@ -2,6 +2,8 @@
 
 module Accounts
   class TransactionsController < ApplicationController
+    before_action :set_selected_account_info
+
     include GraphQuery
 
     def index
@@ -93,6 +95,10 @@ module Accounts
 
     def namespace
       'accounts'
+    end
+
+    def set_selected_account_info
+      session[:selected_account_path] = [slug, 'transactions', month, year].join('/')
     end
   end
 end
