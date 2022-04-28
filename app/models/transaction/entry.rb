@@ -42,10 +42,15 @@ module Transaction
     private
 
     def eligible_for_exclusion!
-      return unless account.cash_flow?
+      if account.cash_flow?
+        errors.add(:budget_exclusion,
+                   'Budget Exclusions only applicable for non-cashflow accounts')
+      end
+
+      return if details.all? { |detail| detail.budget_item.nil? }
 
       errors.add(:budget_exclusion,
-                 'Budget Exclusions only applicable for non-cashflow accounts')
+                 'Budget Exclusions cannot be associated with a budget item')
     end
 
     def single_detail!

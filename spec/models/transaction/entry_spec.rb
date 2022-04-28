@@ -41,6 +41,7 @@ RSpec.describe Transaction::Entry, type: :model do
 
       let(:transaction_entry) do
         FactoryBot.build :transaction_entry,
+                         details_attributes: [{ amount: rand(10_000), budget_item_id: nil }],
                          budget_exclusion: true,
                          account: account
       end
@@ -58,6 +59,30 @@ RSpec.describe Transaction::Entry, type: :model do
           expect(transaction_entry.errors[:budget_exclusion]).to include \
             'Budget Exclusions only applicable for non-cashflow accounts'
         end
+      end
+    end
+
+    describe 'details must not be associated with a budget item' do
+      subject { transaction_entry.valid? }
+
+      let(:budget_item) { FactoryBot.create(:budget_item) }
+      let(:detail) { FactoryBot.build(:transaction_detail, budget_item: budget_item) }
+      let(:transaction_entry) do
+        FactoryBot.build :transaction_entry,
+                         details: [detail],
+                         budget_exclusion: true,
+                         account: FactoryBot.build(:account, cash_flow: true)
+      end
+
+      it 'is invalid' do
+        expect(subject).to be false
+      end
+
+      it 'has a meaningful error message' do
+        subject
+
+        expect(transaction_entry.errors[:budget_exclusion])
+          .to include 'Budget Exclusions cannot be associated with a budget item'
       end
     end
 

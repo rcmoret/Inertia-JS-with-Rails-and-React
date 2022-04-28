@@ -139,6 +139,27 @@ const Form = props => {
     })
   }
 
+  const toggleBudgetExclusion = () => {
+    if (budgetExclusion) {
+      updateEntry({ budgetExclusion: false })
+    } else {
+      updateAttributes({
+        ...attributes,
+        details: attributes.details.map(detail => ({
+          ...detail,
+          updatedAttributes: {
+            ...detail.updatedAttributes,
+            budgetItemId: null,
+          }
+        })),
+        updatedAttributes: {
+          ...attributes.updatedAttributes,
+          budgetExclusion: true,
+        }
+      })
+    }
+  }
+
   const detailFns = {
     addNew: () => updateAttributes({
       ...attributes,
@@ -218,6 +239,7 @@ const Form = props => {
         </Cell>
         <div className="w-4/12">
           <Details
+            isBudgetExclusion={budgetExclusion}
             details={attributes.details}
             detailFns={detailFns}
             interval={interval}
@@ -226,7 +248,7 @@ const Form = props => {
           />
         </div>
         <div className="w-2/12 ml-8">
-          {!isCashFlow && <BudgetExclusion value={budgetExclusion} updateEntry={updateEntry} />}
+          {!isCashFlow && <BudgetExclusion value={budgetExclusion} toggleBudgetExclusion={toggleBudgetExclusion} />}
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
           <Receipt value={receipt} onChange={handleFileUpload} />
@@ -248,9 +270,7 @@ const Form = props => {
   )
 }
 
-const BudgetExclusion = ({ value, updateEntry }) => {
-  const onChange = event => updateEntry({ budgetExclusion: !value })
-
+const BudgetExclusion = ({ value, toggleBudgetExclusion }) => {
   return (
     <Row>
       <div className="w-2/12">
@@ -260,7 +280,7 @@ const BudgetExclusion = ({ value, updateEntry }) => {
         Budget Exclusion?
       </div>
       <div className="w-2/12 text-right">
-        <input type="checkbox" name="budgetExclusion" checked={value} onChange={onChange} />
+        <input type="checkbox" name="budgetExclusion" checked={value} onChange={toggleBudgetExclusion} />
       </div>
     </Row>
   )
@@ -318,7 +338,7 @@ const Notes = ({ value, onChange }) => {
 }
 
 const Details = props => {
-  const { total, interval, items, detailFns } = props
+  const { isBudgetExclusion, total, interval, items, detailFns } = props
   const { addNew, remove, update } = detailFns
   const details = props.details.filter(detail => !detail.isMarkedForDelete)
 
@@ -347,6 +367,7 @@ const Details = props => {
             key={detail.uuid}
             detail={detail}
             interval={interval}
+            isBudgetExclusion={isBudgetExclusion}
             items={items}
             iconClassName="fa fa-times-circle"
             onClick={() => remove(detail.uuid)}
@@ -359,8 +380,9 @@ const Details = props => {
     return (
       <DetailForm
         detail={details[0]}
-        items={items}
         interval={interval}
+        isBudgetExclusion={isBudgetExclusion}
+        items={items}
         iconClassName="fa fa-plus-circle"
         onClick={addNew}
         update={update}
@@ -370,7 +392,7 @@ const Details = props => {
 }
 
 const DetailForm = props => {
-  const { detail, iconClassName, interval, items, onClick, update } = props
+  const { detail, iconClassName, interval, isBudgetExclusion, items, onClick, update } = props
   const originalBudgetItemId = detail.budgetItemId
   const { uuid, amount, budgetItemId, budgetCategoryName, isMarkedForDelete } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
@@ -436,6 +458,7 @@ const DetailForm = props => {
       </div>
       <div className="w-7/12">
         <Select
+          isDisabled={isBudgetExclusion}
           onChange={handleItemChange}
           options={availableOptions}
           value={value}
