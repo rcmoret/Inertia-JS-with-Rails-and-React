@@ -66,19 +66,24 @@ module Presenters
       def maturity_month
         return unless accrual?
 
-        category.maturity_intervals.on_or_after(month, year)&.first&.month
+        upcoming_maturity_interval&.month
       end
 
       def maturity_year
         return unless accrual?
 
-        category.maturity_intervals.on_or_after(month, year)&.first&.year
+        upcoming_maturity_interval&.year
       end
 
       private
 
       def attributes
         super.symbolize_keys
+      end
+
+      def upcoming_maturity_interval
+        @upcoming_maturity_interval ||=
+          category.maturity_intervals.on_or_after(month, year)&.first
       end
     end
   end

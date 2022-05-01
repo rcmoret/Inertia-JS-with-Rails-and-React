@@ -4,10 +4,9 @@ module Presenters
   module Budget
     class NamespacePresenter
       def categories(include_archived: false)
-        scope = include_archived ? :all : :active
+        base_scope = include_archived ? ::Budget::Category.all : ::Budget::Category.active
 
-        ::Budget::Category
-          .send(scope)
+        base_scope
           .includes(:icon)
           .includes(maturity_intervals: [:interval])
           .map(&:as_presenter)
