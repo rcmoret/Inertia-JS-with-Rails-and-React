@@ -9,7 +9,7 @@ import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Row from "../shared/Row";
 
-import { asOption, sortByName } from "../../lib/Functions";
+import { asOption, clearedMonthly, sortByName, sortByClearedThenName } from "../../lib/Functions";
 import { eventsFrom, postEvents } from "./Functions"
 import { index as copy, shared } from "../../lib/copy/budget";
 import { titleize } from "../../lib/copy/functions"
@@ -49,10 +49,16 @@ const MultiItemAdjustForm = (props) => {
   } = formData
   const { month, year } = interval
   const adjustmentItemIds = adjustmentItems.map(item => item.id)
-  const itemLabelFn = item => `${item.name} - ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
+  const itemLabelFn = item => {
+    if (clearedMonthly(item)) {
+      return `${item.name} - (cleared ${MoneyFormatter(item.amount, { decorate: true, absolute: true })})`
+    } else {
+      return `${item.name} - ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
+    }
+  }
   const itemOptions = [
     { value: null, label: titleize(copy.multiItemAdjustForm.existingItems) },
-    ...items.sort(sortByName)
+    ...items.sort(sortByClearedThenName)
     .filter(item => !adjustmentItemIds.includes(item.id))
     .map(item => asOption(item, { labelFn: itemLabelFn }))
   ]

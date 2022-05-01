@@ -21,6 +21,16 @@ export const sortByClearanceDate = (txn1, txn2) => {
   }
 }
 
+export const sortByClearedThenName = (obj1, obj2) => {
+  if (clearedMonthly(obj1) && !clearedMonthly(obj2)) {
+    return 1
+  } else if (!clearedMonthly(obj1) && clearedMonthly(obj2)) {
+    return -1
+  } else {
+    return sortByName(obj1, obj2)
+  }
+}
+
 // item filters
 export const isAccrual = object => object.isAccrual
 export const isNonAccrual = object => !object.isAccrual
