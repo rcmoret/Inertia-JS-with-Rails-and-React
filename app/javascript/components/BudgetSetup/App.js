@@ -40,7 +40,7 @@ const BudgetSetupApp = ({ budget, ...props }) => {
   const onSubmit = ev => {
     ev.preventDefault();
     const events = eventsReducer(form)
-    Inertia.post(`/budget/set-up?month=${month}&year=${year}`, { events })
+    Inertia.post(`/budget/set-up/${month}/${year}`, { events })
   }
   const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
   document.title = titleize(copy.docTitle(dateString))
