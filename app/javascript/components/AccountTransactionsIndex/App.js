@@ -117,9 +117,8 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                 year={year}
               />
               <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2"}}>
-                <div className="w-full text-lg underline"><h3>Transactions</h3></div>
-                <div className="w-full">
-                  {fromDateString(firstDate)} to {fromDateString(lastDate)}
+                <div className="w-full text-lg underline">
+                  <h3>{DateFormatter({ month, year, format: "monthYear" })}</h3>
                 </div>
                 <div className="w-full">
                   &#8226; Total Days: {totalDays}
