@@ -31,6 +31,7 @@ gem 'devise'
 gem 'graphql'
 gem 'inertia_rails'
 gem 'rubocop', require: false
+gem 'web-console', '>= 3.3.0'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
@@ -38,10 +39,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-end
-
-group :development, :demo, :test do
-  gem 'web-console', '>= 3.3.0'
 end
 
 group :development, :demo do
