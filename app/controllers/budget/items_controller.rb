@@ -109,5 +109,9 @@ module Budget
     def additional_props
       { includesDeleted: include_deleted?, selectedAccountPath: selected_account_path }
     end
+
+    def set_selected_budget_info
+      session[:selected_budget_path] = [slug, 'transactions', month, year].join('/')
+    end
   end
 end
