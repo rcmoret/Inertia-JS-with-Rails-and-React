@@ -1,5 +1,5 @@
 {
-  "name": "inertia_todo",
+  "name": "budget_app",
   "private": true,
   "dependencies": {
     "@babel/preset-react": "^7.10.4",
@@ -48,5 +48,8 @@
     "testPathIgnorePatterns": [
       "config/webpack/test.js"
     ]
+  },
+  "engines": {
+    "node": "12.22.6"
   }
 }
