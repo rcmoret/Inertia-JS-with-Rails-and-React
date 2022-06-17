@@ -6,12 +6,12 @@ import Form, { reducer, eventsReducer } from "./Form";
 import ItemGroup, { ExistingItemForm, NewItem } from "./ItemGroup";
 
 import DateFormatter from "../../lib/DateFormatter";
-import { sortByName as sortFn } from "../../lib/Functions";
+import { sortByName } from "../../lib/Functions";
 import { shared, titles, setup as copy } from "../../lib/copy/budget"
 import { titleize } from "../../lib/copy/functions"
 
 import AmountSpan from "../shared/AmountSpan";
-import Button from "../shared/Button";
+import Button, { DisabledButton } from "../shared/Button";
 import Header from "../shared/Header";
 import Section from "../shared/Section";
 
@@ -32,10 +32,12 @@ const BudgetSetupApp = ({ budget, ...props }) => {
 
     return [...array, object]
   }, [])
-  const accruals = models.filter(model => model.isAccrual).sort(sortFn)
-  const revenues = models.filter(model => !model.isExpense).sort(sortFn)
-  const monthlyExpenses = models.filter(model => !model.isAccrual && model.isExpense && model.isMonthly).sort(sortFn)
-  const dayToDayExpenses = models.filter(model => !model.isAccrual && model.isExpense && !model.isMonthly).sort(sortFn)
+  const isRequeued = model => model.requeuedAt === null ? false : true
+  const accruals = models.filter(model => model.isAccrual && !isRequeued(model)).sort(sortByName)
+  const revenues = models.filter(model => !model.isExpense && !isRequeued(model)).sort(sortByName)
+  const monthlyExpenses = models.filter(model => !model.isAccrual && model.isExpense && model.isMonthly && !isRequeued(model)).sort(sortByName)
+  const dayToDayExpenses = models.filter(model => !model.isAccrual && model.isExpense && !model.isMonthly && !isRequeued(model)).sort(sortByName)
+  const requeuedModels = models.filter(isRequeued).sort(sortByName)
   const balance = [...form.existingItems, ...form.newItems].reduce((sum, item) => sum + item.amount, 0)
   const onSubmit = ev => {
     ev.preventDefault();
@@ -44,6 +46,7 @@ const BudgetSetupApp = ({ budget, ...props }) => {
   }
   const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
   document.title = titleize(copy.docTitle(dateString))
+  const isSubmittable = [...form.existingItems, ...form.newItems].filter(item => item.displayAmount === "").length === 0
 
   return (
     <div>
@@ -72,11 +75,12 @@ const BudgetSetupApp = ({ budget, ...props }) => {
               collection={dayToDayExpenses}
               dispatch={dispatch}
             />
+            <ItemGroup name="Requeued" ItemForm={NewItem} collection={requeuedModels} dispatch={dispatch} />
             <div className="flex justify-between flex-row-reverse">
               <div className="bg-white rounded justify-between flex-row-reverse pl-6 pr-6 pt-2 pb-2">
-                <Button bgColor="bg-green-600" hoverBgColor="hover:bg-green-700" onSubmit={onSubmit}>
+                <SubmitButton isSubmittable={isSubmittable} onSubmit={onSubmit}>
                   {titleize(copy.submitText)}
-                </Button>
+                </SubmitButton>
               </div>
             </div>
           </form>
@@ -100,5 +104,21 @@ const BudgetSetupApp = ({ budget, ...props }) => {
     </div>
   );
 };
+
+const SubmitButton = ({ children, isSubmittable, onSubmit }) => {
+  if (isSubmittable) {
+    return (
+      <Button bgColor="bg-green-600" hoverBgColor="hover:bg-green-700" onSubmit={onSubmit}>
+        {children}
+      </Button>
+    )
+  } else {
+    return (
+      <DisabledButton>
+        {children}
+      </DisabledButton>
+    )
+  }
+}
 
 export default BudgetSetupApp;

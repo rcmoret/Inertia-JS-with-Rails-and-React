@@ -30,8 +30,9 @@ const Form = (props) => {
     }
   }
 
-  const { baseInterval, categories, targetInterval } = props
+  const { baseInterval, targetInterval } = props
   const { month, year } = targetInterval
+  const categories = props.categories.map(category => ({ ...category, requeuedAt: null }))
 
   const existingItems = targetInterval.items.map(item => existingItem(item))
 
@@ -135,6 +136,11 @@ export const reducer = (event, form, payload) => {
           ...form.removedItems,
           ...form.existingItems.filter(item => item.id === payload.id),
         ],
+      }
+    case "requeueCategory":
+      return {
+        ...form,
+        categories: form.categories.map(category => category.id === payload.id ? { ...category, requeuedAt: new Date () } : category),
       }
     default:
      return form

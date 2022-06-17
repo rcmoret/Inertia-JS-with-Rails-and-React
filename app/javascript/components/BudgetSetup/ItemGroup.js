@@ -93,7 +93,7 @@ const NewItems = ({ items, dispatch, hasBorder }) => {
 }
 
 const ItemWrapper = props => {
-  const { children, item, inputChange, hasBorder, removeItem } = props
+  const { children, item, inputChange, hasBorder, removeItem, requeueCategory } = props
   const inputClassName = "text-right rounded w-4/5 border border-gray-400 border-solid"
 
   const baseClasses = ["w-full", "flex", "justify-between", "content-end"]
@@ -109,6 +109,9 @@ const ItemWrapper = props => {
         <div className="w-4">
           <Link onClick={removeItem}>
             <Icon className="fas fa-times" />
+          </Link>
+          <Link color="text-blue-400" onClick={requeueCategory}>
+            <Icon className="fas fa-arrow-down" />
           </Link>
         </div>
       </Cell>
@@ -126,8 +129,13 @@ export const ExistingItem = props => {
     dispatch("removeItem", { id: item.id })
   }
 
+  const requeueCategory = event => {
+    event.preventDefault()
+    dispatch("requeueCategory", { id: item.budgetCategoryId })
+  }
+
   return (
-    <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} hasBorder={hasBorder}>
+    <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} requeueCategory={requeueCategory} hasBorder={hasBorder}>
       <div><strong>{titleize(copy.existingItem)}</strong></div>
     </ItemWrapper>
   )
@@ -142,6 +150,10 @@ export const NewItem = ({ item, index, dispatch, hasBorder }) => {
     event.preventDefault()
     dispatch("removeItem", { id: id })
   }
+  const requeueCategory = event => {
+    event.preventDefault()
+    dispatch("requeueCategory", { id: item.budgetCategoryId })
+  }
   const selectSpent = () => {
     dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(spent), status: "spent" })
   }
@@ -153,7 +165,7 @@ export const NewItem = ({ item, index, dispatch, hasBorder }) => {
   }
 
   return (
-    <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} hasBorder={hasBorder}>
+    <ItemWrapper item={item} inputChange={inputChange} removeItem={removeItem} requeueCategory={requeueCategory} hasBorder={hasBorder}>
       <div className="w-3/12"><strong>{titleize(copy.newItem)}</strong></div>
       <div className="w-1/3">
         <QuickSelectButton
