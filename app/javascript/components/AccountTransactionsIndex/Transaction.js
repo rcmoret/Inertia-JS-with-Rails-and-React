@@ -15,6 +15,7 @@ import { EditForm } from "./TransactionForm"
 export const Transaction = props => {
   const {
     transaction,
+    accounts,
     closeForm,
     detailFns,
     interval,
@@ -64,6 +65,7 @@ export const Transaction = props => {
       <EditForm
         transaction={transaction}
         interval={interval}
+        accounts={accounts}
         isCashFlow={isCashFlow}
         items={items}
         makeRequest={makeRequest}

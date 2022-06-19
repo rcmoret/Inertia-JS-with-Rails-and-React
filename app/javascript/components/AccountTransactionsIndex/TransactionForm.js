@@ -47,6 +47,7 @@ export const NewForm = ({ account, transaction, ...props }) => {
     <Form
       attributes={attributes}
       label="Create"
+      accounts={[]}
       onSuccess={onSuccess}
       updateAttributes={updateAttributes}
       {...props}
@@ -70,6 +71,7 @@ export const EditForm = ({ transaction, ...props }) => {
     <Form
       attributes={attributes}
       label="Update"
+      accounts={props.accounts}
       onSuccess={props.toggleForm}
       updateAttributes={updateAttributes}
       {...props}
@@ -79,6 +81,7 @@ export const EditForm = ({ transaction, ...props }) => {
 
 const Form = props => {
   const {
+    accounts,
     attributes,
     updateAttributes,
     interval,
@@ -252,6 +255,7 @@ const Form = props => {
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
           <Receipt value={receipt} onChange={handleFileUpload} />
+          {accounts.length > 0 && <AccountSelect accountId={accountId} accounts={accounts} onChange={updateEntry} />}
         </div>
         <div className="w-2/12 flex flex-row-reverse items-start">
           <Button
@@ -411,7 +415,6 @@ const DetailForm = props => {
   }).map(item => asOption(item, { labelFn }))
   const optionsFn = () => {
     const nullOption = { value: null, label: "Petty Cash" }
-    const sortByLabel = (a, b) => a.label < b.label ? -1 : 1
     if (baseOptions.map(o => o.value).includes(originalBudgetItemId)) {
       return [nullOption, ...baseOptions.sort(sortByLabel)]
     } else {
@@ -487,4 +490,20 @@ const Receipt = ({ receipt, onChange }) => {
   )
 }
 
-export default Form;
+const AccountSelect = ({ accounts, accountId, onChange }) => {
+  const options = accounts.map(a => ({ value: a.id, label: a.name })).sort(sortByLabel)
+  const value = options.find(option => option.value === accountId)
+  const handleChange = event => onChange({ accountId: event.value })
+
+  return(
+    <div className="w-full mt-2">
+      <Select
+        onChange={handleChange}
+        options={options}
+        value={value}
+      />
+    </div>
+  )
+}
+
+const sortByLabel = (a, b) => a.label < b.label ? -1 : 1;

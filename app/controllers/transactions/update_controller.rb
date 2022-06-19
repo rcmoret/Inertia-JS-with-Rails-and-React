@@ -2,9 +2,11 @@
 
 module Transactions
   class UpdateController < ApplicationController
+    before_action :account_slug
+
     def call
       if transaction.update(update_params.to_h.deep_transform_keys(&:underscore))
-        redirect_to account_transactions_path(transaction.account.slug, month: month, year: year)
+        redirect_to account_transactions_path(account_slug, month: month, year: year)
       else
         render inertia: 'AccountTransactionsIndexApp', props: transaction.errors
       end
@@ -30,6 +32,10 @@ module Transactions
 
     def update_params
       params.require(:transaction).permit(*PERMITTED_ATTRIBUTES)
+    end
+
+    def account_slug
+      @account_slug ||= transaction.account.slug
     end
 
     PERMITTED_ATTRIBUTES = [

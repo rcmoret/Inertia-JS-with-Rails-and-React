@@ -143,6 +143,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
               <Transaction
                 key={transaction.id}
                 transaction={{...transaction, accountId: selectedAccount.id}}
+                accounts={accounts}
                 closeForm={closeForm}
                 detailFns={detailFns}
                 interval={budget.interval}
