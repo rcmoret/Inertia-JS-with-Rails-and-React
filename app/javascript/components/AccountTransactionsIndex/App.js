@@ -15,7 +15,7 @@ import Link, { ButtonStyleInertiaLink } from "../shared/Link";
 import MonthYearSelect from "../shared/MonthYearSelect";
 import PageHeader from "../shared/Header";
 import Row, { StripedRow } from "../shared/Row";
-import Transaction from "./Transaction";
+import { Transaction } from "./Transaction";
 import { NewForm, newTransaction } from "./TransactionForm";
 
 export const App = ({ accounts, budget, selectedAccount, ...props }) => {
@@ -218,6 +218,4 @@ const NewTransaction = props => {
       </StripedRow>
     )
   }
-}
-
-export default App;
+};

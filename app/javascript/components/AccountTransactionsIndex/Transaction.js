@@ -12,7 +12,7 @@ import Link from "../shared/Link";
 import { StripedRow } from "../shared/Row";
 import { EditForm } from "./TransactionForm"
 
-const Transaction = props => {
+export const Transaction = props => {
   const {
     transaction,
     closeForm,
@@ -222,5 +222,3 @@ const Receipt = ({ attachment }) => {
     </div>
   )
 }
-
-export default Transaction;
