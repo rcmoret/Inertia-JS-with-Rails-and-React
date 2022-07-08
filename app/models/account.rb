@@ -26,8 +26,6 @@ class Account < ApplicationRecord
   validates_uniqueness_of :name, :priority, conditions: -> { active }
   validates_presence_of :name, :priority
 
-  PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
-
   class << self
     def available_cash
       cash_flow.joins(:details).sum(:amount)

@@ -10,8 +10,6 @@ module Budget
     validates :year, presence: true, inclusion: (2000..2099)
     validate :close_out_completed_at_end_of_month
 
-    PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at].freeze
-
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
 
     scope :prior_to, lambda { |date_hash|

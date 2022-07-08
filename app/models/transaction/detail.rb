@@ -32,13 +32,6 @@ module Transaction
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry
 
-    PUBLIC_ATTRS = %w[
-      id
-      amount
-      budget_item_id
-      _destroy
-    ].freeze
-
     def self.total
       sum(:amount)
     end

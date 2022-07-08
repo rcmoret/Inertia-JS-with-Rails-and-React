@@ -6,11 +6,9 @@ class Icon < ApplicationRecord
 
   has_many :budget_categories, class_name: 'Budget::Category', dependent: :nullify
 
-  PUBLIC_ATTRS = %w[id class_name name].freeze
-
   delegate :to_hash, to: :attributes
 
   def attributes
-    super.slice(*PUBLIC_ATTRS).symbolize_keys
+    super.slice('id', 'class_name', 'name').symbolize_keys
   end
 end
