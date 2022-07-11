@@ -3,6 +3,8 @@ AllCops:
     - 'db/schema.rb'
     - 'db/migrate/*.rb'
     - 'node_modules/**/*'
+  TargetRubyVersion:
+    2.7.0
 
 Layout/LineLength:
   Max: 120
