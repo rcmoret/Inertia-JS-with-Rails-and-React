@@ -41,7 +41,7 @@
   },
   "scripts": {
     "test": "jest",
-    "webpack:deploy": "webpack -p",
+    "webpack:deploy": "webpack --config=webpack.config.js -p",
     "heroku-postbuild": "npm run webpack:deploy"
   },
   "jest": {

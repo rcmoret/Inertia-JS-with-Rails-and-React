@@ -2,8 +2,8 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
@@ -89,9 +89,9 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
     t.bigint "budget_item_id"
     t.bigint "budget_item_event_type_id"
     t.integer "amount", null: false
+    t.json "data"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.jsonb "data"
     t.index ["budget_item_event_type_id"], name: "index_budget_item_events_on_budget_item_event_type_id"
     t.index ["budget_item_id"], name: "index_budget_item_events_on_budget_item_id"
   end
@@ -138,8 +138,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
   end
 
   create_table "transfers", force: :cascade do |t|
-    t.integer "to_transaction_id", null: false
-    t.integer "from_transaction_id", null: false
+    t.integer "to_transaction_id"
+    t.integer "from_transaction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -157,7 +157,6 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "budget_categories", "icons"
   add_foreign_key "budget_category_maturity_intervals", "budget_categories"
   add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
