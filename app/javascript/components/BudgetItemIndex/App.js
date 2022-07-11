@@ -127,7 +127,7 @@ const App = ({ budget, ...props }) => {
   const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
   const [discretionary, updateDiscretionary] = useState(discretionaryModel(budget.interval.discretionary))
 
-  const [items, updateItemsState] = useState(budget.interval.items.map(itemModel))
+  const [items, updateItemsState] = useState(budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays)))
 
   const existingItemCategoryIds = items.map(item => item.budgetCategoryId)
   const availableDayToDayCategories = budget

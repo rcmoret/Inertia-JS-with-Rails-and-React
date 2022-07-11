@@ -83,7 +83,7 @@ const Form = ({ model, fns, details, month, year }) => {
         </div>
       </Cell>
       <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
-      {showDetails && <BudgetItemDetails id={id} details={details} />}
+      {showDetails && <BudgetItemDetails item={mdoel} details={details} />}
      </StripedRow>
   )
 }
@@ -102,7 +102,7 @@ const Show = ({ model, fns, details, month, year }) => {
       <SpentOrDeposited isExpense={isExpense} spent={spent} />
       <DifferenceOrRemaining {...model} />
       <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
-      {showDetails && <BudgetItemDetails id={id} details={details} />}
+      {showDetails && <BudgetItemDetails item={model} details={details} />}
      </StripedRow>
   )
 };

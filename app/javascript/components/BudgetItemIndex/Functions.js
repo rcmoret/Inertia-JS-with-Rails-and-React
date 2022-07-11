@@ -20,14 +20,35 @@ const eventModel = event => {
   }
 }
 
-export const itemModel = item  => {
-  return {
+export const itemModel = (item, daysRemaining, totalDays)  => {
+  const baseItem = {
     ...item,
     difference: (item.difference * -1),
     events: item.events.map(eventModel),
     inputAmount: MoneyFormatter(item.amount, { decoarate: false }),
     transactionDetails: item.transactionDetails.map(transactionDetailModel),
     updateAmount: null,
+  }
+  if (item.isMonthly) {
+    return baseItem
+  } else {
+    return { ...baseItem, ...dayToDayAttributes(item, daysRemaining, totalDays) }
+  }
+}
+
+const dayToDayAttributes = (item, daysRemaining, totalDays) => {
+  const budgetedPerDay = Math.round(item.amount / totalDays)
+
+  const budgeted = {
+    budgetedPerDay,
+    budgetedPerWeek: (budgetedPerDay * 7),
+  }
+
+  if (daysRemaining < 7) {
+    return budgeted
+  } else {
+    const remainingPerDay = Math.round(item.remaining / daysRemaining)
+    return { ...budgeted, remainingPerDay, remainingPerWeek: (remainingPerDay * 7), }
   }
 }
 

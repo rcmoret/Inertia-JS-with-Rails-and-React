@@ -64,8 +64,8 @@ const BudgetItem = ({ model, fns, pageState, month, year }) => {
 
 const ClearedMonthlyItem = ({ model }) => {
   const [state, setState] = useState({ showDetails: model.showDetails })
-  const { id, difference, iconClassName, isExpense, name, spent, transactionDetails } = model
-  const events = model.events.sort(eventAndTransactionDetailSort).reduce(eventTransactionReducer, [])
+  const { difference, events, iconClassName, isExpense, name, spent, transactionDetails } = model
+  const details = events.sort(eventAndTransactionDetailSort).reduce(eventTransactionReducer, [])
   const toggleDetail = () => setState({ showDetails: !state.showDetails })
   const caretClassName = state.showDetails ? "fas fa-caret-down" : "fas fa-caret-right"
   const spentOrDeposited = isExpense ? shared.spent : shared.deposited
@@ -112,7 +112,7 @@ const ClearedMonthlyItem = ({ model }) => {
           />
         </div>
       </Cell>
-      {state.showDetails && <BudgetItemDetails id={id} details={events} />}
+      {state.showDetails && <BudgetItemDetails item={model} details={details} />}
     </StripedRow>
   )
 }

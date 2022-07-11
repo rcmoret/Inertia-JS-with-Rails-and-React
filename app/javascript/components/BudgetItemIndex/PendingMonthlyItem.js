@@ -25,7 +25,7 @@ const Show = ({ details, model, fns, month, year }) => (
   <StripedRow styling={{ wrap: "flex-wrap"}}>
     <NameRow model={model} fns={fns} month={month} year={year} />
     <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
-    {model.showDetails && <BudgetItemDetails id={model.id} details={details} />}
+    {model.showDetails && <BudgetItemDetails item={model} details={details} />}
   </StripedRow>
 );
 
@@ -62,7 +62,7 @@ const Form = ({ details, model, fns, month, year }) => {
         inputAmount={inputAmount}
         postEvent={postEvent}
       />
-      {showDetails && <BudgetItemDetails id={id} details={details} />}
+      {showDetails && <BudgetItemDetails item={model} details={details} />}
     </StripedRow>
   )
 };

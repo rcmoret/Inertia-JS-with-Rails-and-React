@@ -9,7 +9,9 @@ import { TransactionDetail } from "./shared"
 import { shared, index as copy } from "../../lib/copy/budget"
 import { titleize } from "../../lib/copy/functions"
 
-const BudgetItemDetails = ({ id, details }) => {
+const BudgetItemDetails = ({ item, details }) => {
+  const { id } = item
+  const hasBudgetedPerDiem = item.hasOwnProperty("budgetedPerDay")
   return (
     <>
       <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
@@ -20,6 +22,7 @@ const BudgetItemDetails = ({ id, details }) => {
           <strong>{copy.id}: {id}</strong>
         </div>
       </Row>
+      {hasBudgetedPerDiem && <PerDiem item={item} />}
       <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
         {details.map(model => (
           <BudgetItemDetail key={model.id} model={model} />
@@ -28,6 +31,51 @@ const BudgetItemDetails = ({ id, details }) => {
     </>
   )
 }
+
+const PerDiem = ({ item }) => {
+  const hasRemainingPerDiem = item.hasOwnProperty("remainingPerDay")
+
+  return (
+    <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
+      <BudgetedPerDiem item={item} />
+      {hasRemainingPerDiem && <RemainingPerDiem item={item} />}
+    </Row>
+  )
+};
+
+const BudgetedPerDiem = ({ item }) => {
+  const { budgetedPerDay, budgetedPerWeek } = item
+
+  return (
+    <>
+      <Cell styling={{width: "w-6/12", padding: "px-2", border: "border-r border-gray-800-solid"}}>
+        Budgeted Per Day:
+        <AmountSpan amount={budgetedPerDay} absolute={true} />
+      </Cell>
+      <Cell styling={{width: "w-6/12", padding: "px-2"}}>
+        Budgeted Per Week:
+        <AmountSpan amount={budgetedPerWeek} absolute={true} />
+      </Cell>
+    </>
+  )
+};
+
+const RemainingPerDiem = ({ item }) => {
+  const { remainingPerDay, remainingPerWeek } = item
+
+  return (
+    <>
+      <Cell styling={{width: "w-6/12", padding: "px-2", border: "border-r border-gray-800-solid"}}>
+        Remaining Per Day:
+        <AmountSpan amount={remainingPerDay} absolute={true} />
+      </Cell>
+      <Cell styling={{width: "w-6/12", padding: "px-2"}}>
+        Remaining Per Week:
+        <AmountSpan amount={remainingPerWeek} absolute={true} />
+      </Cell>
+    </>
+  )
+};
 
 const BudgetItemDetail = ({ model }) => {
   if (model.isTransactionDetail) {
