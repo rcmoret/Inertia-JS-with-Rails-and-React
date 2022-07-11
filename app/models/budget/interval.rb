@@ -66,7 +66,7 @@ module Budget
       return start_date if start_date.present?
 
       DateTime.new(year, month, 1).then do |first|
-        first -= 1.day while first.saturday? || first.sunday? || first.month == 1
+        first -= 1.day while weekend_or_holiday?(first)
         first
       end
     end
@@ -113,6 +113,14 @@ module Budget
 
     def presenter_class
       Presenters::Budget::IntervalPresenter
+    end
+
+    def weekend_or_holiday?(date)
+      return true if date.saturday?
+      return true if date.sunday?
+      return true if date.day == 1 && (date.month == 1 || date.month == 9)
+
+      false
     end
 
     QueryError = Class.new(StandardError)
