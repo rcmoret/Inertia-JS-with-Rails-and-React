@@ -17,6 +17,7 @@ import PageHeader from "../shared/Header";
 import Row, { StripedRow } from "../shared/Row";
 import { Transaction } from "./Transaction";
 import { NewForm, newTransaction } from "./TransactionForm";
+import { TransferRow } from "./TransferRow";
 
 export const App = ({ accounts, budget, selectedAccount, ...props }) => {
   const { id, balancePriorTo, isCashFlow } = selectedAccount
@@ -154,14 +155,18 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                 showFormForId={showFormForId}
               />
             ))}
-              <NewTransaction
-                account={selectedAccount}
-                interval={{ isCurrent, firstDate, lastDate, month, year }}
-                isCashFlow={isCashFlow}
-                items={items}
-                showFormForId={showFormForId}
-                toggleNewForm={toggleNewForm}
-              />
+            <NewTransaction
+              account={selectedAccount}
+              interval={{ isCurrent, firstDate, lastDate, month, year }}
+              isCashFlow={isCashFlow}
+              items={items}
+              showFormForId={showFormForId}
+              toggleNewForm={toggleNewForm}
+            />
+            <TransferRow
+              accounts={accounts}
+              selectedAccount={selectedAccount}
+            />
           </Row>
         </div>
       </div>

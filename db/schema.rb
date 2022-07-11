@@ -41,16 +41,9 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
     t.string "content_type"
     t.text "metadata"
     t.bigint "byte_size", null: false
-    t.string "checksum"
+    t.string "checksum", null: false
     t.datetime "created_at", null: false
-    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "budget_categories", force: :cascade do |t|
@@ -81,8 +74,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
     t.datetime "close_out_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "start_date"
-    t.date "end_date"
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   create_table "budget_item_event_types", force: :cascade do |t|

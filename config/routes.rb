@@ -15,10 +15,11 @@ Rails.application.routes.draw do
   put '/accounts/:id', to: 'accounts/update#call'
   delete '/accounts/:id', to: 'accounts/delete#call'
 
-  get '/accounts/:slug/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
+  get '/accounts/:identifier/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
   post '/transactions', to: 'transactions/create#call'
   put '/transactions/:id', to: 'transactions/update#call'
   delete '/transactions/:id', to: 'transactions/delete#call'
+  post '/accounts/transfer', to: 'transfers#call'
 
   namespace :budget do
     get '(/:month/:year)', to: 'items#index'
