@@ -72,6 +72,7 @@ module Budget
                 isDeletable
                 isExpense
                 isMonthly
+                isPerDiemEnabled
                 maturityMonth
                 maturityYear
                 events {

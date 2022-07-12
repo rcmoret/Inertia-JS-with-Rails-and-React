@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_15_143233) do
+ActiveRecord::Schema.define(version: 2022_07_11_163333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_04_15_143233) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "slug"
+    t.boolean "is_per_diem_enabled", default: false, null: false
     t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
     t.index ["slug"], name: "index_budget_categories_on_slug", unique: true
   end

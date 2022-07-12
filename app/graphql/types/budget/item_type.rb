@@ -15,6 +15,7 @@ module Types
       field :is_accrual, Boolean, 'Is the item\'s category an accrual', null: false
       field :is_monthly, Boolean, 'Is the category a monthly/not day-to-day', null: false
       field :is_expense, Boolean, 'Is the category an expense/not revenue', null: false
+      field :is_per_diem_enabled, Boolean, 'Should the per day amounts be displayed', null: false
       field :month, Integer, 'The month of the budget\'s interval', null: false
       field :maturity_month, Integer, 'The month of next maturity if accural', null: true
       field :maturity_year, Integer, 'The year of next maturity if accural', null: true

@@ -37,6 +37,7 @@ module Budget
       validates :category, presence: true
 
       delegate :to_json, to: :to_hash
+      delegate :per_diem_enabled?, to: :category
     end
 
     def to_hash # rubocop:disable Metrics/MethodLength

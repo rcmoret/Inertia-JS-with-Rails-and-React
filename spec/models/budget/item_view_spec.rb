@@ -24,6 +24,7 @@ RSpec.describe Budget::ItemView, type: :model do
         budget_category_id: category.id,
         monthly: false,
         icon_class_name: category.icon_class_name,
+        is_per_diem_enabled: false,
         month: budget_interval.month,
         year: budget_interval.year,
         budget_interval_id: budget_interval.id,

@@ -29,14 +29,14 @@ export const itemModel = (item, daysRemaining, totalDays)  => {
     transactionDetails: item.transactionDetails.map(transactionDetailModel),
     updateAmount: null,
   }
-  if (item.isMonthly) {
-    return baseItem
+  if (item.isPerDiemEnabled) {
+    return { ...baseItem, ...perDiemAttributes(item, daysRemaining, totalDays) }
   } else {
-    return { ...baseItem, ...dayToDayAttributes(item, daysRemaining, totalDays) }
+    return baseItem
   }
 }
 
-const dayToDayAttributes = (item, daysRemaining, totalDays) => {
+const perDiemAttributes = (item, daysRemaining, totalDays) => {
   const budgetedPerDay = Math.round(item.amount / totalDays)
 
   const budgeted = {

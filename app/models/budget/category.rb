@@ -40,6 +40,7 @@ module Budget
     scope :expenses, -> { where(expense: true) }
     scope :revenues, -> { where(expense: false) }
 
+    alias_attribute :is_per_diem_enabled?, :per_diem_enabled?
     delegate :to_json, to: :to_hash
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
 
