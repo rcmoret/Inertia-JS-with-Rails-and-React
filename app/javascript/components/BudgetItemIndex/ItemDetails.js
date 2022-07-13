@@ -118,51 +118,67 @@ const BudgetItemEvent = ({ event }) => {
     typeDescription,
   } = event
 
-  return (
-    <>
-      <Row styling={{wrap: "flex-wrap", rounded: null, fontSize: "text-sm", border: "border-b border-gray-500 border-solid"}}>
-        <div className="hidden">{id}</div>
-        <div className="w-3/12">{createdAt}</div>
-        <div className="w-6/12">Event: {titleize(typeDescription)}</div>
-        <div className="w-3/12 text-right">
-          <div><AmountSpan amount={amount} /></div>
-        </div>
-        <Row styling={{fontSize: "text-xs"}}>
-          <Cell styling={{width: "w-6/12", wrap: "flex-wrap"}}>
-            <Row>
-              <div>Budgeted:</div>
-              <div><AmountSpan amount={prevBudgeted} /></div>
-            </Row>
-            <Row>
-              <div>Amount:</div>
-              <div> + <AmountSpan amount={amount} /></div>
-            </Row>
-            <Row>
-              <div>Updated Budgeted:</div>
-              <div><AmountSpan amount={budgeted} /></div>
-            </Row>
-          </Cell>
-          <Cell styling={{width: "w-6/12", wrap: "flex-wrap"}}>
-            <Row>
-              <div>Remaining:</div>
-              <div><AmountSpan amount={prevRemaining} /></div>
-            </Row>
-            <Row>
-              <div>Amount:</div>
-              <div> + <AmountSpan amount={amount} /></div>
-            </Row>
-            <Row>
-              <div>Updated Remaining:</div>
-              <div><AmountSpan amount={remaining} /></div>
-            </Row>
-          </Cell>
+  console.log(typeDescription)
+  if (typeDescription.includes("create")) {
+    return (
+      <>
+        <Row styling={{wrap: "flex-wrap", rounded: null, fontSize: "text-sm", border: "border-b border-gray-500 border-solid"}}>
+          <div className="hidden">{id}</div>
+          <div className="w-3/12">{createdAt}</div>
+          <div className="w-6/12">Event: {titleize(typeDescription)}</div>
+          <div className="w-3/12 text-right">
+            <div><AmountSpan amount={amount} /></div>
+          </div>
         </Row>
-        <Row styling={{fontSize: "text-xs"}}>
-          {data && <BudgetItemData data={data} renderData={eventState.renderData} toggleData={toggleData} />}
+      </>
+    )
+  } else {
+    return (
+      <>
+        <Row styling={{wrap: "flex-wrap", rounded: null, fontSize: "text-sm", border: "border-b border-gray-500 border-solid"}}>
+          <div className="hidden">{id}</div>
+          <div className="w-3/12">{createdAt}</div>
+          <div className="w-6/12">Event: {titleize(typeDescription)}</div>
+          <div className="w-3/12 text-right">
+            <div><AmountSpan amount={amount} /></div>
+          </div>
+          <Row styling={{fontSize: "text-xs"}}>
+            <Cell styling={{width: "w-6/12", wrap: "flex-wrap"}}>
+              <Row>
+                <div>Budgeted:</div>
+                <div><AmountSpan amount={prevBudgeted} /></div>
+              </Row>
+              <Row>
+                <div>Amount:</div>
+                <div> + <AmountSpan amount={amount} /></div>
+              </Row>
+              <Row>
+                <div>Updated Budgeted:</div>
+                <div><AmountSpan amount={budgeted} /></div>
+              </Row>
+            </Cell>
+            <Cell styling={{width: "w-6/12", wrap: "flex-wrap"}}>
+              <Row>
+                <div>Remaining:</div>
+                <div><AmountSpan amount={prevRemaining} /></div>
+              </Row>
+              <Row>
+                <div>Amount:</div>
+                <div> + <AmountSpan amount={amount} /></div>
+              </Row>
+              <Row>
+                <div>Updated Remaining:</div>
+                <div><AmountSpan amount={remaining} /></div>
+              </Row>
+            </Cell>
+          </Row>
+          <Row styling={{fontSize: "text-xs"}}>
+            {data && <BudgetItemData data={data} renderData={eventState.renderData} toggleData={toggleData} />}
+          </Row>
         </Row>
-      </Row>
-    </>
-  )
+      </>
+    )
+  }
 }
 
 const BudgetItemData = ({ data, renderData, toggleData }) => {

@@ -1,5 +1,5 @@
 import { Inertia } from "@inertiajs/inertia";
-import { decimalToInt } from "../../lib/MoneyFormatter";
+import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 import { eventForm } from "../../lib/Functions";
 
 export const isSubmittable = ({ models, rolloverItem }) => {
@@ -14,7 +14,7 @@ export const formReducer = ({ models, month, rolloverItem, year }) => {
     const { budgeted, eventType } = targetItem
 
     const amount = (rolloverAmount + budgeted)
-    const data = { [budgetItemId]: { amount: rolloverAmount } }
+    const data = { [budgetItemId]: { amount: MoneyFormatter(rolloverAmount) } }
 
     if (targetItem.eventType === "rollover_item_create") {
       return { amount, data, eventType, budgetCategoryId: id, month, year }
