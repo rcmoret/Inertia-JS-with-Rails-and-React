@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'factory_bot'
-require 'active_support/testing/time_helpers'
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
