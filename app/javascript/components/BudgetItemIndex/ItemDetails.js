@@ -118,7 +118,6 @@ const BudgetItemEvent = ({ event }) => {
     typeDescription,
   } = event
 
-  console.log(typeDescription)
   if (typeDescription.includes("create")) {
     return (
       <>

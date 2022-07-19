@@ -23,6 +23,7 @@ const Form = ({ category, closeForm, icons, onSubmit, update }) => {
     isExpense,
     isMonthly,
     isNew,
+    isPerDiemEnabled,
     maturityIntervals,
     name,
     slug,
@@ -39,6 +40,7 @@ const Form = ({ category, closeForm, icons, onSubmit, update }) => {
     displayAmount: event.target.value,
   })
   const handleAccrualChange = () => update({ isAccrual: !isAccrual })
+  const handlePerDiemChange = () => update({ isPerDiemEnabled: !isPerDiemEnabled })
   const handleIconSelectChange = event => update({ iconId: event.value })
 
   return (
@@ -62,7 +64,8 @@ const Form = ({ category, closeForm, icons, onSubmit, update }) => {
       <div className="w-1/10">
         <IconSelect iconId={iconId} options={icons} handleChange={handleIconSelectChange} />
       </div>
-      <div className="w-1/10">
+      <div className="w-2/10">
+        {!isMonthly && <PerDiemCheckBox value={isPerDiemEnabled} onChange={handlePerDiemChange} />}
       </div>
       <div className="w-2/12 italic">
         {isArchived && <span>Archived on {fromDateString(archivedAt)}</span>}
@@ -117,6 +120,19 @@ const AccrualCheckBox = ({ isAccrual, handleChange }) => (
       <input type="checkbox" name="accrual" checked={isAccrual} onChange={handleChange} />
     </div>
   </Cell>
+);
+
+const PerDiemCheckBox = ({ value, onChange }) => (
+  <>
+    <div className="w-full flex flex-row-reverse">
+      <span>Per Diem?</span>
+    </div>
+    <div className="w-full flex flex-row-reverse">
+      <span>
+        <input type="checkbox" name="perDiem" checked={value} onChange={onChange} />
+      </span>
+    </div>
+  </>
 )
 
 const IconSelect = ({ iconId, handleChange, ...props }) => {

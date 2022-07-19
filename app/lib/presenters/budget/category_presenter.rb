@@ -27,6 +27,11 @@ module Presenters
         super
       end
       alias is_archived archived?
+
+      def per_diem_enabled?
+        super
+      end
+      alias is_per_diem_enabled per_diem_enabled?
     end
   end
 end

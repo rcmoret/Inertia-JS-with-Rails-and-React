@@ -31,6 +31,7 @@ module Budget
     validates_uniqueness_of :name, conditions: -> { active }
     validates :default_amount, :name, presence: true
     validate :accrual_on_expense
+    validate :per_diem_disabled, if: :monthly?
 
     scope :active, -> { where(archived_at: nil) }
     scope :accruals, -> { where(accrual: true) }
@@ -40,7 +41,7 @@ module Budget
     scope :expenses, -> { where(expense: true) }
     scope :revenues, -> { where(expense: false) }
 
-    alias_attribute :is_per_diem_enabled?, :per_diem_enabled?
+    alias_attribute :per_diem_enabled?, :is_per_diem_enabled
     delegate :to_json, to: :to_hash
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
 
@@ -80,6 +81,12 @@ module Budget
       return if expense? || (!accrual && revenue?)
 
       errors.add(:accrual, 'can only be enabled for expenses')
+    end
+
+    def per_diem_disabled
+      return unless per_diem_enabled?
+
+      errors.add(:is_per_diem_enabled, 'not available on monthly category')
     end
 
     def presenter_class

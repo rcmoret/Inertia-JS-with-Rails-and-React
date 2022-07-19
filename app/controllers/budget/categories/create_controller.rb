@@ -22,16 +22,7 @@ module Budget
       end
 
       def create_params
-        params.require(:category).permit(
-          :archived_at,
-          :default_amount,
-          :accrual,
-          :expense,
-          :icon_id,
-          :monthly,
-          :name,
-          :slug
-        )
+        params.require(:category).permit(*BudgetCategories::PERMITTED_PARAMS)
       end
 
       def category

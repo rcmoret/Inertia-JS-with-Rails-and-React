@@ -24,6 +24,7 @@ module Budget
                 isArchived
                 isExpense
                 isMonthly
+                isPerDiemEnabled
                 name
                 slug
                 icon { id className name }
@@ -40,15 +41,11 @@ module Budget
       end
 
       def additional_props
-        { includesArchived: include_archived? }
+        { includesArchived: include_archived?, selectedAccountPath: selected_account_path }
       end
 
       def namespace
         'budget'
-      end
-
-      def additional_props
-        { selectedAccountPath: selected_account_path }
       end
     end
   end

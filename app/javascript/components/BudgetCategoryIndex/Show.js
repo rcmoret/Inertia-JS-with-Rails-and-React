@@ -21,6 +21,7 @@ const Show = ({ category, deleteOrRestoreCategory, maturityFns, ...props }) => {
     isAccrual,
     isExpense,
     isMonthly,
+    isPerDiemEnabled,
     maturityIntervals,
     name,
     slug,
@@ -55,6 +56,9 @@ const Show = ({ category, deleteOrRestoreCategory, maturityFns, ...props }) => {
       </div>
       <div className="w-1/10">
         {isAccrual && <MaturityIntervals id={id} isDetailShown={isDetailShown} maturityIntervals={maturityIntervals} fns={fns} />}
+      </div>
+      <div className="w-1/10 text-right pr-4">
+        {isPerDiemEnabled && <span>true</span>}
       </div>
       <div className="w-2/12 italic">
         {isArchived && <span>Archived on {fromDateString(archivedAt)}</span>}

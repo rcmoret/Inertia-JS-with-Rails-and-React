@@ -46,6 +46,11 @@ module Presenters
         attributes.fetch(:transaction_count) { transation_details.count }
       end
 
+      def per_diem_enabled?
+        attributes.fetch(:is_per_diem_enabled) { category.per_diem_enabled? }
+      end
+      alias is_per_diem_enabled per_diem_enabled?
+
       def difference
         amount - spent
       end

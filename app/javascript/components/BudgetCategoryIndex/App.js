@@ -173,7 +173,7 @@ export const App = props => {
               toggleFilters={toggleFilters}
               updateFilters={updateFilters}
             />
-            <HeaderRow />
+            <HeaderRow includesArchived={props.includesArchived} />
             <NewCategory
               category={pageData.newCategory}
               fns={newFormFns}
@@ -369,6 +369,11 @@ const HeaderRow = ({ includesArchived }) => (
     <div className="w-1/10">
       <span className="underline text-xl">
         Maturity Intervals
+      </span>
+    </div>
+    <div className="w-1/12">
+      <span className="underline text-xl">
+        Per Diem?
       </span>
     </div>
     <div className="w-2/12 italic">

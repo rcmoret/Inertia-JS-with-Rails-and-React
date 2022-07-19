@@ -12,6 +12,7 @@ module Types
       field :is_archived, Boolean, 'Has the category been archived', null: false
       field :is_monthly, Boolean, 'Is the category a monthly/not day-to-day', null: false
       field :is_expense, Boolean, 'Is the category an expense/not revenue', null: false
+      field :is_per_diem_enabled, Boolean, 'Display the per day/week info', null: false
       field :maturity_intervals, [CategoryMaturityIntervalType], 'Maturity info for accruals', null: false
       field :icon, IconType, 'Icon associated with the category', null: true
       field :slug, String, 'Short name for the URL', null: false
