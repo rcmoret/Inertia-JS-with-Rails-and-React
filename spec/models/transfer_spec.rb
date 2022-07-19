@@ -19,12 +19,18 @@ RSpec.describe Transfer, type: :model do
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:savings_account) }
     let(:amount) { (100..1000).to_a.sample }
-    let(:transfer) do
-      Transfer::Generator.create(
-        from_account: checking_account,
-        to_account: savings_account,
+    let(:transfer_form) do
+      Forms::TransferForm.new(
+        from_account_id: checking_account.id,
+        to_account_id: savings_account.id,
         amount: amount
       )
+    end
+    let(:transfer) do
+      case transfer_form.call
+      in [:ok, { transfer: transfer }]
+        transfer
+      end
     end
 
     subject { transfer.to_hash }
