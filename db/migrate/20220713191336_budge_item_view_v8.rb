@@ -37,20 +37,20 @@ class BudgeItemViewV8 < ActiveRecord::Migration[6.1]
         JOIN budget_intervals bi ON bi.id = i.budget_interval_id
         LEFT JOIN icons ic ON ic.id = c.icon_id;
 
-        CREATE VIEW budget_item_event_view AS
-          SELECT ev.id,
-                 v.name AS "category_name",
-                 evt.name AS "event_type_name",
-                 ev.amount AS "amount",
-                 ev.data AS "data",
-                 v.month AS "month",
-                 v.year AS "year",
-                 v.icon_class_name AS "icon_class_name",
-                 ev.created_at,
-                 ev.updated_at
-          FROM budget_item_events ev
-          JOIN budget_item_views v ON v.id = ev.budget_item_id
-          JOIN budget_item_event_types evt on evt.id = ev.budget_item_event_type_id;
+      CREATE VIEW budget_item_event_view AS
+        SELECT ev.id,
+               v.name AS "category_name",
+               evt.name AS "event_type_name",
+               ev.amount AS "amount",
+               ev.data AS "data",
+               v.month AS "month",
+               v.year AS "year",
+               v.icon_class_name AS "icon_class_name",
+               ev.created_at,
+               ev.updated_at
+        FROM budget_item_events ev
+        JOIN budget_item_views v ON v.id = ev.budget_item_id
+        JOIN budget_item_event_types evt on evt.id = ev.budget_item_event_type_id;
     SQL
   end
 

@@ -41,16 +41,9 @@ ActiveRecord::Schema.define(version: 2022_07_13_191336) do
     t.string "content_type"
     t.text "metadata"
     t.bigint "byte_size", null: false
-    t.string "checksum"
+    t.string "checksum", null: false
     t.datetime "created_at", null: false
-    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "budget_categories", force: :cascade do |t|
@@ -82,8 +75,8 @@ ActiveRecord::Schema.define(version: 2022_07_13_191336) do
     t.datetime "close_out_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "start_date"
-    t.date "end_date"
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   create_table "budget_item_event_types", force: :cascade do |t|
@@ -94,12 +87,12 @@ ActiveRecord::Schema.define(version: 2022_07_13_191336) do
   end
 
   create_table "budget_item_events", force: :cascade do |t|
-    t.bigint "budget_item_id"
-    t.bigint "budget_item_event_type_id"
+    t.integer "budget_item_id"
+    t.integer "budget_item_event_type_id"
     t.integer "amount", null: false
+    t.json "data"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.jsonb "data"
     t.index ["budget_item_event_type_id"], name: "index_budget_item_events_on_budget_item_event_type_id"
     t.index ["budget_item_id"], name: "index_budget_item_events_on_budget_item_id"
   end
@@ -146,8 +139,8 @@ ActiveRecord::Schema.define(version: 2022_07_13_191336) do
   end
 
   create_table "transfers", force: :cascade do |t|
-    t.integer "to_transaction_id", null: false
-    t.integer "from_transaction_id", null: false
+    t.integer "to_transaction_id"
+    t.integer "from_transaction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -165,7 +158,6 @@ ActiveRecord::Schema.define(version: 2022_07_13_191336) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "budget_categories", "icons"
   add_foreign_key "budget_category_maturity_intervals", "budget_categories"
   add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
