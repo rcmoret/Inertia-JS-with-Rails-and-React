@@ -12,6 +12,7 @@ import { eventAndTransactionDetailSort, eventTransactionReducer } from "./Functi
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import PendingMonthlyItem from "./PendingMonthlyItem";
+import { Point } from "../shared/symbol";
 import { StripedRow, TitleRow } from "../shared/Row"
 import Section from "../shared/Section";
 import { TransactionDetail } from "./shared";
@@ -25,11 +26,9 @@ const ItemGroup = props => {
       <Section styling={{border: null, margin: null, padding: "pt-0.5 pb-0.5 pl-1 pr1"}}>
         <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
           <div>
-            &#8226;
-            {" "}
-            <span className="underline">
-              {name}
-            </span>
+            <Point>
+              <span className="underline">{name}</span>
+            </Point>
           </div>
         </TitleRow>
         {collection.map(model => (

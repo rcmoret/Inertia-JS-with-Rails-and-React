@@ -128,6 +128,9 @@ const BudgetItemEvent = ({ event }) => {
           <div className="w-3/12 text-right">
             <div><AmountSpan amount={amount} /></div>
           </div>
+          <Row styling={{fontSize: "text-xs"}}>
+            {data && <BudgetItemData data={data} renderData={eventState.renderData} toggleData={toggleData} />}
+          </Row>
         </Row>
       </>
     )

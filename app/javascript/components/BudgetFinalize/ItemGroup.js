@@ -8,6 +8,7 @@ import { titleize } from "../../lib/copy/functions"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
 import AmountSpan from "../shared/AmountSpan";
+import { Point } from "../shared/symbol";
 import { StripedRow, TitleRow } from "../shared/Row";
 import Section from "../shared/Section";
 import TextInput from "../shared/TextInput";
@@ -19,7 +20,7 @@ export default ({ name, collection, dispatch }) => {
     return (
       <Section>
         <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-600 to-green-300"}}>
-          &#8226;{" "}{name}
+          <Point>{name}</Point>
         </TitleRow>
         {collection.map(model => (
           <ModelForm key={model.id} model={model} dispatch={dispatch} />

@@ -7,6 +7,7 @@ import { titleize } from "../../lib/copy/functions"
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
+import { Point } from "../shared/symbol";
 import Section from "../shared/Section"
 import Row, { StripedRow, TitleRow } from "../shared/Row"
 import TextInput from "../shared/TextInput"
@@ -19,11 +20,9 @@ const ItemGroup = ({ collection, name, dispatch }) => {
       <Section>
         <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
           <div>
-            &#8226;
-            {" "}
-            <span className="underline">
-              {name}
-            </span>
+            <Point>
+              <span className="underline">{name}</span>
+            </Point>
           </div>
         </TitleRow>
         {collection.map(model => (

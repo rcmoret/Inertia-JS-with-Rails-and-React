@@ -6,6 +6,7 @@ import Form from "./Form"
 import Icon from "../shared/Icons";
 import Link, { InertiaLink } from "../shared/Link";
 import PageHeader from "../shared/Header";
+import { Point } from "../shared/symbol";
 import Row, { StripedRow } from "../shared/Row";
 import Show from "./Show"
 
@@ -295,9 +296,9 @@ const Filters = props => {
         </div>
         <div className="w-full mt-8">
           <InertiaLink color="text-blue-800" href={href}>
-            &#8226;
-            {" "}
-            {includesArchived ? "Exclude Archived" : "Include Archived"}
+            <Point>
+              {includesArchived ? "Exclude Archived" : "Include Archived"}
+            </Point>
           </InertiaLink>
         </div>
       </div>

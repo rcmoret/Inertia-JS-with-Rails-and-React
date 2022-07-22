@@ -30,6 +30,7 @@ import ItemGroup from "./ItemGroup";
 import Link, { ButtonStyleInertiaLink, InertiaLink } from "../shared/Link";
 import MonthYearSelect from "../shared/MonthYearSelect";
 import MultiItemAdjustForm from "./MultiItemAdjustForm";
+import { Point } from "../shared/symbol";
 import Section from "../shared/Section";
 import Row from "../shared/Row";
 
@@ -221,16 +222,12 @@ const App = ({ budget, ...props }) => {
                   <div className="w-6/12">
                     <div>
                       <Link onClick={toggleAccruals} color="text-blue-800">
-                        &#8226;
-                        {" "}
-                        {titleize(accrualLinkText)}
+                        <Point>{titleize(accrualLinkText)}</Point>
                       </Link>
                     </div>
                     <div>
                       <Link onClick={toggleClearedMonthly} color="text-blue-800">
-                        &#8226;
-                        {" "}
-                        {titleize(clearedMonthlyLinkText)}
+                        <Point>{titleize(clearedMonthlyLinkText)}</Point>
                       </Link>
                     </div>
                     <div>
@@ -240,16 +237,12 @@ const App = ({ budget, ...props }) => {
                   <div className="w-6/12">
                     <div>
                       <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
-                        &#8226;
-                        {" "}
-                        {titleize(adjustItemsFormLinkText)}
+                        <Point>{titleize(adjustItemsFormLinkText)}</Point>
                       </Link>
                     </div>
                     <div>
                       <InertiaLink href="/budget/categories" color="text-blue-800">
-                        &#8226;
-                        {" "}
-                        Manage Categories
+                        <Point>Manage Categories</Point>
                       </InertiaLink>
                     </div>
                     {!isSetUp && <SetUpLink month={month} year={year} />}
@@ -375,17 +368,17 @@ const ClearedMonthlySection = ({ collection, pageState }) => {
 
 const SetUpLink = ({ month, year }) => (
   <InertiaLink href={`/budget/set-up/${month}/${year}`} color="text-blue-800">
-    &#8226;
-    {" "}
-    Set Up {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+    <Point>
+      Set Up {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+    </Point>
   </InertiaLink>
 )
 
 const FinalizeLink = ({ month, year }) => (
   <InertiaLink href={`/budget/finalize/${month}/${year}`} color="text-blue-800">
-    &#8226;
-    {" "}
-    Finalize {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+    <Point>
+      Finalize {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
+    </Point>
   </InertiaLink>
 )
 
@@ -393,9 +386,9 @@ const ToggleDeletedLink = ({ includesDeleted, month, year }) => {
   const href = `/budget/${month}/${year}${includesDeleted ? "" : "?include_deleted=true"}`
   return (
     <InertiaLink href={href} color="text-blue-800">
-      &#8226;
-      {" "}
-      {includesDeleted ? "Hide" : "Show"} Deleted Items
+      <Point>
+        {includesDeleted ? "Hide" : "Show"} Deleted Items
+      </Point>
     </InertiaLink>
   )
 }

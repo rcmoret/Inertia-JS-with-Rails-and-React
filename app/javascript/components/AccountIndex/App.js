@@ -9,6 +9,7 @@ import Form from "./Form"
 import Icon from "../shared/Icons";
 import Link, { InertiaLink } from "../shared/Link";
 import PageHeader from "../shared/Header";
+import { Point } from "../shared/symbol";
 import Row, { StripedRow } from "../shared/Row";
 import Show from "./Show"
 
@@ -179,9 +180,9 @@ const ToggleArchivedLink = ({ includesArchived }) => {
 
   return (
     <InertiaLink href={href} color="text-blue-700" classes={["italics"]}>
-      &#8226;
-      {" "}
-      {copy}
+      <Point>
+        {copy}
+      </Point>
     </InertiaLink>
   )
 }

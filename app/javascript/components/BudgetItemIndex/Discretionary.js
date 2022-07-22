@@ -6,6 +6,7 @@ import { sortByClearanceDate } from "../../lib/Functions";
 import AmountSpan from "../shared/AmountSpan";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
+import { Point } from "../shared/symbol";
 import Section from "../shared/Section";
 import Row, { TitleRow } from "../shared/Row";
 import { titleize } from "../../lib/copy/functions";
@@ -35,11 +36,11 @@ const Discretionary = ({ data, dispatch }) => {
     <Section styling={{border: null, margin: null, padding: "pt-0.5 pb-0.5 pl-1 pr1"}}>
       <TitleRow styling={{backgroundColor: "bg-gradient-to-r from-green-300 to-green-600"}}>
         <div>
-          &#8226;
-          {" "}
-          <span className="underline">
-            {titleize(shared.discretionary)}
-          </span>
+          <Point>
+            <span className="underline">
+              {titleize(shared.discretionary)}
+            </span>
+          </Point>
         </div>
       </TitleRow>
       <Row styling={{padding: "pl-1 pr-1"}}>

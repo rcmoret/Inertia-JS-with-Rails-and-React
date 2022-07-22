@@ -14,6 +14,7 @@ import Icon from "../shared/Icons";
 import Link, { ButtonStyleInertiaLink } from "../shared/Link";
 import MonthYearSelect from "../shared/MonthYearSelect";
 import PageHeader from "../shared/Header";
+import { Point } from "../shared/symbol";
 import Row, { StripedRow } from "../shared/Row";
 import { Transaction } from "./Transaction";
 import { NewForm, newTransaction } from "./TransactionForm";
@@ -121,10 +122,10 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                 <div className="w-full text-lg underline">
                   <h3>{DateFormatter({ month, year, format: "monthYear" })}</h3>
                 </div>
+                {isCurrent && <div className="w-full"><Point>Days Remaining: {daysRemaining}</Point></div>}
                 <div className="w-full">
-                  &#8226; Total Days: {totalDays}
+                  <Point>Total Days: {totalDays}</Point>
                 </div>
-                {isCurrent && <div className="w-full">&#8226; Days Remaining: {daysRemaining}</div>}
                 <ButtonStyleInertiaLink href={visitPrevUrl}>
                   <Icon className="fas fa-angle-double-left" />
                   {" "}
