@@ -46,6 +46,8 @@ export const formatted = (args) => {
     return [(month < 10 ? "0" + month : month), (day < 10 ? "0" + day : day), year].join("/")
   case "monthYear":
     return `${monthString.long} ${year}`
+  case "numericMonthShortYear":
+    return `${month}/${year.toString().slice(-2)}`
   case "numericMonthYear":
     return `${month}/${year}`
   case "object":

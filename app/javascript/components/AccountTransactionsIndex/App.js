@@ -104,6 +104,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
       updatePageState({ ...pageState, showFormForId: "new" })
     }
   }
+  document.title = `${selectedAccount.name} - ${DateFormatter({ month, year, day: 1, format: "numericMonthShortYear" })}`
 
   return (
     <div>

@@ -79,9 +79,10 @@ module Accounts
           }
           selectedAccount: account(slug: "#{slug}") {
             id
-            slug
-            isCashFlow
             balancePriorTo(month: #{month}, year: #{year})
+            isCashFlow
+            name
+            slug
             transactions(month: #{month}, year: #{year}) {
               id
               amount
