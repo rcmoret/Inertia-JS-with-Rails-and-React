@@ -37,6 +37,7 @@ import Row from "../shared/Row";
 const App = ({ budget, ...props }) => {
   const {
     daysRemaining,
+    isClosedOut,
     isCurrent,
     isSetUp,
     month,
@@ -54,7 +55,7 @@ const App = ({ budget, ...props }) => {
     },
     isDayToDayFormShown: false,
     isMonthlyFormShown: false,
-    renderAccruals: false,
+    renderAccruals: (!isClosedOut && !isCurrent),
     renderClearedMonthly: false,
     showDetailsIds: [],
     showFormId: null,

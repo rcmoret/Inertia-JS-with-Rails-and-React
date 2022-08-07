@@ -93,7 +93,6 @@ const Form = props => {
     toggleForm,
   } = props
   const { isCurrent, firstDate, lastDate, month, year } = interval
-  const { accountId } = attributes
 
   const updatedTransaction = {
     ...attributes,
@@ -102,6 +101,7 @@ const Form = props => {
   }
 
   const {
+    accountId,
     budgetExclusion,
     checkNumber,
     clearanceDate,
@@ -255,7 +255,7 @@ const Form = props => {
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
           <Receipt value={receipt} onChange={handleFileUpload} />
-          {accounts.length > 0 && <AccountSelect accountId={accountId} accounts={accounts} onChange={updateEntry} />}
+          {accounts.length > 0 && <AccountSelect accountId={accountId} accounts={accounts} updateEntry={updateEntry} />}
         </div>
         <div className="w-2/12 flex flex-row-reverse items-start">
           <Button
@@ -490,10 +490,10 @@ const Receipt = ({ receipt, onChange }) => {
   )
 }
 
-const AccountSelect = ({ accounts, accountId, onChange }) => {
+const AccountSelect = ({ accounts, accountId, updateEntry }) => {
   const options = accounts.map(a => ({ value: a.id, label: a.name })).sort(sortByLabel)
   const value = options.find(option => option.value === accountId)
-  const handleChange = event => onChange({ accountId: event.value })
+  const handleChange = event => updateEntry({ accountId: event.value })
 
   return(
     <div className="w-full mt-2">

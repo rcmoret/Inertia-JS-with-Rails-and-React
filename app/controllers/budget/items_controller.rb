@@ -39,6 +39,13 @@ module Budget
             interval(month: #{month.to_i}, year: #{year.to_i}) {
               month
               year
+              daysRemaining
+              firstDate
+              isClosedOut
+              isCurrent
+              isSetUp
+              totalDays
+              lastDate
               discretionary {
                 amount
                 overUnderBudget
@@ -53,12 +60,6 @@ module Budget
                 }
                 transactionsTotal
               }
-              isCurrent
-              isSetUp
-              totalDays
-              firstDate
-              lastDate
-              daysRemaining
               items(includeDeleted: #{include_deleted?}) {
                 id
                 budgetCategoryId
