@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
 
 import { parseISO } from 'date-fns'
 
@@ -398,7 +398,7 @@ const Details = props => {
 const DetailForm = props => {
   const { detail, iconClassName, interval, isBudgetExclusion, items, onClick, update } = props
   const originalBudgetItemId = detail.budgetItemId
-  const { uuid, amount, budgetItemId, budgetCategoryName, isMarkedForDelete } = { ...detail, ...detail.updatedAttributes }
+  const { uuid, amount, budgetItemId, budgetCategoryName, isMarkedForDelete, isNew } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
 
   const labelFn = item => `${item.name} ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
@@ -413,10 +413,13 @@ const DetailForm = props => {
       return !item.isMonthly || item.isDeletable
     }
   }).map(item => asOption(item, { labelFn }))
+  const selectFilter = createFilter({ matchFrom: "start" })
   const optionsFn = () => {
     const nullOption = { value: null, label: "Petty Cash" }
     if (baseOptions.map(o => o.value).includes(originalBudgetItemId)) {
       return [nullOption, ...baseOptions.sort(sortByLabel)]
+    } else if (isNew) {
+      return [nullOption, ...baseOptions].sort(sortByLabel)
     } else {
       return [nullOption, ...[{ value: originalBudgetItemId, label: budgetCategoryName }, ...baseOptions].sort(sortByLabel)]
     }
@@ -461,6 +464,7 @@ const DetailForm = props => {
       </div>
       <div className="w-7/12">
         <Select
+          filterOption={selectFilter}
           isDisabled={isBudgetExclusion}
           onChange={handleItemChange}
           options={availableOptions}
