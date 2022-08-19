@@ -7,7 +7,7 @@ import { parseISO } from 'date-fns'
 
 import { fromDateString } from "../../lib/DateFormatter";
 import evalInput from "../../lib/dynamicInputEvaluator";
-import { isMatureAccrual, asOption } from "../../lib/Functions";
+import { asOption, isMatureAccrual, sortByLabel } from "../../lib/Functions";
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 import { v4 as uuid } from "uuid";
 
@@ -533,5 +533,3 @@ const AccountSelect = ({ accounts, accountId, updateEntry }) => {
     </div>
   )
 }
-
-const sortByLabel = (a, b) => a.label < b.label ? -1 : 1;
