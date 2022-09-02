@@ -116,9 +116,14 @@ module Budget
     end
 
     def weekend_or_holiday?(date)
-      return true if date.saturday?
-      return true if date.sunday?
-      return true if date.day == 1 && (date.month == 1 || date.month == 9)
+      date.saturday? || date.sunday? || holiday?(date)
+    end
+
+    def holiday?(date)
+      # always adjust for New Year's Day
+      return true if date.month == 1 && date.day == 1
+      # adjust for labor day if it falls on the first
+      return true if date.month == 9 && date.day == 1 && date.monday?
 
       false
     end

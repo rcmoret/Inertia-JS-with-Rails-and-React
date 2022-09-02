@@ -140,10 +140,17 @@ RSpec.describe Budget::Interval, type: :model do
         end
       end
 
-      context 'when the first is Labor Day' do # (9/1/25 is a Monday which is an edge case)
+      context 'when the first is a Monday and Labor Day' do # (9/1/25 is a Monday which is an edge case)
         specify do
           subject = FactoryBot.build(:budget_interval, month: 9, year: 2025)
           expect(subject.first_date).to eq Date.new(2025, 8, 29)
+        end
+      end
+
+      context 'when the Labor Day lands on a non-Monday' do # (9/1/22 is a Thursday)
+        specify do
+          subject = FactoryBot.build(:budget_interval, month: 9, year: 2022)
+          expect(subject.first_date).to eq Date.new(2022, 9, 1)
         end
       end
     end
