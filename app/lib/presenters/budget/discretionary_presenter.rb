@@ -3,13 +3,13 @@
 module Presenters
   module Budget
     class DiscretionaryPresenter
-      def initialize(budget_interval)
-        @budget_interval = budget_interval
+      def initialize(budget_interval_presenter)
+        @budget_interval_presenter = budget_interval_presenter
       end
 
-      attr_reader :budget_interval
+      attr_reader :budget_interval_presenter
 
-      delegate :available_cash, :current?, :date_range, :items, to: :budget_interval
+      delegate :available_cash, :current?, :date_range, :items, :user, to: :budget_interval_presenter
 
       def amount
         items.reduce(available_cash) { |sum, item| sum + item.remaining }
@@ -22,6 +22,7 @@ module Presenters
       def transaction_details
         @transaction_details ||=
           Transaction::DetailView
+          .for(user)
           .discretionary
           .budget_inclusions
           .non_transfers

@@ -3,6 +3,13 @@
 module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
+      def inititalize(interval, user)
+        @user = user
+        super(interval)
+      end
+
+      attr_reader :user
+
       def current?
         !closed_out? && prev.closed_out?
       end
@@ -74,9 +81,9 @@ module Presenters
       def available_cash
         @available_cash ||=
           if current?
-            Account.available_cash + charged
+            Account.available_cash(user) + charged
           elsif closed_out?
-            charged + Transaction::Detail.prior_to(last_date + 1.day).cash_flow.sum(:amount)
+            charged + Transaction::Detail.for(user).prior_to(last_date + 1.day).cash_flow.sum(:amount)
           else
             0
           end
@@ -97,6 +104,7 @@ module Presenters
 
       def charged
         @charged ||= Transaction::Detail
+                     .for(user)
                      .budget_inclusions
                      .non_cash_flow
                      .between(date_range, include_pending: current?)

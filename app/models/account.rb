@@ -10,6 +10,7 @@ class Account < ApplicationRecord
            class_name: 'Transaction::Detail',
            through: :transactions
   has_many :detail_views, class_name: 'Transaction::DetailView'
+  scope :for, ->(user) { where(user: user) }
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
@@ -28,8 +29,8 @@ class Account < ApplicationRecord
   validates_presence_of :name, :priority, :slug
 
   class << self
-    def available_cash
-      cash_flow.joins(:details).sum(:amount)
+    def available_cash(user)
+      self.for(user).cash_flow.joins(:details).sum(:amount)
     end
   end
 
