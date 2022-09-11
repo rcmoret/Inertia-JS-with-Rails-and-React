@@ -49,8 +49,8 @@ module Budget
       end
 
       def promote_errors(model, index)
-        model.errors.each do |attribute, message|
-          errors.add("#{model}.#{index}.#{attribute}", message)
+        model.errors.each do |error|
+          errors.add("#{model}.#{index}.#{error.attribute}", error.message)
         end
       end
 

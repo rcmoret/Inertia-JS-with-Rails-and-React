@@ -91,8 +91,8 @@ module Budget
       end
 
       def promote_errors(model_errors)
-        model_errors.each do |attribute, message|
-          errors.add(attribute, message)
+        model_errors.each do |error|
+          errors.add(error.attribute, error.message)
         end
       end
 
