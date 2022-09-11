@@ -3,6 +3,7 @@
 module Accounts
   class ListController < ApplicationController
     include GraphQuery
+    include GraphQueries::AccountQueries
     def index
       render inertia: 'AccountIndexApp', props: props
     end
@@ -10,19 +11,7 @@ module Accounts
     private
 
     def query
-      <<-GQL
-        {
-          accounts(includeInactive: #{include_archived?}) {
-            id
-            name
-            archivedAt
-            isArchived
-            isCashFlow
-            priority
-            slug
-          }
-        }
-      GQL
+      full_accounts_for(current_user, include_archived: include_archived?)
     end
 
     def include_archived?

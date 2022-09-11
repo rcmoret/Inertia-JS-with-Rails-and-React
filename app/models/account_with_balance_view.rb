@@ -6,6 +6,8 @@ class AccountWithBalanceView < ApplicationRecord
 
   self.primary_key = :id
 
+  belongs_to :user
+
   def read_only?
     true
   end

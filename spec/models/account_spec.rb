@@ -10,9 +10,9 @@ RSpec.describe Account, type: :model do
     subject { FactoryBot.build(:account) }
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:priority) }
-    it { should validate_uniqueness_of(:priority) }
-    it { should validate_uniqueness_of(:name) }
-    it { should validate_uniqueness_of(:slug) }
+    it { should validate_uniqueness_of(:priority).scoped_to(:user_id) }
+    it { should validate_uniqueness_of(:name).scoped_to(:user_id) }
+    it { should validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     describe 'slug format validation' do
       context 'when it is all lower case with a dash' do

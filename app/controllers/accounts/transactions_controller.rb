@@ -5,6 +5,7 @@ module Accounts
     before_action :set_selected_account_info
 
     include GraphQuery
+    include GraphQueries::AccountQueries
 
     # rubocop:disable Metrics/AbcSize
     def index
@@ -47,65 +48,7 @@ module Accounts
     end
 
     def query
-      <<~GQL
-        {
-          accounts {
-            id
-            name
-            balance
-            priority
-            slug
-          }
-          budget {
-            interval(month: #{month}, year: #{year}) {
-              firstDate
-              lastDate
-              daysRemaining
-              isCurrent
-              totalDays
-              month
-              year
-              items {
-                id
-                name
-                remaining
-                isAccrual
-                isMonthly
-                isDeletable
-                maturityMonth
-                maturityYear
-              }
-            }
-          }
-          selectedAccount: account(slug: "#{slug}") {
-            id
-            balancePriorTo(month: #{month}, year: #{year})
-            isCashFlow
-            name
-            slug
-            transactions(month: #{month}, year: #{year}) {
-              id
-              amount
-              budgetExclusion
-              checkNumber
-              clearanceDate
-              description
-              notes
-              transferId
-              updatedAt
-              details {
-                id
-                amount
-                budgetItemId
-                budgetCategoryId
-                budgetCategoryName
-                iconClassName
-              }
-              receiptBlob { filename contentType path }
-            }
-          }
-        }
-      GQL
+      account_transactions_query(current_user.id, slug, month, year)
     end
 
     def namespace

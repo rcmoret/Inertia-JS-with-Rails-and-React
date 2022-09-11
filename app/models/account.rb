@@ -3,6 +3,7 @@
 class Account < ApplicationRecord
   include Slugable
 
+  belongs_to :user
   has_many :transaction_views, class_name: 'Transaction::EntryView'
   has_many :transactions, class_name: 'Transaction::Entry'
   has_many :details,
@@ -23,8 +24,8 @@ class Account < ApplicationRecord
       joins(:details).merge(details.prior_to(date))
     end
   }
-  validates_uniqueness_of :name, :priority, conditions: -> { active }
-  validates_presence_of :name, :priority
+  validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_id }
+  validates_presence_of :name, :priority, :slug
 
   class << self
     def available_cash
@@ -62,5 +63,11 @@ class Account < ApplicationRecord
 
   def balance
     details.total
+  end
+
+  private
+
+  def active?
+    archived_at.nil?
   end
 end

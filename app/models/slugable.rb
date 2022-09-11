@@ -8,8 +8,5 @@ module Slugable
   included do
     validates :slug, presence: true
     validates :slug, format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
-
-    scope :active_scope, -> { defined?(active) ? active : all }
-    validates_uniqueness_of :name, :slug, conditions: -> { active_scope }
   end
 end

@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :account do
+    association :user
     sequence(:name) { |n| "#{n.ordinalize} City Bank" }
     sequence(:slug) { |n| "slug-#{n.ordinalize}" }
     sequence :priority

@@ -33,7 +33,6 @@ module GraphQueries
                   amount
                   clearanceDate
                   description
-                  iconClassName
                   updatedAt
                 }
                 transactionsTotal
@@ -68,7 +67,6 @@ module GraphQueries
                   amount
                   clearanceDate
                   description
-                  iconClassName
                   updatedAt
                 }
               }

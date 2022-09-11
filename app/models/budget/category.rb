@@ -28,7 +28,7 @@ module Budget
               },
               if: :revenue?
 
-    validates_uniqueness_of :name, conditions: -> { active }
+    validates_uniqueness_of :name, :slug, conditions: -> { active }
     validates :default_amount, :name, presence: true
     validate :accrual_on_expense
     validate :per_diem_disabled, if: :monthly?

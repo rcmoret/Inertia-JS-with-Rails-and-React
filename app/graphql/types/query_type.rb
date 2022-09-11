@@ -10,12 +10,13 @@ module Types
     # They will be entry points for queries on your schema.
 
     field :accounts, [AccountType], null: false do
-      description 'Fetch the Accounts'
+      description "Fetch the user's accounts"
+      argument :user_id, Integer, required: true
       argument :include_inactive, Boolean, required: false
     end
 
-    def accounts(include_inactive: false)
-      scope = AccountWithBalanceView.all
+    def accounts(user_id:, include_inactive: false)
+      scope = AccountWithBalanceView.where(user_id: user_id)
       scope = scope.where(archived_at: nil) unless include_inactive
       scope.map(&:as_presenter)
     end
