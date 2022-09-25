@@ -19,7 +19,7 @@ const BudgetItemDetails = ({ item, details }) => {
           <strong>{titleize(copy.detailsTitle)}</strong>
         </div>
         <div className="w-4/12 text-right">
-          <strong>{copy.id}: {id}</strong>
+          <strong>{titleize(copy.id)}: {id}</strong>
         </div>
       </Row>
       {hasBudgetedPerDiem && <PerDiem item={item} />}

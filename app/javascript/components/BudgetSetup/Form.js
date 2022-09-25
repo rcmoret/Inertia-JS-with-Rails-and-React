@@ -7,6 +7,7 @@ const Form = (props) => {
   // Functions
   const existingItem = item => ({
     ...item,
+    id: item.key,
     data: {},
     displayAmount: MoneyFormatter(item.amount),
     originalAmount: item.amount,

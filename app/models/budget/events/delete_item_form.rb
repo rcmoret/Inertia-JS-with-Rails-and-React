@@ -23,7 +23,7 @@ module Budget
 
       def initialize(params)
         @event_type = params[:event_type]
-        @budget_item_id = params[:budget_item_id]
+        @budget_item_key = params[:budget_item_key]
         @data = params[:data]
         super()
       end
@@ -50,7 +50,7 @@ module Budget
       private
 
       def budget_item
-        @budget_item ||= Budget::Item.find_by(id: budget_item_id)
+        @budget_item ||= Budget::Item.for(budget_item_key)
       end
 
       def event
@@ -107,7 +107,7 @@ module Budget
         end
       end
 
-      attr_reader :budget_item_id, :event_type, :data
+      attr_reader :budget_item_key, :event_type, :data
     end
   end
 end

@@ -4,6 +4,7 @@ module Budget
   class ItemsController < ApplicationController
     include AccountsHelper
     include GraphQuery
+    include GraphQueries::BudgetItems
 
     def index
       if month.nil? || year.nil?
@@ -25,79 +26,7 @@ module Budget
     end
 
     def query
-      <<~GQL
-        {
-          budget {
-            categories {
-              id
-              defaultAmount
-              name
-              isAccrual
-              isExpense
-              isMonthly
-            }
-            interval(month: #{month.to_i}, year: #{year.to_i}) {
-              month
-              year
-              daysRemaining
-              firstDate
-              isClosedOut
-              isCurrent
-              isSetUp
-              totalDays
-              lastDate
-              discretionary {
-                amount
-                overUnderBudget
-                transactionDetails {
-                  id
-                  accountName,
-                  amount
-                  clearanceDate
-                  description
-                  iconClassName
-                  updatedAt
-                }
-                transactionsTotal
-              }
-              items(includeDeleted: #{include_deleted?}) {
-                id
-                budgetCategoryId
-                name
-                amount
-                difference
-                remaining
-                spent
-                iconClassName
-                isAccrual
-                isDeletable
-                isExpense
-                isMonthly
-                isPerDiemEnabled
-                maturityMonth
-                maturityYear
-                events {
-                  id
-                  amount
-                  createdAt
-                  data
-                  typeDescription
-                }
-                transactionDetailCount
-                transactionDetails {
-                  id
-                  accountName
-                  amount
-                  clearanceDate
-                  description
-                  iconClassName
-                  updatedAt
-                }
-              }
-            }
-          }
-        }
-      GQL
+      budget_item_index_query(month: month, year: year, include_deleted: include_deleted?)
     end
 
     def include_deleted?

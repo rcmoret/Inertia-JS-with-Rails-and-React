@@ -38,6 +38,10 @@ module Budget
 
       delegate :to_json, to: :to_hash
       delegate :per_diem_enabled?, to: :category
+
+      def self.for(key)
+        find_by(key: key)
+      end
     end
 
     def to_hash # rubocop:disable Metrics/MethodLength

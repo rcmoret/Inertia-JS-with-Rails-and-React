@@ -36,7 +36,7 @@ RSpec.describe Account, type: :model do
   describe '.to_hash [balance]' do
     subject { account.to_hash }
 
-    let!(:account) { FactoryBot.create(:checking_account) }
+    let!(:account) { FactoryBot.create(:account) }
     let(:transaction_entries) do
       FactoryBot.create_list(:transaction_entry, 2, account: account)
     end
@@ -97,7 +97,7 @@ RSpec.describe Account, type: :model do
   end
 
   describe '#to_hash' do
-    let(:account) { FactoryBot.create(:checking_account) }
+    let(:account) { FactoryBot.create(:account) }
     let(:expected_hash) do
       {
         id: account.id,

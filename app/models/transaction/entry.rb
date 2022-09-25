@@ -23,6 +23,7 @@ module Transaction
     has_one_attached :receipt
 
     scope :total, -> { joins(:details).sum(:amount) }
+    scope :for, ->(user) { joins(:account).merge(Account.for(user)) }
 
     delegate :name, to: :account, prefix: true
 

@@ -36,7 +36,7 @@ module Budget
 
       def initialize(params)
         @amount = params[:amount]
-        @budget_item_id = params[:budget_item_id]
+        @budget_item_key = params[:budget_item_key]
         @event_type = params[:event_type]
         @data = params[:data]
         super()
@@ -72,7 +72,7 @@ module Budget
       end
 
       def budget_item
-        @budget_item ||= Budget::ItemView.find_by(id: budget_item_id)
+        @budget_item ||= Budget::ItemView.for(budget_item_key)
       end
 
       def adjustment_amount
@@ -96,7 +96,7 @@ module Budget
         end
       end
 
-      attr_reader :amount, :budget_item_id, :event_type, :data
+      attr_reader :amount, :budget_item_key, :event_type, :data
     end
   end
 end

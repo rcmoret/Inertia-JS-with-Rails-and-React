@@ -8,6 +8,7 @@ class BudgeItemViewV8 < ActiveRecord::Migration[6.1]
 
       CREATE VIEW #{VIEW_NAME} AS
         SELECT i.id,
+          i.key,
           i.budget_category_id AS budget_category_id,
           i.budget_interval_id,
           i.deleted_at,

@@ -49,19 +49,19 @@ RSpec.describe Budget::Events::AdjustItemForm do
     describe 'item validation' do
       context 'when a budget item exists' do
         it 'is a valid form object' do
-          form = build_form(budget_item_id: budget_item.id)
+          form = build_form(budget_item_key: budget_item.key)
           expect(form).to be_valid
         end
       end
 
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
-          form = build_form(budget_item_id: 0)
+          form = build_form(budget_item_key: 0)
           expect(form).not_to be_valid
         end
 
         it 'returns a meaniful error message' do
-          form = build_form(budget_item_id: 0)
+          form = build_form(budget_item_key: 0)
           form.valid?
           expect(form.errors['budget_item']).to include 'can\'t be blank'
         end
@@ -247,7 +247,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
   def default_form_params
     {
-      budget_item_id: budget_item.id,
+      budget_item_key: budget_item.key,
       event_type: described_class::APPLICABLE_EVENT_TYPES.sample,
       amount: 0,
       data: nil,
@@ -276,8 +276,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
   def stub_item_view(id:, amount:, expense:)
     allow(Budget::ItemView)
-      .to receive(:find_by)
-      .with(id: id)
+      .to receive(:for)
       .and_return(item_view_double(id, amount, expense))
   end
 

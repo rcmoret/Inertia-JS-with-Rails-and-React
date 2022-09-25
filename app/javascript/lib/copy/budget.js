@@ -57,7 +57,7 @@ export const index = {
   hideClearedMonthly: "hide cleared monthly",
   hideData: "hide data",
   hideTransactions: "hide transactions",
-  id: "id",
+  id: "key",
   monthly: `${titles.monthly} ${shared.items}`,
   multiItemAdjustForm: {
     availableCategories: "available categories",

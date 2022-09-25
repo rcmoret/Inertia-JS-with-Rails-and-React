@@ -91,7 +91,7 @@ module Budget
               month
               year
               items {
-                id
+                key
                 name
                 budgetCategoryId
                 amount

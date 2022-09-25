@@ -61,4 +61,14 @@ RSpec.describe Budget::Item, type: :model do
       end
     end
   end
+
+  describe '.for' do
+    let(:key) { SecureRandom.uuid }
+
+    it 'calls find by with key: key' do
+      expect(described_class).to receive(:find_by).with(key: key)
+
+      described_class.for(key)
+    end
+  end
 end

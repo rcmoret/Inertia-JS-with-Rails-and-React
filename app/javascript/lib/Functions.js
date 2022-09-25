@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 export const sortByName = (obj1, obj2) => (
   obj1.name.toLowerCase() < obj2.name.toLowerCase() ? -1 : 1
 );
@@ -117,11 +119,11 @@ export const newItemEvent = (item, month, year, eventType = "item_create") => {
 }
 
 export const adjustItemEvent = (item, eventType = "item_adjust") => {
-  const { id, amount, data } = item
+  const { key, amount, data } = item
 
   return eventForm({
     amount: amount,
-    budgetItemId: id,
+    budgetItemKey: key,
     eventType,
     data,
   })
@@ -129,8 +131,10 @@ export const adjustItemEvent = (item, eventType = "item_adjust") => {
 
 export const deleteItemEvent = (item, eventType = "item_delete") => (
   eventForm({
-    budgetItemId: item.id,
+    budgetItemKey: item.key,
     eventType,
     data: item.data,
   })
-)
+);
+
+export const generateIdentifer = () => uuid().replace(/-/g, '').slice(0,12);

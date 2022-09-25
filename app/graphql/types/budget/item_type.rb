@@ -3,7 +3,7 @@
 module Types
   module Budget
     class ItemType < BaseObject
-      field :id, ID, 'primary key', null: false
+      field :key, ID, 'Unique identife for the budget item', null: false
       field :name, String, 'The category name of the budget item', null: false
       field :amount, Integer, 'The amount that was budgeted', null: false
       field :budget_category_id, ID, 'The primary key of the category', null: false

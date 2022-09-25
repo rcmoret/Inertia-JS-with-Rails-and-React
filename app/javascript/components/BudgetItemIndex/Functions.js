@@ -23,6 +23,7 @@ const eventModel = event => {
 export const itemModel = (item, daysRemaining, totalDays)  => {
   const baseItem = {
     ...item,
+    id: item.key,
     difference: (item.difference * -1),
     events: item.events.map(eventModel),
     inputAmount: MoneyFormatter(item.amount, { decoarate: false }),
@@ -168,7 +169,7 @@ export const eventsFrom = (items, month, notes, year) => {
   const data = {
     items: items.map(item => {
       const {
-        id,
+        key,
         name,
         bottomLineChange,
         amount,
@@ -178,7 +179,7 @@ export const eventsFrom = (items, month, notes, year) => {
       } = item
       const event = isMarkedForDelete ? "delete" : eventType.split("_").reverse()[0]
       return {
-        id,
+        key,
         name,
         event,
         originalAmount: MoneyFormatter(amount, { decorate: true }),
@@ -193,7 +194,7 @@ export const eventsFrom = (items, month, notes, year) => {
 
   return items.map(item => {
     const {
-      id,
+      key,
       adjustmentAmount,
       budgetCategoryId,
       eventType,
@@ -205,10 +206,10 @@ export const eventsFrom = (items, month, notes, year) => {
       const object = { amount, budgetCategoryId, data }
       return newItemEvent(object, month, year, eventType)
     } else if (isMarkedForDelete) {
-      const object = { id, data }
+      const object = { key, data }
       return deleteItemEvent(object, copy.multiItemAdjustForm.events.delete)
     } else {
-      const object = { id, amount, data }
+      const object = { key, amount, data }
       return adjustItemEvent(object, eventType)
     }
   })

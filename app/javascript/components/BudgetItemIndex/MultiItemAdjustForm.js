@@ -1,6 +1,5 @@
 import React from "react";
 import Select from "react-select";
-import { v4 as uuid } from "uuid";
 
 import AmountInput from "../shared/TextInput";
 import Button from "../shared/Button";
@@ -9,25 +8,36 @@ import Icon from "../shared/Icons";
 import Link from "../shared/Link";
 import Row from "../shared/Row";
 
-import { asOption, clearedMonthly, sortByName, sortByClearedThenName } from "../../lib/Functions";
+import {
+  asOption,
+  clearedMonthly,
+  generateIdentifer,
+  sortByName,
+  sortByClearedThenName
+} from "../../lib/Functions";
 import { eventsFrom, postEvents } from "./Functions"
 import { index as copy, shared } from "../../lib/copy/budget";
 import { titleize } from "../../lib/copy/functions"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 
-const newItemModel = category => ({
-  ...category,
-  id: uuid().split("-")[0],
-  adjustmentAmount: 0,
-  amount: 0,
-  inputAmount: "",
-  bottomLineChange: 0,
-  eventType: copy.multiItemAdjustForm.events.create,
-  budgetCategoryId: category.id,
-  isMarkedForDelete: false,
-  difference: 0,
-  isNewItem: true,
-})
+const newItemModel = category => {
+  const key = generateIdentifer()
+
+  return {
+    ...category,
+    key,
+    id: key,
+    adjustmentAmount: 0,
+    amount: 0,
+    bottomLineChange: 0,
+    budgetCategoryId: category.id,
+    difference: 0,
+    eventType: copy.multiItemAdjustForm.events.create,
+    inputAmount: "",
+    isMarkedForDelete: false,
+    isNewItem: true,
+  }
+};
 
 const existingItemModel = item => ({
   ...item,
@@ -39,7 +49,7 @@ const existingItemModel = item => ({
   isNewItem: false,
 })
 
-const MultiItemAdjustForm = (props) => {
+const MultiItemAdjustForm = props => {
   const { availableCategories, clearAdjustItemsForm, interval, items, fns, formData, updateAdjustItemsForm } = props
   const {
     adjustmentItems,
