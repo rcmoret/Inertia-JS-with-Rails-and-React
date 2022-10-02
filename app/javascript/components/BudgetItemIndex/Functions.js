@@ -18,7 +18,7 @@ const eventModel = event => {
     isPending: false,
     typeDescription: event.typeDescription.replaceAll("_", " ")
   }
-}
+};
 
 export const itemModel = (item, daysRemaining, totalDays)  => {
   const baseItem = {
@@ -35,7 +35,7 @@ export const itemModel = (item, daysRemaining, totalDays)  => {
   } else {
     return baseItem
   }
-}
+};
 
 const perDiemAttributes = (item, daysRemaining, totalDays) => {
   const budgetedPerDay = Math.round(item.amount / totalDays)
@@ -51,7 +51,7 @@ const perDiemAttributes = (item, daysRemaining, totalDays) => {
     const remainingPerDay = Math.round(item.remaining / daysRemaining)
     return { ...budgeted, remainingPerDay, remainingPerWeek: (remainingPerDay * 7), }
   }
-}
+};
 
 export const transactionDetailModel = detail => {
   const isPending = detail.clearanceDate === null
@@ -67,7 +67,7 @@ export const transactionDetailModel = detail => {
     isPending: isPending,
     isTransactionDetail: true,
   }
-}
+};
 
 export const eventAndTransactionDetailSort = (obj1, obj2) => {
   const today = new Date()
@@ -84,7 +84,7 @@ export const eventAndTransactionDetailSort = (obj1, obj2) => {
   } else if (obj2.isPending) {
     return obj1.comparisonDate < today ? -1 : 1
   }
-}
+};
 
 export const eventTransactionReducer = (array, model) => {
   const prevModel = array[array.length - 1] || { budgeted: 0, remaining: 0 }
@@ -112,8 +112,7 @@ export const eventTransactionReducer = (array, model) => {
       }
     ]
   }
-}
-
+};
 
 const defaultCallbacks = { onSuccess: () => null }
 
@@ -126,7 +125,7 @@ export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => 
     { events },
     { preserveScroll: true , onSuccess: onSuccess }
   )
-}
+};
 
 export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
@@ -142,7 +141,7 @@ export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
     }
   ]
   postEvents({ events, month, year }, callbacks)
-}
+};
 
 export const postItemAdjustEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
@@ -153,7 +152,7 @@ export const postItemAdjustEvent = ({ id, amount, month, year }, suppliedCallbac
     data: null
   }
   postEvents({ events: [event], month, year }, callbacks)
-}
+};
 
 export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
@@ -163,7 +162,7 @@ export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbac
     data: null
   }
   postEvents({ events: [event], month, year }, callbacks)
-}
+};
 
 export const eventsFrom = (items, month, notes, year) => {
   const data = {
@@ -213,4 +212,4 @@ export const eventsFrom = (items, month, notes, year) => {
       return adjustItemEvent(object, eventType)
     }
   })
-}
+};
