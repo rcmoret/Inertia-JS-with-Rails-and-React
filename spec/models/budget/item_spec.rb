@@ -11,6 +11,13 @@ RSpec.describe Budget::Item, type: :model do
   it { should delegate_method(:expense?).to(:category) }
   it { should delegate_method(:monthly?).to(:category) }
 
+  describe 'key validations' do
+    subject { FactoryBot.build(:budget_item) }
+
+    it { is_expected.to validate_uniqueness_of(:key) }
+    it { is_expected.to validate_presence_of(:key) }
+  end
+
   describe '#current' do
     before { Timecop.travel(year, month, 10) }
     let(:month) { (1..12).to_a.sample }
@@ -63,12 +70,36 @@ RSpec.describe Budget::Item, type: :model do
   end
 
   describe '.for' do
-    let(:key) { SecureRandom.uuid }
+    let(:budget_item) { FactoryBot.create(:budget_item) }
 
-    it 'calls find by with key: key' do
-      expect(described_class).to receive(:find_by).with(key: key)
+    context 'when passing an upcased version of the key' do
+      let(:key) { budget_item.key.upcase }
 
-      described_class.for(key)
+      it 'returns the item' do
+        subject = described_class.for(key)
+
+        expect(subject).to eq budget_item
+      end
+    end
+
+    context 'when passing an down-cased version of the key' do
+      let(:key) { budget_item.key.downcase }
+
+      it 'returns the item' do
+        subject = described_class.for(key)
+
+        expect(subject).to eq budget_item
+      end
+    end
+
+    context 'when passing a key that does not map to an item' do
+      let(:key) { SecureRandom.hex(6) }
+
+      it 'returns the item' do
+        subject = described_class.for(key)
+
+        expect(subject).to be nil
+      end
     end
   end
 end

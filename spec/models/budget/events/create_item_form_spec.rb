@@ -76,6 +76,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       context 'when the interval does not exist' do
         it 'creates an interval if needed' do
+          require 'pry'
           form = new_object(month: 1, year: 2017)
           expect { form.save }
             .to change { Budget::Interval.count }
@@ -243,6 +244,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       event_type: described_class::APPLICABLE_EVENT_TYPES.sample,
       month: budget_interval.month,
       year: budget_interval.year,
+      budget_item_key: SecureRandom.hex(6),
     }
   end
 

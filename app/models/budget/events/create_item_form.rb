@@ -36,6 +36,7 @@ module Budget
                   message: REVENUE_AMOUNT_VALIDATION_MESSAGE,
                 },
                 if: :revenue?
+      validates :budget_item_key, presence: true, length: { is: 12 }
 
       def initialize(params)
         @event_type = params[:event_type]
@@ -44,6 +45,7 @@ module Budget
         @year = params[:year].to_i
         @budget_category_id = params[:budget_category_id]
         @data = params[:data]
+        @budget_item_key = params[:budget_item_key]
         super()
       end
 
@@ -100,7 +102,7 @@ module Budget
       end
 
       def item
-        @item ||= Budget::Item.new(interval: interval, category: category)
+        @item ||= Budget::Item.new(interval: interval, category: category, key: budget_item_key)
       end
 
       def category
@@ -158,7 +160,7 @@ module Budget
           event_type
         end
       end
-      attr_reader :amount, :budget_category_id, :event_type, :month, :year, :data
+      attr_reader :amount, :budget_category_id, :event_type, :month, :year, :data, :budget_item_key
     end
     # rubocop:enable Metrics/ClassLength
   end

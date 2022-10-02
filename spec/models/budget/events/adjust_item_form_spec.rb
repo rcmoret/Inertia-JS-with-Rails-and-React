@@ -56,12 +56,12 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
-          form = build_form(budget_item_key: 0)
+          form = build_form(budget_item_key: '0')
           expect(form).not_to be_valid
         end
 
         it 'returns a meaniful error message' do
-          form = build_form(budget_item_key: 0)
+          form = build_form(budget_item_key: '0')
           form.valid?
           expect(form.errors['budget_item']).to include 'can\'t be blank'
         end

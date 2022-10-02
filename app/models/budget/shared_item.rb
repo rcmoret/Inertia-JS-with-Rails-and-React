@@ -40,7 +40,7 @@ module Budget
       delegate :per_diem_enabled?, to: :category
 
       def self.for(key)
-        find_by(key: key)
+        find_by(arel_table[:key].lower.eq(key.downcase))
       end
     end
 

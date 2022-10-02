@@ -56,12 +56,12 @@ RSpec.describe Budget::Events::DeleteItemForm do
 
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
-          form = build_form(budget_item_key: 0)
+          form = build_form(budget_item_key: SecureRandom.hex(6))
           expect(form).not_to be_valid
         end
 
         it 'returns a meaniful error message' do
-          form = build_form(budget_item_key: 0)
+          form = build_form(budget_item_key: SecureRandom.hex(6))
           form.valid?
           expect(form.errors['budget_item']).to include 'can\'t be blank'
         end
@@ -128,12 +128,12 @@ RSpec.describe Budget::Events::DeleteItemForm do
 
     context 'when there are pre-save errors' do
       it 'returns false' do
-        form = build_form(budget_item_key: 0)
+        form = build_form(budget_item_key: SecureRandom.hex(6))
         expect(form.save).to be false
       end
 
       it 'returns a meaningful error message' do
-        form = build_form(budget_item_key: 0)
+        form = build_form(budget_item_key: SecureRandom.hex(6))
         form.save
         expect(form.errors['budget_item']).to include 'can\'t be blank'
       end
