@@ -21,7 +21,7 @@ export const sortByClearanceDate = (txn1, txn2) => {
   } else {
     return txn1.clearanceDate <= today ? -1 : 1
   }
-}
+};
 
 export const sortByClearedThenName = (obj1, obj2) => {
   if (clearedMonthly(obj1) && !clearedMonthly(obj2)) {
@@ -31,7 +31,7 @@ export const sortByClearedThenName = (obj1, obj2) => {
   } else {
     return sortByName(obj1, obj2)
   }
-}
+};
 
 export const uberSort = (term, defaultSortFn) => (obj1, obj2) => {
   if (term === "" || term === null || term === undefined) {
@@ -64,20 +64,20 @@ export const isMatureAccrual = (object, month, year) => {
   } else {
     return object.maturityMonth === month && object.maturityYear === year
   }
-}
+};
 
-export const isDayToDay = object => !object.isMonthly
-export const isMonthly = object => object.isMonthly
+export const isDayToDay = object => !object.isMonthly;
+export const isMonthly = object => object.isMonthly;
 
-export const isExpense = object => object.isExpense
-export const isRevenue = object => !object.isExpense
+export const isExpense = object => object.isExpense;
+export const isRevenue = object => !object.isExpense;
 
-export const pendingMonthly = object => object.isMonthly && object.transactionDetailCount === 0
-export const clearedMonthly = object => object.isMonthly && object.transactionDetailCount > 0
+export const pendingMonthly = object => object.isMonthly && object.transactionDetailCount === 0;
+export const clearedMonthly = object => object.isMonthly && object.transactionDetailCount > 0;
 
 // combined item filters
-export const dayToDayExpense = object => isDayToDay(object) && isExpense(object)
-export const dayToDayRevenue = object => isDayToDay(object) && isRevenue(object)
+export const dayToDayExpense = object => isDayToDay(object) && isExpense(object);
+export const dayToDayRevenue = object => isDayToDay(object) && isRevenue(object);
 
 export const asOption = (object, optionalFns = {}) => {
   const defaultOptionFns = {
@@ -103,7 +103,7 @@ const dataFor = (data) => {
   } else {
     return null
   }
-}
+};
 
 export const newItemEvent = (item, month, year, eventType = "item_create") => {
   const { amount, budgetCategoryId, data } = item
@@ -116,7 +116,7 @@ export const newItemEvent = (item, month, year, eventType = "item_create") => {
     year,
     data,
   })
-}
+};
 
 export const adjustItemEvent = (item, eventType = "item_adjust") => {
   const { key, amount, data } = item
@@ -127,7 +127,7 @@ export const adjustItemEvent = (item, eventType = "item_adjust") => {
     eventType,
     data,
   })
-}
+};
 
 export const deleteItemEvent = (item, eventType = "item_delete") => (
   eventForm({
