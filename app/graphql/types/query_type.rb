@@ -12,13 +12,11 @@ module Types
     field :accounts, [AccountType], null: false do
       description "Fetch the user's accounts"
       argument :user_id, Integer, required: true
-      argument :include_inactive, Boolean, required: false
+      argument :include_archived, Boolean, required: false
     end
 
-    def accounts(user_id:, include_inactive: false)
-      scope = AccountWithBalanceView.where(user_id: user_id)
-      scope = scope.where(archived_at: nil) unless include_inactive
-      scope.map(&:as_presenter)
+    def accounts(user_id:, include_archived: false)
+      Queries::Accounts::WithBalance.new(user_id: user_id, include_archived: include_archived).call(&:as_presenter)
     end
 
     field :account, AccountType, null: true do

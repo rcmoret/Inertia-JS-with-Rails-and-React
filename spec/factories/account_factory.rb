@@ -14,5 +14,9 @@ FactoryBot.define do
     trait :non_cash_flow do
       cash_flow { false }
     end
+
+    trait :archived do
+      archived_at { 1.year.ago }
+    end
   end
 end

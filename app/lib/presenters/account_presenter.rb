@@ -2,10 +2,6 @@
 
 module Presenters
   class AccountPresenter < SimpleDelegator
-    def balance
-      attributes(:balance) { super }
-    end
-
     def balance_prior_to(month:, year:)
       interval = ::Budget::Interval.for(month: month, year: year).as_presenter
 

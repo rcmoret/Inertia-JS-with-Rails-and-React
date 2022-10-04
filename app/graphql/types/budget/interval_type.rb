@@ -3,7 +3,6 @@
 module Types
   module Budget
     class IntervalType < BaseObject
-      field :balance, Integer, 'Amount of cash associated with this budget interval', null: false
       field :month, Integer, 'Interval\'s month', null: false
       field :year, Integer, 'Interval\'s year', null: false
       field :is_set_up, Boolean, 'Has the interval\'s budget been set up', null: false

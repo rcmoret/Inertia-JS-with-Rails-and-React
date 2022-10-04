@@ -13,7 +13,7 @@ module GraphQueries
     def full_accounts_for(user, include_archived:)
       <<-GQL
         {
-          accounts(userId: #{user.id} includeInactive: #{include_archived}) {
+          accounts(userId: #{user.id} includeArchived: #{include_archived}) {
             id
             name
             archivedAt

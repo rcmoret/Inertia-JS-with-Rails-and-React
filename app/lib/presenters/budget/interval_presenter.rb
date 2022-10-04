@@ -34,14 +34,6 @@ module Presenters
         DiscretionaryPresenter.new(self)
       end
 
-      def balance
-        if current?
-          (available_cash + charged).to_i
-        else
-          0
-        end
-      end
-
       def set_up?
         super
       end
@@ -79,14 +71,10 @@ module Presenters
       end
 
       def available_cash
+        return 0 unless current? || closed_out?
+
         @available_cash ||=
-          if current?
-            Account.available_cash(user) + charged
-          elsif closed_out?
-            charged + Transaction::Detail.for(user).prior_to(last_date + 1.day).cash_flow.sum(:amount)
-          else
-            0
-          end
+          Queries::Accounts::AvailableCash.new(user.id, date_range: date_range, current: current?).call
       end
 
       private
@@ -100,15 +88,6 @@ module Presenters
 
       def today
         @today ||= Time.zone.today
-      end
-
-      def charged
-        @charged ||= Transaction::Detail
-                     .for(user)
-                     .budget_inclusions
-                     .non_cash_flow
-                     .between(date_range, include_pending: current?)
-                     .sum(:amount)
       end
 
       def prev
