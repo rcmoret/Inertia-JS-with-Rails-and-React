@@ -5,7 +5,7 @@ module GraphQueries
     def budget_item_index_query(month:, year:, include_deleted:)
       <<~GQL
         {
-          budget {
+          budget(userId: #{current_user.id}) {
             categories {
               id
               defaultAmount

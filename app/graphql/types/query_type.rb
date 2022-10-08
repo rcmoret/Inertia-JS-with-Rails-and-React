@@ -32,10 +32,11 @@ module Types
 
     field :budget, Budget::NamespaceType, null: false do
       description 'Namespace for all things related to the budget'
+      argument :user_id, Integer, required: true
     end
 
-    def budget
-      Presenters::Budget::NamespacePresenter.new
+    def budget(user_id:)
+      Presenters::Budget::NamespacePresenter.new(user_id)
     end
   end
 end

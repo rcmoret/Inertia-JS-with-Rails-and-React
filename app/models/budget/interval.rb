@@ -43,6 +43,9 @@ module Budget
     }
     # rubocop:enable Metric/BlockLength
 
+    attr_accessor :user_id
+
+    # rubocop:disable Metric/AbcSize
     def self.for(**opts)
       month, year =
         if opts[:date].present?
@@ -51,8 +54,9 @@ module Budget
           today = Date.today
           [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
         end
-      find_or_create_by(month: month, year: year)
+      find_or_create_by(month: month, year: year).tap { |interval| interval.user_id = opts[:user_id] }
     end
+    # rubocop:enable Metric/AbcSize
 
     def self.current
       unclosed.ordered.take

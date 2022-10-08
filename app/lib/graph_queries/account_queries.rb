@@ -30,7 +30,7 @@ module GraphQueries
       <<~GQL
         {
           #{base_accounts_query(user_id)}
-          budget {
+          budget(userId: #{user_id}) {
             interval(month: #{month}, year: #{year}) {
               firstDate
               lastDate

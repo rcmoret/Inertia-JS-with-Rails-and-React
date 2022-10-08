@@ -17,9 +17,6 @@ module Types
       end
       field :first_date, GraphQL::Types::ISO8601Date, 'Date the budget interval begins', null: false
       field :last_date, GraphQL::Types::ISO8601Date, 'Date the budget interval ends', null: false
-      # field :transaction_entries, [TransactionEntryType], 'Transactions for the interval', null: false do
-      #   argument :account_id, Integer, required: true
-      # end
     end
   end
 end

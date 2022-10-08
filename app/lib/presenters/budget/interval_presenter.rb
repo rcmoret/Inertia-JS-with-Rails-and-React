@@ -3,13 +3,6 @@
 module Presenters
   module Budget
     class IntervalPresenter < SimpleDelegator
-      def inititalize(interval, user)
-        @user = user
-        super(interval)
-      end
-
-      attr_reader :user
-
       def current?
         !closed_out? && prev.closed_out?
       end
@@ -75,6 +68,10 @@ module Presenters
 
         @available_cash ||=
           Queries::Accounts::AvailableCash.new(user.id, date_range: date_range, current: current?).call
+      end
+
+      def user
+        @user ||= User.find(user_id)
       end
 
       private
