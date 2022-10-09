@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     get '/set-up/:month/:year', to: 'set_up#new'
     post 'set-up/:month/:year', to: 'set_up#create'
     get '/finalize/:month/:year', to: 'finalize#new'
+    get '/:month/:year/finalize', to: 'finalize#new'
     post 'finalize/:month/:year', to: 'finalize#complete'
 
     get '/categories', to: 'categories/index#call', as: :categories
