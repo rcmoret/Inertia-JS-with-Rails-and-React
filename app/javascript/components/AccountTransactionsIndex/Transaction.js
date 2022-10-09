@@ -42,7 +42,8 @@ export const Transaction = props => {
   const { month, year } = interval
   const clearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate)
   const isDetailShown = showDetailsForIds.includes(id)
-  const noteLines = (notes || "").split("<br>")
+  const notesNeedAttn = (notes || "").startsWith("!!!")
+  const noteLines = (notes || "").split("<br>").map(line => line.replace(/^!!!/, ""))
   const modifyFns = {
     deleteTransaction: () => {
       const isConfirmed = window.confirm("Are you sure you want to delete this transaction?")
@@ -107,7 +108,7 @@ export const Transaction = props => {
           {budgetExclusion && <div className="ml-4 max-w-2/12 italic">budget exclusion</div>}
           {checkNumber && <div className="ml-4 max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
           {transferId && <div className="ml-4 max-w-2/12 italic"><span className="hidden">{transferId}</span>transfer</div>}
-          {notes && <Notes noteLines={noteLines} />}
+          {notes && <Notes noteLines={noteLines} notesNeedAttn={notesNeedAttn} />}
           {receiptBlob && <Receipt attachment={receiptBlob} />}
         </div>
         <div className="w-1/12 ml-4 flex flex-row-reverse">
@@ -177,8 +178,24 @@ const BudgetItemList = ({ details }) => {
   ))
 }
 
-const Notes = ({ noteLines }) => (
-  <div className="ml-4 max-w-4/12">
+const NotesWrapper = ({ children, notesNeedAttn }) => {
+  if (notesNeedAttn) {
+    return (
+      <div className="ml-4 max-w-4/12 bg-blue-900 text-white pl-2 pr-2">
+        {children}
+      </div>
+    )
+  } else {
+    return (
+      <div className="ml-4 max-w-4/12">
+        {children}
+      </div>
+    )
+  }
+};
+
+const Notes = ({ noteLines, notesNeedAttn  }) => (
+  <NotesWrapper notesNeedAttn={notesNeedAttn}>
     {noteLines.map((note, index) => (
       <div key={index} className="w=full">
         {index === 0 && <Icon className="fas fa-sticky-note" />}
@@ -186,7 +203,7 @@ const Notes = ({ noteLines }) => (
         {note}
       </div>
     ))}
-  </div>
+  </NotesWrapper>
 )
 
 const ModifyLinks = ({ modifyFns }) => {
