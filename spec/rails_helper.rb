@@ -67,6 +67,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  view_sql = File.read('./spec/helpers/views.sql')
+  ApplicationRecord.connection.execute(view_sql)
   FactoryBot.definition_file_paths = %w[./spec/factories]
   FactoryBot.find_definitions
 end
