@@ -413,6 +413,8 @@ const DetailForm = props => {
       return !item.isMonthly || item.isDeletable
     }
   }).map(item => asOption(item, { labelFn }))
+  const [term, setTerm] = useState("")
+  // console.log({ term })
   const selectFilter = createFilter({ matchFrom: "start" })
   const optionsFn = () => {
     const nullOption = { value: null, label: "Petty Cash" }
@@ -446,6 +448,27 @@ const DetailForm = props => {
       handleCalculate()
     }
   }
+  const resetTerm = () => setTerm("");
+  const updateTerm = event => {
+    switch(event.key) {
+      case "Backspace":
+        setTerm(term.slice(0, (term.length - 1)))
+        return
+      case "Escape":
+        resetTerm()
+        return
+      case "Enter":
+        resetTerm()
+        return
+      case "Meta":
+        return null
+      default:
+        console.log({ event })
+        console.log(event.key)
+        setTerm(`${term}${event.key}`)
+        return null
+    }
+  }
 
   return (
     <Row styling={{overflow: "overflow-visible"}}>
@@ -466,6 +489,7 @@ const DetailForm = props => {
         <Select
           filterOption={selectFilter}
           isDisabled={isBudgetExclusion}
+          onBlur={resetTerm}
           onChange={handleItemChange}
           options={availableOptions}
           value={value}

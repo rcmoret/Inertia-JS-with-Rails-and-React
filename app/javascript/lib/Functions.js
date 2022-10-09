@@ -31,6 +31,28 @@ export const sortByClearedThenName = (obj1, obj2) => {
   }
 }
 
+export const uberSort = (term, defaultSortFn) => (obj1, obj2) => {
+  if (term === "" || term === null || term === undefined) {
+    return defaultSortFn(obj1, obj2)
+  } else {
+    const strictExp = new RegExp(`^${term}.*`, "i")
+    const looseExp = new RegExp(`(^|\\s)${term}.*`, "i")
+    if (obj1.label.match(strictExp)) {
+      return -1
+    } else if (obj2.label.match(strictExp)) {
+      return 1
+    } else if (obj1.label.match(looseExp) && obj2.label.match(looseExp)) {
+      return defaultSortFn(a, b)
+    } else if (obj1.label.match(looseExp)) {
+      return -1
+    } else if (obj2.label.match(looseExp)) {
+      return 1
+    } else {
+      return defaultSortFn(obj1, obj2)
+    }
+  }
+}
+
 // item filters
 export const isAccrual = object => object.isAccrual
 export const isNonAccrual = object => !object.isAccrual
