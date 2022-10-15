@@ -2,26 +2,32 @@
 
 module Queries
   module Accounts
-    class WithBalance
+    class AllWithBalance
       include Shared
 
       SELECTS = ACCOUNT_WITH_TRANSACTIONS_SELECTS
 
-      def initialize(user_id:, month:, year:)
+      def initialize(user_id:, include_archived: false)
         @user_id = user_id
-        @interval = Budget::Interval.for(month: month, year: year)
+        @include_archived = include_archived
       end
 
-      def call
-        results.first.fetch('balance')
+      def call(&block)
+        if block_given?
+          results.map(&block)
+        else
+          results
+        end
       end
 
       private
 
-      attr_reader :user_id, :interval
+      attr_reader :user_id, :include_archived
 
       def results
-        @results ||= ApplicationRecord.connection.exec_query(query.to_sql)
+        @results ||= ApplicationRecord.connection.exec_query(query.to_sql).map do |result|
+          QueryResult.new(result)
+        end
       end
 
       def query
@@ -33,15 +39,15 @@ module Queries
       end
 
       def where_clause
-        user_clause
-          .and(ACCOUNTS[:id].eq(account_id))
-          .and(transactions_clause)
+        if include_archived
+          user_clause
+        else
+          user_clause.and(exclude_inactive_clause)
+        end
       end
 
-      def transactions_clause
-        clause = TRANSCATIONS[:clearance_date].lt(interval.first_date)
-        clause = clause.or(TRANSCATIONS[:clearance_date].eq(nil)) if interval.future?
-        clause
+      def exclude_inactive_clause
+        ACCOUNTS[:archived_at].eq(nil)
       end
 
       def presenter_class

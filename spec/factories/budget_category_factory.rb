@@ -29,5 +29,9 @@ FactoryBot.define do
     trait :accrual do
       accrual { true }
     end
+
+    trait :with_icon do
+      association :icon
+    end
   end
 end

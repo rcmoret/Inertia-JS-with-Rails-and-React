@@ -7,6 +7,10 @@ FactoryBot.define do
     sequence(:slug) { |n| "slug-#{n.ordinalize}" }
     sequence :priority
 
+    trait :cash_flow do
+      cash_flow { true }
+    end
+
     factory :savings_account do
       non_cash_flow
     end

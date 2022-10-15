@@ -7,10 +7,8 @@ module Queries
 
       SELECTS = BALANCE_SELECT
 
-      def initialize(user_id, date_range:, current: true)
-        @user_id = user_id
-        @date_range = date_range
-        @current = current
+      def initialize(budget_interval:)
+        @budget_interval = budget_interval.as_presenter
       end
 
       def call
@@ -32,26 +30,35 @@ module Queries
 
       def where_clause
         base_clause.and(
-          CASH_FLOW_ACCOUNTS_CLAUSE.and(TRANSACTIONS[:clearance_date].lteq(date_range.last))
-          .or(NON_CASH_FLOW_ACCOUNTS_CLAUSE.and(non_cash_flow_entry_clause))
+          cash_flow_accounts_clause.or(NON_CASH_FLOW_ACCOUNTS_CLAUSE.and(non_cash_flow_entry_clause))
         )
       end
 
+      def cash_flow_accounts_clause
+        date_clause = TRANSACTIONS[:clearance_date].lteq(date_range.last)
+        date_clause = date_clause.or(pending_clause) if current?
+
+        CASH_FLOW_ACCOUNTS_CLAUSE.and(date_clause)
+      end
+
       def non_cash_flow_entry_clause
-        clause = TRANSACTIONS[:clearance_date].between(date_range)
-        clause = clause.or(TRANSACTIONS[:clearance_date].eq(nil)) if current?
-        clause
+        date_clause = TRANSACTIONS[:clearance_date].between(date_range)
+        date_clause = date_clause.or(pending_clause) if current?
+        TRANSACTIONS[:budget_exclusion].eq(false).and(date_clause)
       end
 
       def base_clause
-        user_clause.and(NON_ARCHIEVED_ACCOUNT_CLAUSE)
+        user_clause.and(NON_ARCHIVED_ACCOUNT_CLAUSE)
       end
 
-      def current?
-        @current == true
+      def pending_clause
+        TRANSACTIONS[:clearance_date].eq(nil)
       end
 
-      attr_reader :user_id, :date_range
+
+      attr_reader :budget_interval
+
+      delegate :user_id, :date_range, :current?, to: :budget_interval
     end
   end
 end

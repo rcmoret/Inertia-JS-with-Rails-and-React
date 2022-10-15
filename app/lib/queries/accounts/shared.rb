@@ -9,14 +9,14 @@ module Queries
         Arel::Nodes::NamedFunction.new('coalesce', nodes)
       end
 
-      ACCOUNTS = Account.arel_table
-      TRANSACTIONS = Transaction::Entry.arel_table
-      TRANSACTION_DETAILS = Transaction::Detail.arel_table
-      ACCOUNT_TRANSACTIONS_JOIN = TRANSACTIONS[:account_id].eq(ACCOUNTS[:id])
-      CASH_FLOW_ACCOUNTS_CLAUSE = ACCOUNTS[:cash_flow].eq(true)
-      NON_CASH_FLOW_ACCOUNTS_CLAUSE = ACCOUNTS[:cash_flow].eq(false)
-      NON_ARCHIEVED_ACCOUNT_CLAUSE = ACCOUNTS[:archived_at].eq(nil)
-      TRANSACTION_DETAILS_JOIN = TRANSACTION_DETAILS[:transaction_entry_id].eq(TRANSACTIONS[:id])
+      ACCOUNTS = Constants::Tables::ACCOUNTS
+      TRANSACTIONS = Constants::Tables::TRANSACTIONS
+      TRANSACTION_DETAILS = Constants::Tables::TRANSACTION_DETAILS
+      ACCOUNT_TRANSACTIONS_JOIN = Constants::Joins::ACCOUNT_TRANSACTIONS_JOIN
+      CASH_FLOW_ACCOUNTS_CLAUSE = Constants::Clauses::CASH_FLOW_ACCOUNTS_CLAUSE
+      NON_CASH_FLOW_ACCOUNTS_CLAUSE = Constants::Clauses::NON_CASH_FLOW_ACCOUNTS_CLAUSE
+      NON_ARCHIVED_ACCOUNT_CLAUSE = Constants::Clauses::NON_ARCHIVED_ACCOUNT_CLAUSE
+      TRANSACTION_DETAILS_JOIN = Constants::Joins::TRANSACTION_DETAILS_JOIN
       BALANCE_SELECT = { 'balance' => coalesce(TRANSACTION_DETAILS[:amount].sum, 0).as('balance') }.freeze
 
       ACCOUNT_WITH_TRANSACTIONS_SELECTS = Account.columns.reduce(BALANCE_SELECT.dup) do |hash, column|

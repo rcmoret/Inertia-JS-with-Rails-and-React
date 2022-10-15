@@ -33,11 +33,15 @@ module Budget
     def to_hash
       attributes
         .symbolize_keys
-        .merge(
-          name: type.name,
-          month: month,
-          year: year
-        )
+        .merge(name: type.name)
+    end
+
+    def item_create?
+      CREATE_EVENTS.include?(type.name)
+    end
+
+    def item_delete?
+      DELETE_EVENTS.include?(type.name)
     end
 
     private

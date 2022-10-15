@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Queries::Accounts::WithBalance do
+RSpec.describe Queries::Accounts::AllWithBalance do
   context 'when there are no accounts associated with the user' do
     let(:user) { FactoryBot.create(:user) }
 
@@ -24,13 +24,6 @@ RSpec.describe Queries::Accounts::WithBalance do
         .attributes
         .all? { |key, value| subject.public_send(key) == value }
         .then { |actual| expect(actual).to be true }
-    end
-
-    it 'returns balance from the other query :)' do
-      date_range = 1.month.ago.to_date..1.day.ago.to_date
-      subject = Queries::Accounts::AvailableCash.new(user.id, date_range: date_range).call
-
-      expect(subject).to be_zero
     end
 
     it 'also returns a zero balance' do

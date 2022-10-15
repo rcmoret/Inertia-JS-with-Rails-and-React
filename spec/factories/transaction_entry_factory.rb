@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :transaction_entry, class: Transaction::Entry do
     association :account
     budget_exclusion { false }
+    clearance_date { (2..5).to_a.sample.days.ago }
     details_attributes do
       [
         {
@@ -15,6 +16,10 @@ FactoryBot.define do
 
     trait :cleared do
       clearance_date { (2..5).to_a.sample.days.ago }
+    end
+
+    trait :pending do
+      clearance_date { nil }
     end
 
     trait :budget_exclusion do
