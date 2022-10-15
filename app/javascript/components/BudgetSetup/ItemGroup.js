@@ -26,7 +26,7 @@ const ItemGroup = ({ collection, name, dispatch }) => {
           </div>
         </TitleRow>
         {collection.map(model => (
-          <ModelForms key={model.id} model={model} dispatch={dispatch} />
+          <ModelForms key={model.key} model={model} dispatch={dispatch} />
         ))}
       </Section>
     )

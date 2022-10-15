@@ -32,7 +32,7 @@ const ItemGroup = props => {
           </div>
         </TitleRow>
         {collection.map(model => (
-          <BudgetItem key={model.id} model={model} fns={fns} pageState={pageState} month={month} year={year} />
+          <BudgetItem key={model.key} model={model} fns={fns} pageState={pageState} month={month} year={year} />
         ))}
       </Section>
     )
@@ -42,8 +42,8 @@ const ItemGroup = props => {
 const BudgetItem = ({ model, fns, pageState, month, year }) => {
   const item = {
     ...model,
-    showDetails: pageState.showDetailsIds.includes(model.id),
-    showForm: (model.id === pageState.showFormId),
+    showDetails: pageState.showDetailsIds.includes(model.key),
+    showForm: (model.key === pageState.showFormId),
   }
 
   if (pendingMonthly(item)) {

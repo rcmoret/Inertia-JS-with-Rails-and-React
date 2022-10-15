@@ -48,13 +48,13 @@ export const TransactionDetail = ({ model, ...suppliedProps }) => {
 
 export const NameRow = ({ model, fns, month, year }) => {
   const {
-    id,
+    key,
     amount,
     iconClassName,
     name,
     showDetails,
   } = model
-  const toggleDetail = () => showDetails ? fns.collapseDetails(id) : fns.showDetails(id)
+  const toggleDetail = () => showDetails ? fns.collapseDetails(key) : fns.showDetails(key)
   const caretClassName = showDetails ? "fas fa-caret-down" : "fas fa-caret-right"
 
   return (
@@ -102,18 +102,18 @@ export const FormRow = ({ handleChange, hideForm, inputAmount, postEvent }) => (
 )
 
 export const Links = ({ model, fns, month, year }) => {
-  const { id, name, showForm, isDeletable } = model
+  const { key, name, showForm, isDeletable } = model
 
   return (
     <Cell styling={{width: "w-1/12", fontSize: "text-xs"}}>
-      <EditLink id={id} fns={fns} showForm={showForm} />
-      <DeleteLink id={id} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
+      <EditLink key={key} fns={fns} showForm={showForm} />
+      <DeleteLink key={key} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
     </Cell>
   )
 }
 
-const EditLink = ({ id, fns, showForm }) => {
-  const editFn = () => fns.renderForm(id)
+const EditLink = ({ key, fns, showForm }) => {
+  const editFn = () => fns.renderForm(key)
 
   if (showForm) {
     return (

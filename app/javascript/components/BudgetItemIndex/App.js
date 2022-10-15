@@ -81,9 +81,9 @@ const App = ({ budget, ...props }) => {
     ...pageState,
     renderClearedMonthly: !renderClearedMonthly,
   })
-  const renderForm = id => updatePageState({
+  const renderForm = key => updatePageState({
     ...pageState,
-    showFormId: id,
+    showFormId: key,
   })
   const closeForm = () => updatePageState({
     ...pageState,
