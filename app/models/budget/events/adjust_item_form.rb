@@ -7,18 +7,11 @@ module Budget
       include EventTypes
       include Messages
 
-      APPLICABLE_EVENT_TYPES = [
-        ITEM_ADJUST,
-        MULTI_ITEM_ADJUST,
-        ROLLOVER_ITEM_ADJUST,
-        SETUP_ITEM_ADJUST,
-      ].freeze
-
       def self.applicable_event_types
-        APPLICABLE_EVENT_TYPES
+        ADJUST_EVENTS
       end
 
-      validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
+      validates :event_type, inclusion: { in: ADJUST_EVENTS }
       validates :amount, numericality: { only_integer: true }
       validates :budget_item, presence: true
       validates :amount,
@@ -72,7 +65,7 @@ module Budget
       end
 
       def budget_item
-        @budget_item ||= Budget::ItemView.for(budget_item_key)
+        @budget_item ||= Budget::Item.for(budget_item_key)
       end
 
       def adjustment_amount

@@ -6,14 +6,14 @@ RSpec.describe Budget::Events::DeleteItemForm do
   describe '.applies?' do # inherited from the base class but needs to be tested here
     context 'when an applicable event' do
       it 'returns true' do
-        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::DELETE_EVENTS.sample
         expect(described_class.applies?(event_type)).to be true
       end
     end
 
     context 'when a non-applicable event' do
       it 'returns false' do
-        event_type = Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         expect(described_class.applies?(event_type)).to be false
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
     describe 'event type validation' do
       context 'when a valid event' do
         it 'is a valid form object' do
-          event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+          event_type = Budget::EventTypes::DELETE_EVENTS.sample
           form = build_form(event_type: event_type)
           expect(form).to be_valid
         end
@@ -121,7 +121,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
 
       it 'creates an event record' do
         form = build_form
-        expect { form.save }.to(change { Budget::ItemEvent.item_delete.count }
+        expect { form.save }.to(change { Budget::ItemEvent.delete_events.count }
           .from(0).to(+1))
       end
     end
@@ -158,7 +158,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
   def default_form_params
     {
       budget_item_key: budget_item.key,
-      event_type: described_class::ITEM_DELETE,
+      event_type: Budget::EventTypes::DELETE_EVENTS.sample,
     }
   end
 

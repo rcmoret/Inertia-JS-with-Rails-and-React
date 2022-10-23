@@ -64,7 +64,7 @@ RSpec.describe Queries::Budget::ItemEventsQuery do
       expected_collection = events.map do |event|
         {
           id: event.id,
-          created_at: event.created_at,
+          created_at: event.created_at.strftime('%FT%T.%6N').sub(/\.?0+$/, ''),
           amount: event.amount,
           type_description: event.type.name,
           data: nil,

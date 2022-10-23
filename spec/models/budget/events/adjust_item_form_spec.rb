@@ -3,17 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe Budget::Events::AdjustItemForm do
-  describe '.applies?' do # inherited from the base class but needs to be tested here
+  describe '.applies?' do
     context 'when an applicable event' do
       it 'returns true' do
-        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::ADJUST_EVENTS.sample
         expect(described_class.applies?(event_type)).to be true
       end
     end
 
     context 'when a non-applicable event' do
       it 'returns false' do
-        event_type = Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         expect(described_class.applies?(event_type)).to be false
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
     describe 'event type validation' do
       context 'when a valid event' do
         it 'is a valid form object' do
-          event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+          event_type = Budget::EventTypes::ADJUST_EVENTS.sample
           form = build_form(event_type: event_type)
           expect(form).to be_valid
         end
@@ -162,7 +162,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when increasing an expense' do
           it 'calls new with the correct args' do
-            stub_item_view(id: budget_item.id, amount: -22_89, expense: true)
+            stub_budget_item(id: budget_item.id, amount: -22_89, expense: true)
             form = build_form(amount: -32_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
@@ -173,7 +173,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when decreasing an expense' do
           it 'calls new with the correct args' do
-            stub_item_view(id: budget_item.id, amount: -22_89, expense: true)
+            stub_budget_item(id: budget_item.id, amount: -22_89, expense: true)
             form = build_form(amount: -15_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
@@ -184,7 +184,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when increasing a revenue' do
           it 'calls new with the correct args' do
-            stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
+            stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
             form = build_form(amount: 32_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
@@ -195,7 +195,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when decreasing a revenue' do
           it 'calls new with the correct args' do
-            stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
+            stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
             form = build_form(amount: 15_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
@@ -206,7 +206,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when providing json data' do
           it 'calls new and passes in the json' do
-            stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
+            stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
             data = { 'info' => rand(100) }
             form = build_form(data: data)
             expect(Budget::ItemEvent)
@@ -217,7 +217,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         end
 
         it 'calls save on the new event object' do
-          stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
+          stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
           form = build_form(amount: 15_89)
           expect(event_double).to receive(:save)
           form.save
@@ -248,7 +248,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
   def default_form_params
     {
       budget_item_key: budget_item.key,
-      event_type: described_class::APPLICABLE_EVENT_TYPES.sample,
+      event_type: Budget::EventTypes::ADJUST_EVENTS.sample,
       amount: 0,
       data: nil,
     }
@@ -274,16 +274,15 @@ RSpec.describe Budget::Events::AdjustItemForm do
       .and_return(event_double(save: false, errors: event_errors))
   end
 
-  def stub_item_view(id:, amount:, expense:)
-    allow(Budget::ItemView)
+  def stub_budget_item(id:, amount:, expense:)
+    allow(Budget::Item)
       .to receive(:for)
-      .and_return(item_view_double(id, amount, expense))
+      .and_return(item_double(id, amount, expense))
   end
 
-  def item_view_double(id, amount, expense)
-    # for some reason RSpec does not know about all of the instance methods
-    # from the view for Budget::ItemView so I have to use an anonymous double
-    double(
+  def item_double(id, amount, expense)
+    instance_double(
+      Budget::Item,
       id: id,
       amount: amount,
       expense?: expense,

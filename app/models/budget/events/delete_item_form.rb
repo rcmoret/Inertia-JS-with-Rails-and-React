@@ -6,18 +6,12 @@ module Budget
       include ActiveModel::Model
       include EventTypes
 
-      APPLICABLE_EVENT_TYPES = [
-        ITEM_DELETE,
-        MULTI_ITEM_ADJUST_DELETE,
-        SETUP_ITEM_DELETE,
-      ].freeze
-
       def self.applicable_event_types
-        APPLICABLE_EVENT_TYPES
+        DELETE_EVENTS
       end
 
       validates :budget_item, presence: true
-      validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
+      validates :event_type, inclusion: { in: DELETE_EVENTS }
       validate :no_transaction_details_present!
       validate :no_delete_events_present!
 

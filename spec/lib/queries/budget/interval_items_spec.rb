@@ -78,7 +78,7 @@ RSpec.describe Queries::Budget::IntervalItems do
           {
             id: event.id,
             amount: event.amount,
-            created_at: event.created_at.strftime('%FT%T.%6N').sub(/0+$/, ''),
+            created_at: event.created_at.strftime('%FT%T.%6N').sub(/\.?0+$/, ''),
             type_description: event.type.name,
             data: nil,
           }
@@ -115,7 +115,7 @@ RSpec.describe Queries::Budget::IntervalItems do
               account_name: account.name,
               description: entry.description,
               clearance_date: entry.clearance_date.strftime('%F'),
-              updated_at: detail.updated_at.strftime('%FT%T.%6N').sub(/0+$/, ''),
+              updated_at: detail.updated_at.strftime('%FT%T.%6N').sub(/\.?0+$/, ''),
             }
           end
         end
@@ -185,7 +185,7 @@ RSpec.describe Queries::Budget::IntervalItems do
           {
             id: event.id,
             amount: event.amount,
-            created_at: event.created_at.strftime('%FT%T.%6N').sub(/0+$/, ''),
+            created_at: event.created_at.strftime('%FT%T.%6N').sub(/\.?0+$/, ''),
             type_description: event.type.name,
             data: nil,
           }

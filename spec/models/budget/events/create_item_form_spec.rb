@@ -6,14 +6,14 @@ RSpec.describe Budget::Events::CreateItemForm do
   describe '.applies?' do # inherited from the base class but needs to be tested here
     context 'when an applicable event' do
       it 'returns true' do
-        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         expect(described_class.applies?(event_type)).to be true
       end
     end
 
     context 'when a non-applicable event' do
       it 'returns false' do
-        event_type = Budget::Events::AdjustItemForm::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::ADJUST_EVENTS.sample
         expect(described_class.applies?(event_type)).to be false
       end
     end
@@ -22,7 +22,7 @@ RSpec.describe Budget::Events::CreateItemForm do
   describe 'event type validation' do
     context 'when a valid event' do
       it 'is a valid form object' do
-        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         form = new_object(event_type: event_type)
         expect(form).to be_valid
       end
@@ -86,7 +86,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       context 'when the interval does exist' do
         it 'does not create an interval - not needed' do
-          interval = Budget::Interval.for
+          interval = FactoryBot.create(:budget_interval)
           form = new_object(month: interval.month, year: interval.year)
           expect { form.save }.not_to(change { Budget::Interval.count })
         end
@@ -220,7 +220,7 @@ RSpec.describe Budget::Events::CreateItemForm do
   describe '.applies?' do
     context 'when applicable' do
       specify do
-        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         expect(described_class.applies?(event_type)).to be true
       end
     end
@@ -241,7 +241,7 @@ RSpec.describe Budget::Events::CreateItemForm do
     {
       amount: amount,
       budget_category_id: budget_category.id,
-      event_type: described_class::APPLICABLE_EVENT_TYPES.sample,
+      event_type: Budget::EventTypes::CREATE_EVENTS.sample,
       month: budget_interval.month,
       year: budget_interval.year,
       budget_item_key: SecureRandom.hex(6),

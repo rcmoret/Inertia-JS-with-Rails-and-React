@@ -8,20 +8,11 @@ module Budget
       include EventTypes
       include Messages
 
-      APPLICABLE_EVENT_TYPES = [
-        ITEM_CREATE,
-        MULTI_ITEM_ADJUST_CREATE,
-        ROLLOVER_ITEM_CREATE,
-        PRE_SETUP_MULTI_ITEM_ADJUST_CREATE,
-        PRE_SETUP_ITEM_CREATE,
-        SETUP_ITEM_CREATE,
-      ].freeze
-
       def self.applicable_event_types
-        APPLICABLE_EVENT_TYPES
+        CREATE_EVENTS
       end
 
-      validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
+      validates :event_type, inclusion: { in: CREATE_EVENTS }
       validates :category, presence: true
       validates :amount, numericality: { only_integer: true }
       validates :amount,
@@ -110,7 +101,7 @@ module Budget
       end
 
       def interval
-        @interval ||= Budget::Interval.for(month: month, year: year)
+        @interval ||= Budget::Interval.for(month: month, year: year, user_id: 1)
       end
 
       def promote_errors(model_errors)

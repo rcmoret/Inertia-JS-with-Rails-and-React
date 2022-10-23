@@ -54,7 +54,7 @@ RSpec.describe Queries::Budget::TransactionDetailsQuery do
           {
             id: detail.id,
             amount: detail.amount,
-            updated_at: detail.updated_at.strftime('%FT%T.%6N').sub(/0+$/, ''),
+            updated_at: detail.updated_at.strftime('%FT%T.%6N').sub(/\.?0+$/, ''),
             account_name: detail.entry.account.name,
             clearance_date: detail.entry.clearance_date.to_s,
             description: detail.entry.description,

@@ -15,7 +15,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'records an error' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, events: events_params)
+      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
 
       form.save
 
@@ -24,7 +24,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'returns false' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, events: events_params)
+      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
       expect(form.save).to be false
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'records an error' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, events: events_params)
+      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
 
       form.save
 
@@ -55,13 +55,13 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'returns false' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, events: events_params)
+      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
       expect(form.save).to be false
     end
   end
 
   describe 'events form validation' do
-    subject { described_class.new(month: month, year: year, events: events_params) }
+    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
@@ -91,7 +91,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   context 'when the form does not save correctly' do
-    subject { described_class.new(month: month, year: year, events: events_params) }
+    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
@@ -101,7 +101,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     let(:errors_double) do
       instance_double(ActiveModel::Errors).tap do |double|
-        allow(double).to receive(:each).and_yield('create.0.amount', 'Can\'t be blank')
+        allow(double).to receive(:each).and_yield('create.0.amount', "Can't be blank")
       end
     end
     let(:form_double) do
@@ -121,7 +121,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe 'updates to the interval' do
-    subject { described_class.new(month: interval.month, year: interval.year, events: events_params) }
+    subject { described_class.new(month: interval.month, year: interval.year, user_id: 1, events: events_params) }
 
     around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
     before do
@@ -129,10 +129,10 @@ RSpec.describe Budget::Events::SetupForm do
         .to receive(:new)
         .and_return(instance_double(Budget::Events::Form, save: true, valid?: true))
     end
-    let(:interval) { Budget::Interval.for(month: month, year: year) }
+    let(:interval) { FactoryBot.create(:budget_interval, month: month, year: year) }
     let(:events_params) { [{ event_type: valid_create_event }] }
 
-    it 'updates the interval\'s set up completed at timestamp' do
+    it "updates the interval's set up completed at timestamp" do
       expect { subject.save }
         .to change { interval.reload.set_up_completed_at }
         .from(nil)
@@ -177,6 +177,7 @@ RSpec.describe Budget::Events::SetupForm do
         described_class.new(
           month: interval.month,
           year: interval.year,
+          user_id: 1,
           events: events_params,
           start_date: start_date,
           end_date: end_date
@@ -186,14 +187,14 @@ RSpec.describe Budget::Events::SetupForm do
       let(:start_date) { DateTime.new(today.year, today.month, 2) }
       let(:end_date) { DateTime.new(today.year, today.month, -2) }
 
-      it 'updates the interval\'s start date' do
+      it "updates the interval's start date" do
         expect { subject.save }
           .to change { interval.reload.start_date }
           .from(nil)
           .to(start_date)
       end
 
-      it 'updates the interval\'s end date' do
+      it "updates the interval's end date" do
         expect { subject.save }
           .to change { interval.reload.end_date }
           .from(nil)
@@ -203,7 +204,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe 'initializing and saving the events form' do
-    subject { described_class.new(month: month, year: year, events: events_params) }
+    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
@@ -234,7 +235,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe '.save' do
-    subject { described_class.new(month: month, year: year, events: []) }
+    subject { described_class.new(month: month, year: year, user_id: 1, events: []) }
 
     before do
       allow(Budget::Events::Form)
@@ -249,7 +250,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   def valid_create_event
-    Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+    Budget::EventTypes::CREATE_EVENTS.sample
   end
 
   def month

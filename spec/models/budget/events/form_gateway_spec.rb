@@ -6,7 +6,7 @@ RSpec.describe Budget::Events::FormGateway do
   describe '.handler_registered?' do
     context 'when providing one that is registered' do
       it 'returns true' do
-        event_type = Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+        event_type = Budget::EventTypes::CREATE_EVENTS.sample
         expect(described_class.handler_registered?(event_type)).to be true
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe Budget::Events::FormGateway do
     context 'when a create event' do
       it 'returns the create event form object initialized with event data' do
         event = {
-          event_type: Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample,
+          event_type: Budget::EventTypes::CREATE_EVENTS.sample,
           budget_item_id: rand(100),
           amount: rand(1000),
         }

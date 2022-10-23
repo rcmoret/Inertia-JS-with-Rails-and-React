@@ -6,7 +6,7 @@ RSpec.describe Budget::Events::Form do
   describe 'validations' do
     context 'when providing a single item array that is valid' do
       it 'returns valid' do
-        params = { events: [{ event_type: valid_create_event }] }
+        params = { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
         form = described_class.new(params)
         expect(form).to be_valid
       end
@@ -24,7 +24,7 @@ RSpec.describe Budget::Events::Form do
   describe 'initializing the new event form objects' do
     context 'when providing a single item array that is valid' do
       it 'initializes a create item event form object' do
-        params = { events: [{ event_type: valid_create_event }] }
+        params = { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
         expect(Budget::Events::CreateItemForm)
           .to receive(:new)
           .with(params[:events].first.symbolize_keys)
@@ -37,7 +37,7 @@ RSpec.describe Budget::Events::Form do
   describe '#save' do
     context 'when not valid' do
       it 'returns false' do
-        params = { events: [{ event_type: valid_create_event }] }
+        params = { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
         form = described_class.new(params)
         expect(form.save).to be false
       end
@@ -46,7 +46,7 @@ RSpec.describe Budget::Events::Form do
     context 'when valid and the form objects all save' do
       let(:form_double) { instance_double(Budget::Events::CreateItemForm, save: true) }
       let(:params) do
-        { events: [{ event_type: valid_create_event }] }
+        { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
       end
 
       before do
@@ -76,7 +76,7 @@ RSpec.describe Budget::Events::Form do
           .and_call_original
       end
       let(:params) do
-        { events: [{ event_type: valid_create_event }] }
+        { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
       end
 
       it 'returns false' do
@@ -94,9 +94,5 @@ RSpec.describe Budget::Events::Form do
 
   def unregistered_event
     'unregistered_event'
-  end
-
-  def valid_create_event
-    Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
   end
 end
