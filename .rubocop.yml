@@ -54,3 +54,11 @@ Style/MultilineBlockChain:
 Lint/UselessMethodDefinition:
   Exclude:
     - app/lib/presenters/**/*
+
+Metrics/AbcSize:
+  Exclude:
+    - app/lib/queries/**/*
+
+Lint/MissingSuper:
+  Exclude:
+    - app/models/budget/events/*
