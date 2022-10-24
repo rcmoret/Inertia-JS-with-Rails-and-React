@@ -72,44 +72,8 @@ RSpec.describe Budget::Interval, type: :model do
       end
     end
 
-    describe '.for' do
-      let(:year) { (2000..2099).to_a.sample }
-      let(:today) { Date.new(year, 3, 14) }
-      let(:first_of_march) { Date.new(year, 3, 1) }
-      let(:first_of_april) { Date.new(year, 4, 1) }
-
-      before { Timecop.travel(today) }
-
-      describe 'accepts a date object as a named parameter' do
-        specify do
-          subject = described_class.for(date: first_of_march)
-          expect(subject.month).to be 3
-          expect(subject.year).to be year
-        end
-      end
-
-      describe 'accpets a date string as a named parameter' do
-        specify do
-          subject = described_class.for(date: first_of_march.to_s)
-          expect(subject.month).to be 3
-          expect(subject.year).to be year
-        end
-      end
-
-      describe 'raising an error if invalid date' do
-        specify do
-          expect { described_class.for(date: 'foo bar') }.to raise_error ArgumentError
-        end
-      end
-
-      describe 'passing a month as a named parameter' do
-        specify do
-          subject = described_class.for(month: 3)
-          expect(subject.month).to be 3
-          expect(subject.year).to be year
-        end
-      end
-    end
+    # describe '.for' do
+    # end
 
     describe '#first_date' do
       context 'when the first day lands normally' do # (2/28/19 is a Thursday)

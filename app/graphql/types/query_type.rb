@@ -21,11 +21,12 @@ module Types
 
     field :account, AccountType, null: true do
       description 'Fetch an Account by id'
+      argument :user_id, Integer, required: true
       argument :slug, String, required: true
     end
 
-    def account(slug:)
-      Account.find_by(slug: slug)&.then do |acct|
+    def account(slug:, user_id:)
+      Account.find_by(slug: slug, user_id: user_id)&.then do |acct|
         Presenters::AccountPresenter.new(acct)
       end
     end

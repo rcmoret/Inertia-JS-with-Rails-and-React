@@ -45,18 +45,9 @@ module Budget
 
     attr_accessor :user_id
 
-    # rubocop:disable Metric/AbcSize
-    def self.for(**opts)
-      month, year =
-        if opts[:date].present?
-          [opts[:date].to_date.month, opts[:date].to_date.year]
-        else
-          today = Date.today
-          [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
-        end
-      find_or_create_by(month: month, year: year).tap { |interval| interval.user_id = opts[:user_id] }
+    def self.for(month:, year:, user_id:)
+      find_or_create_by(month: month, year: year).tap { |interval| interval.user_id = user_id }
     end
-    # rubocop:enable Metric/AbcSize
 
     def self.current
       unclosed.ordered.take
@@ -91,17 +82,17 @@ module Budget
 
     def prev
       if month > 1
-        self.class.for(month: (month - 1), year: year)
+        self.class.for(month: (month - 1), year: year, user_id: user_id)
       else
-        self.class.for(month: 12, year: (year - 1))
+        self.class.for(month: 12, year: (year - 1), user_id: user_id)
       end
     end
 
     def next_month
       if month < 12
-        self.class.for(month: (month + 1), year: year)
+        self.class.for(month: (month + 1), year: year, user_id: user_id)
       else
-        self.class.for(month: 1, year: (year + 1))
+        self.class.for(month: 1, year: (year + 1), user_id: user_id)
       end
     end
     alias next next_month
