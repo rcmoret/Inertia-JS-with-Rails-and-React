@@ -28,8 +28,8 @@ gem 'jbuilder', '~> 2.7'
 gem 'image_processing', '~> 1.2'
 
 gem 'devise'
-gem 'importmap-rails'
 gem 'graphql'
+gem 'importmap-rails'
 gem 'inertia_rails'
 gem 'rubocop', require: false
 

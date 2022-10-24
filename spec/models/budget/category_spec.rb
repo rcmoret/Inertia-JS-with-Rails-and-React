@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Budget::Category, type: :model do
   describe 'associations' do
     it { should have_many(:items) }
-    it { should have_many(:transactions) }
+    it { should have_many(:transaction_details) }
     it { should belong_to(:icon).required(false) }
     it { should have_many(:maturity_intervals) }
     it { should have_many(:events).through(:items) }

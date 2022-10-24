@@ -2,23 +2,47 @@
 
 module Budget
   class Item < ApplicationRecord
-    include Budget::SharedItem
     include Presentable
 
+    has_many :transaction_details,
+             class_name: 'Transaction::Detail',
+             foreign_key: :budget_item_id
+    has_many :events, class_name: 'ItemEvent', foreign_key: :budget_item_id
+
+    belongs_to :category, foreign_key: :budget_category_id
+    belongs_to :interval,
+               class_name: 'Interval',
+               foreign_key: :budget_interval_id
+    has_many :maturity_intervals, through: :category
+
     validates :key, uniqueness: true, presence: true, length: { is: 12 }
+    validates :category, presence: true
     validates_uniqueness_of :budget_category_id,
                             scope: :budget_interval_id,
                             if: -> { weekly? && active? }
+
+    scope :current, -> { where(budget_interval: Interval.current) }
+    scope :prior_to, ->(date_hash) { joins(:interval).merge(Interval.prior_to(date_hash)) }
+    scope :in_range, ->(range) { joins(:interval).merge(Interval.in_range(range)) }
+    scope :active, -> { where(deleted_at: nil) }
+    scope :deleted, -> { where.not(deleted_at: nil) }
+    scope :revenues, -> { joins(:category).merge(Category.revenues) }
+    scope :expenses, -> { joins(:category).merge(Category.expenses) }
+    scope :monthly, -> { joins(:category).merge(Category.monthly) }
+    scope :weekly, -> { joins(:category).merge(Category.weekly) }
+    scope :accruals, -> { joins(:category).merge(Category.accruals) }
+    scope :non_accruals, -> { joins(:category).merge(Category.non_accruals) }
 
     delegate :accrual,
              :expense?,
              :icon_class_name,
              :monthly?,
              :name,
+             :per_diem_enabled,
              to: :category
 
-    def view
-      @view ||= ItemView.find(id)
+    def self.for(key)
+      find_by(arel_table[:key].lower.eq(key.downcase))
     end
 
     def delete
@@ -27,9 +51,22 @@ module Budget
       update(deleted_at: Time.current)
     end
 
+    def weekly?
+      !monthly?
+    end
+
+    def revenue?
+      !expense?
+    end
+
+    def deletable?
+      transaction_details.none?
+    end
+
     def amount
       events.sum(:amount)
     end
+
     NonDeleteableError = Class.new(StandardError)
 
     private

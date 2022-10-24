@@ -16,7 +16,7 @@ module Types
     end
 
     def accounts(user_id:, include_archived: false)
-      Queries::Accounts::WithBalance.new(user_id: user_id, include_archived: include_archived).call(&:as_presenter)
+      Queries::Accounts::AllWithBalance.new(user_id: user_id, include_archived: include_archived).call(&:as_presenter)
     end
 
     field :account, AccountType, null: true do
