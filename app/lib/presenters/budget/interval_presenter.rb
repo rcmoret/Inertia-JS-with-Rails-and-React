@@ -14,12 +14,10 @@ module Presenters
       alias is_future future?
 
       def items(include_deleted: false, reviewable_only: false)
-        items_query = include_deleted ? item_views : item_views.active
+        item_query(include_deleted: include_deleted).map(&:as_presenter).then do |collection|
+          collection.select!(&:reviewable?) if reviewable_only
 
-        items_query.map(&:as_presenter).then do |item_presenters|
-          item_presenters.select!(&:reviewable?) if reviewable_only
-
-          item_presenters
+          collection
         end
       end
 
@@ -67,7 +65,7 @@ module Presenters
         return 0 unless current? || closed_out?
 
         @available_cash ||=
-          Queries::Accounts::AvailableCash.new(user.id, date_range: date_range, current: current?).call
+          Queries::Accounts::AvailableCash.new(budget_interval: self).call
       end
 
       def user
@@ -76,11 +74,13 @@ module Presenters
 
       private
 
-      def item_views
-        super
-          .includes(:transactions)
-          .includes(events: :type)
-          .includes(:maturity_intervals)
+      def item_query(include_deleted:)
+        @item_query ||= Queries::Budget::IntervalItems.new(
+          month: month,
+          year: year,
+          user_id: user_id,
+          include_deleted: include_deleted
+        ).call
       end
 
       def today

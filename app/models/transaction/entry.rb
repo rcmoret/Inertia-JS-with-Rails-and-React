@@ -3,13 +3,10 @@
 module Transaction
   class Entry < ApplicationRecord
     include Scopes
+    include Presentable
 
     belongs_to :account
     belongs_to :transfer, required: false
-    has_one :view,
-            class_name: 'EntryView',
-            foreign_key: :id,
-            primary_key: :id
     has_many :details,
              foreign_key: :transaction_entry_id,
              dependent: :destroy,
@@ -91,6 +88,10 @@ module Transaction
       else # non-tranfer; budget included
         errors.add(:details, 'Must have at least one detail for this entry')
       end
+    end
+
+    def presenter_class
+      Presenters::Transactions::EntryPresenter
     end
   end
 end

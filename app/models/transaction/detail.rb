@@ -8,10 +8,6 @@ module Transaction
                optional: false,
                foreign_key: :transaction_entry_id
     has_one :account, through: :entry
-    has_one :view,
-            class_name: 'DetailView',
-            foreign_key: :id,
-            primary_key: :id
     validates :amount, presence: true
     validates :budget_item_id, uniqueness: true, if: :budget_item_monthly?
     validate :amount_static!, if: :transfer?, on: :update

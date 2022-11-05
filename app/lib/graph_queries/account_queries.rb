@@ -51,13 +51,13 @@ module GraphQueries
               }
             }
           }
-          selectedAccount: account(slug: "#{slug}") {
+          selectedAccount: account(slug: "#{slug}" userId: #{user_id}) {
             id
-            balancePriorTo(month: #{month}, year: #{year})
+            balancePriorTo(userId: #{user_id} month: #{month} year: #{year})
             isCashFlow
             name
             slug
-            transactions(month: #{month}, year: #{year}) {
+            transactions(month: #{month} year: #{year} userId: #{user_id}) {
               id
               amount
               budgetExclusion

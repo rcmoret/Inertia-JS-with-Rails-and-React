@@ -20,14 +20,7 @@ module Presenters
       end
 
       def transaction_details
-        @transaction_details ||=
-          Transaction::DetailView
-          .for(user)
-          .discretionary
-          .budget_inclusions
-          .non_transfers
-          .between(date_range, include_pending: current?)
-          .map(&:as_presenter)
+        @transaction_details ||= Queries::Transactions::DiscretionaryDetailsQuery.new(interval: self).call
       end
 
       def transactions_total

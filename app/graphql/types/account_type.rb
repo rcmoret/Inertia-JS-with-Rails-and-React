@@ -10,6 +10,7 @@ module Types
       description 'Sum of the transaction details prior to a date'
       argument :month, Integer, required: true
       argument :year, Integer, required: true
+      argument :user_id, Integer, required: true
     end
     field :is_archived, Boolean, 'Has the account been archived', null: false
     field :is_cash_flow, Boolean, 'Count toward available cash', null: false
@@ -18,6 +19,7 @@ module Types
       description 'Transactions associated with the account'
       argument :month, Integer, required: false
       argument :year, Integer, required: false
+      argument :user_id, Integer, required: true
     end
     field :slug, String, 'Account slug name', null: false
   end

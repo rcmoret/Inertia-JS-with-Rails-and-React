@@ -8,7 +8,7 @@ module Presenters
       end
 
       def details
-        attributes.fetch(:details) { super }.map { |detail| Detail.new(detail) }
+        @details ||= super.map(&:as_presenter)
       end
 
       def amount
@@ -26,16 +26,6 @@ module Presenters
       def attributes
         @attributes ||= super.deep_symbolize_keys
       end
-
-      Detail = Struct.new(
-        :id,
-        :budget_category_name,
-        :budget_category_id,
-        :budget_item_id,
-        :amount,
-        :icon_class_name,
-        keyword_init: true
-      )
     end
   end
 end

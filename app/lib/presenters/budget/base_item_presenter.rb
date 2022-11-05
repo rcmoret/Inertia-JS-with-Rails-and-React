@@ -3,92 +3,52 @@
 module Presenters
   module Budget
     class BaseItemPresenter < SimpleDelegator
-      def name
-        attributes.fetch(:name) { category.name }
-      end
-
-      def amount
-        attributes.fetch(:amount) { events.reduce(0) { |sum, event| sum + event.amount } }
-      end
-
-      def spent
-        attributes.fetch(:spent) { transaction_details.reduce(0) { |sum, detail| sum + detail.amount } }
-      end
-
-      def icon_class_name
-        attributes.fetch(:icon_class_name) { category.icon_class_name }
-      end
-
       def accrual?
-        attributes.fetch(:accrual) { category.accrual? }
+        accrual
       end
       alias is_accrual accrual?
 
-      def month
-        attributes.fetch(:month) { interval.month }
-      end
-
-      def year
-        attributes.fetch(:year) { interval.year }
-      end
-
       def monthly?
-        attributes.fetch(:monthly) { category.monthly? }
+        monthly
       end
       alias is_monthly monthly?
 
       def expense?
-        attributes.fetch(:expense) { category.expense? }
+        expense
       end
       alias is_expense expense?
 
-      def transaction_detail_count
-        attributes.fetch(:transaction_count) { transation_details.count }
+      def per_diem_enabled?
+        is_per_diem_enabled
       end
 
-      def per_diem_enabled?
-        attributes.fetch(:is_per_diem_enabled) { category.per_diem_enabled? }
+      def spent
+        transactions_total
       end
-      alias is_per_diem_enabled per_diem_enabled?
+
+      def transaction_detail_count
+        transactions_count
+      end
 
       def difference
         amount - spent
       end
 
       def deletable?
-        transaction_detail_count.zero?
+        transactions_count.zero?
       end
       alias is_deletable deletable?
-
-      def events
-        super.map(&:as_presenter)
-      end
-
-      def transaction_details
-        transactions.map(&:as_presenter)
-      end
 
       def maturity_month
         return unless accrual?
 
-        upcoming_maturity_interval&.month
+        upcoming_maturity_interval[:month]
       end
 
       def maturity_year
         return unless accrual?
 
-        upcoming_maturity_interval&.year
-      end
-
-      private
-
-      def attributes
-        super.symbolize_keys
-      end
-
-      def upcoming_maturity_interval
-        @upcoming_maturity_interval ||=
-          category.maturity_intervals.on_or_after(month, year)&.first
+        upcoming_maturity_interval[:year]
       end
     end
   end

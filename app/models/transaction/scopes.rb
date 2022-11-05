@@ -6,10 +6,7 @@ module Transaction
     included do
       scope :cleared, -> { where.not(clearance_date: nil) }
       scope :pending, -> { where(clearance_date: nil) }
-      scope :prior_to, lambda { |date|
-        cleared
-          .where(%("#{table_name}".clearance_date < :date), date: date)
-      }
+      scope :prior_to, ->(date) { cleared.where(arel_table[:clearance_date].lt(date)) }
       scope :in, ->(range) { where(clearance_date: range) }
       scope :between, lambda { |range, include_pending: false|
         include_pending ? self.in(range).or(pending) : self.in(range)
