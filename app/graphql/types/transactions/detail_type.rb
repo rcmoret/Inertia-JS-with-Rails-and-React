@@ -12,7 +12,7 @@ module Types
             Boolean,
             'Should the transaction detail be excluded from budget calculations',
             null: false
-      field :budget_item_id, ID, 'Optional primary key of the associated budget item', null: true
+      field :budget_item_key, String, 'Optional identifying key of the associated budget item', null: true
       field :budget_category_id, ID, 'Optional primary key of the associated budget category', null: true
       field :budget_category_name, String, 'Name of the associated budget category', null: true
       field :clearance_date, GraphQL::Types::ISO8601DateTime, 'Date when the transaction posted to the bank', null: true

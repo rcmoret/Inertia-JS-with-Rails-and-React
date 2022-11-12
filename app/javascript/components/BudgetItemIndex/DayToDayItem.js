@@ -38,6 +38,7 @@ const DayToDayItem = ({ model, fns, month, year }) => {
 
 const Form = ({ model, fns, details, month, year }) => {
   const {
+    key,
     id,
     amount,
     inputAmount,
@@ -56,7 +57,7 @@ const Form = ({ model, fns, details, month, year }) => {
       fns.onPostSuccess(page)
     }
     postItemAdjustEvent(
-      { id, amount: updateAmount, month, year },
+      { key, amount: updateAmount, month, year },
       { onSuccess }
     )
   }
@@ -83,7 +84,7 @@ const Form = ({ model, fns, details, month, year }) => {
         </div>
       </Cell>
       <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
-      {showDetails && <BudgetItemDetails item={mdoel} details={details} />}
+      {showDetails && <BudgetItemDetails item={model} details={details} />}
      </StripedRow>
   )
 }

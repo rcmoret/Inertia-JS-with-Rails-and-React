@@ -5,14 +5,18 @@ module Transactions
     before_action :account_slug
 
     def call
-      if transaction.update(update_params.to_h.deep_transform_keys(&:underscore))
+      if transaction_form.save
         redirect_to account_transactions_path(account_slug, month: month, year: year)
       else
-        render inertia: 'AccountTransactionsIndexApp', props: transaction.errors
+        render inertia: 'AccountTransactionsIndexApp', props: transaction_form.errors
       end
     end
 
     private
+
+    def transaction_form
+      @transaction_form ||= Forms::TransactionForm.new(transaction, params)
+    end
 
     def transaction
       @transaction ||= Transaction::Entry.find(params.fetch(:id))
@@ -30,23 +34,8 @@ module Transactions
       params.fetch(:year, current_interval.year)
     end
 
-    def update_params
-      params.require(:transaction).permit(*PERMITTED_ATTRIBUTES)
-    end
-
     def account_slug
       @account_slug ||= transaction.account.slug
     end
-
-    PERMITTED_ATTRIBUTES = [
-      :accountId,
-      :budgetExclusion,
-      :checkNumber,
-      :clearanceDate,
-      :description,
-      :notes,
-      :receipt,
-      { detailsAttributes: %i[id amount budgetItemId _destroy].freeze },
-    ].freeze
   end
 end

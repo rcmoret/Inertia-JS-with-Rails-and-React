@@ -3,17 +3,17 @@
 module Transactions
   class CreateController < ApplicationController
     def call
-      if transaction.save
-        redirect_to account_transactions_path(transaction.account.slug, month: month, year: year)
+      if transaction_form.save
+        redirect_to account_transactions_path(transaction_form.account.slug, month: month, year: year)
       else
-        render inertia: 'AccountTransactionsIndexApp', props: transaction.errors
+        render inertia: 'AccountTransactionsIndexApp', props: transaction_form.errors
       end
     end
 
     private
 
-    def transaction
-      @transaction ||= Transaction::Entry.new(create_params.to_h.deep_transform_keys(&:underscore))
+    def transaction_form
+      @transaction_form ||= Forms::TransactionForm.new(Transaction::Entry.new, params)
     end
 
     def current_interval
@@ -26,19 +26,6 @@ module Transactions
 
     def year
       params.fetch(:year, current_interval.year)
-    end
-
-    def create_params
-      params.require(:transaction).permit(
-        :accountId,
-        :budgetExclusion,
-        :checkNumber,
-        :clearanceDate,
-        :description,
-        :notes,
-        :receipt,
-        detailsAttributes: %i[id amount budgetItemId _destroy]
-      )
     end
   end
 end

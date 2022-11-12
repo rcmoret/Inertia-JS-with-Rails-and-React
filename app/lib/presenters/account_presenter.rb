@@ -13,7 +13,7 @@ module Presenters
 
       super()
         .between(interval.date_range, include_pending: interval.current?)
-        .includes(details: { budget_item: { category: :icon } })
+        .includes(receipt_attachment: :blob, details: { budget_item: { category: :icon } })
         .map(&:as_presenter)
     end
 

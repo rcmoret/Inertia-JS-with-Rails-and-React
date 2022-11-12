@@ -3,6 +3,10 @@
 module Presenters
   module Transactions
     class DetailPresenter < SimpleDelegator
+      def budget_item_key
+        budget_item&.key
+      end
+
       def budget_category_id
         category&.id
       end

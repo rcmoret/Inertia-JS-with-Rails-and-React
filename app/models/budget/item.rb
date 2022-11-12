@@ -49,7 +49,7 @@ module Budget
              to: :category
 
     def self.for(key)
-      find_by(arel_table[:key].lower.eq(key.downcase))
+      find_by(arel_table[:key].lower.eq(key.to_s.downcase))
     end
 
     def delete

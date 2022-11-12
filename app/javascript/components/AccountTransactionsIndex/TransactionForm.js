@@ -22,7 +22,7 @@ import TextInput, { AmountInput } from "../shared/TextInput";
 const newDetail = () => ({
   uuid: uuid(),
   amount: "",
-  budgetItemId: null,
+  budgetItemKey: null,
   isNew: true,
   updatedAttributes: {}
 })
@@ -114,12 +114,12 @@ const Form = props => {
   const handleSubmit = event => {
     event.preventDefault();
     const detailsAttributes = updatedTransaction.details.map(detail => {
-      const { id, budgetItemId, isMarkedForDelete, isNew } = detail
+      const { id, budgetItemKey, isMarkedForDelete, isNew } = detail
       if (isMarkedForDelete) {
         return { id, _destroy: true }
       } else {
         const amount = decimalToInt(detail.amount)
-        return isNew ? { amount, budgetItemId } : { id, amount, budgetItemId }
+        return isNew ? { amount, budgetItemKey } : { id, amount, budgetItemKey }
       }
     })
     makeRequest({
@@ -152,7 +152,7 @@ const Form = props => {
           ...detail,
           updatedAttributes: {
             ...detail.updatedAttributes,
-            budgetItemId: null,
+            budgetItemKey: null,
           }
         })),
         updatedAttributes: {
@@ -397,13 +397,14 @@ const Details = props => {
 
 const DetailForm = props => {
   const { detail, iconClassName, interval, isBudgetExclusion, items, onClick, update } = props
-  const originalBudgetItemId = detail.budgetItemId
-  const { uuid, amount, budgetItemId, budgetCategoryName, isMarkedForDelete, isNew } = { ...detail, ...detail.updatedAttributes }
+  const originalBudgetItemKey = detail.budgetItemKey
+  const { uuid, amount, budgetItemKey, budgetCategoryName, isMarkedForDelete, isNew } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
 
+  const valueFn = item => item.key
   const labelFn = item => `${item.name} ${MoneyFormatter(item.remaining, { decorate: true, absolute: true })}`
   const baseOptions = items.filter(item => {
-    if (item.id === originalBudgetItemId) {
+    if (item.id === originalBudgetItemKey) {
       return true
     } else if (item.isAccrual && isMatureAccrual(item, month, year)) {
       return true
@@ -412,32 +413,32 @@ const DetailForm = props => {
     } else {
       return !item.isMonthly || item.isDeletable
     }
-  }).map(item => asOption(item, { labelFn }))
+  }).map(item => asOption(item, { valueFn, labelFn }))
   const [term, setTerm] = useState("")
-  // console.log({ term })
   const selectFilter = createFilter({ matchFrom: "start" })
   const optionsFn = () => {
     const nullOption = { value: null, label: "Petty Cash" }
-    if (baseOptions.map(o => o.value).includes(originalBudgetItemId)) {
+    // debugger
+    if (baseOptions.map(o => o.value).includes(originalBudgetItemKey)) {
       return [nullOption, ...baseOptions.sort(sortByLabel)]
     } else if (isNew) {
       return [nullOption, ...baseOptions].sort(sortByLabel)
     } else {
-      return [nullOption, ...[{ value: originalBudgetItemId, label: budgetCategoryName }, ...baseOptions].sort(sortByLabel)]
+      return [nullOption, ...[{ value: originalBudgetItemKey, label: budgetCategoryName }, ...baseOptions].sort(sortByLabel)]
     }
   }
   const availableOptions = optionsFn()
 
-  const value = availableOptions.find(item => item.value === budgetItemId)
+  const value = availableOptions.find(item => item.value === budgetItemKey)
   const handleAmountChange = event => {
     update(uuid, { amount: event.target.value })
   }
   const handleItemChange = event => {
-    const selectedItem = props.items.find(item => item.id === event.value)
+    const selectedItem = props.items.find(item => item.key === event.value)
     if (selectedItem && selectedItem.isMonthly && amount === "") {
-      update(uuid, { budgetItemId: event.value, amount: MoneyFormatter(selectedItem.remaining) })
+      update(uuid, { budgetItemKey: event.value, amount: MoneyFormatter(selectedItem.remaining) })
     } else {
-      update(uuid, { budgetItemId: event.value })
+      update(uuid, { budgetItemKey: event.value })
     }
   }
   const handleCalculate = () => update(uuid, { amount: evalInput(amount) })

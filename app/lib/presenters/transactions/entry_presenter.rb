@@ -16,7 +16,7 @@ module Presenters
       end
 
       def receipt_blob
-        return if super.nil?
+        return if receipt_attachment.nil?
 
         AttachmentBlobPresenter.new(super)
       end

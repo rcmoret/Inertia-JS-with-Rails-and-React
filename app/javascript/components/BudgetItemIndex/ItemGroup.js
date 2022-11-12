@@ -31,8 +31,8 @@ const ItemGroup = props => {
             </Point>
           </div>
         </TitleRow>
-        {collection.map(model => (
-          <BudgetItem key={model.key} model={model} fns={fns} pageState={pageState} month={month} year={year} />
+        {collection.map((model, index) => (
+          <BudgetItem key={index} model={model} fns={fns} pageState={pageState} month={month} year={year} />
         ))}
       </Section>
     )

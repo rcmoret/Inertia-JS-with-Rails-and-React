@@ -106,14 +106,14 @@ export const Links = ({ model, fns, month, year }) => {
 
   return (
     <Cell styling={{width: "w-1/12", fontSize: "text-xs"}}>
-      <EditLink key={key} fns={fns} showForm={showForm} />
-      <DeleteLink key={key} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
+      <EditLink itemKey={key} fns={fns} showForm={showForm} />
+      <DeleteLink itemKey={key} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
     </Cell>
   )
 }
 
-const EditLink = ({ key, fns, showForm }) => {
-  const editFn = () => fns.renderForm(key)
+const EditLink = ({ itemKey, fns, showForm }) => {
+  const editFn = () => fns.renderForm(itemKey)
 
   if (showForm) {
     return (

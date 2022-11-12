@@ -5,6 +5,7 @@ import {
   asOption,
   isExpense,
   isRevenue,
+  generateIdentifer,
   sortByName,
 } from "../../lib/Functions";
 import { postItemCreateEvent } from "./Functions";
@@ -41,12 +42,13 @@ const CreateItemForm = (props) => {
   const [form, updateForm] = useState({
     amount: "",
     categoryId: null,
+    key: generateIdentifer()
   })
 
   const handleInputChange = event => updateForm({ ...form, amount: event.target.value })
   const handleSelectChange = event => {
     if (form.amount === "") {
-      updateForm({ amount: MoneyFormatter(event.defaultAmount, { decorate: false }), categoryId: event.value })
+      updateForm({ ...form, amount: MoneyFormatter(event.defaultAmount, { decorate: false }), categoryId: event.value })
     } else {
       updateForm({ ...form, categoryId: event.value })
     }
@@ -69,10 +71,13 @@ const CreateItemForm = (props) => {
     toggleForm()
     fns.onPostSuccess(page)
   }
-  const onSubmit = () => postItemCreateEvent(
-    { budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
-    { onSuccess }
-  )
+  const onSubmit = () => {
+    console.log({ form })
+    postItemCreateEvent(
+      { key: form.key, budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
+      { onSuccess }
+    )
+  }
 
   if (isFormShown) {
     return (

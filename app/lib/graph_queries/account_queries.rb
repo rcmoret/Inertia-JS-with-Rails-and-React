@@ -70,7 +70,7 @@ module GraphQueries
               details {
                 id
                 amount
-                budgetItemId
+                budgetItemKey
                 budgetCategoryId
                 budgetCategoryName
                 iconClassName
