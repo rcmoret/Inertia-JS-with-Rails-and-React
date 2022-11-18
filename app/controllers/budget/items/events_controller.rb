@@ -14,7 +14,7 @@ module Budget
       private
 
       def form
-        @form ||= Budget::Events::Form.new(events: events_params)
+        @form ||= Budget::Events::Form.new(current_user, events: events_params)
       end
 
       def events_params
@@ -32,7 +32,7 @@ module Budget
       end
 
       def current_interval
-        @current_interval ||= Budget::Interval.current
+        @current_interval ||= Budget::Interval.current(user: current_user)
       end
     end
   end

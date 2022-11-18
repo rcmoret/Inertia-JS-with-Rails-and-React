@@ -15,7 +15,7 @@ module Budget
       def query
         <<~GQL
           {
-            budget {
+            budget(userId: #{current_user.id}) {
               categories(includeArchived: #{include_archived?}) {
                 id
                 archivedAt

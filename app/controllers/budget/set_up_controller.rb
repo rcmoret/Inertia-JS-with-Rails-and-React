@@ -28,7 +28,7 @@ module Budget
     end
 
     def current_interval
-      @current_interval ||= Budget::Interval.current
+      @current_interval ||= Budget::Interval.current(user: current_user)
     end
 
     def month

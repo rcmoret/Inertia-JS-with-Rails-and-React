@@ -28,7 +28,7 @@ module Budget
     validates :budget_category_id, uniqueness: { scope: :budget_interval_id, if: -> { weekly? && active? } }
     # rubocop:enable Rails/UniqueValidationWithoutIndex
 
-    scope :current, -> { where(budget_interval: Interval.current) }
+    # scope :current, -> { where(budget_interval: Interval.current) }
     scope :prior_to, ->(date_hash) { joins(:interval).merge(Interval.prior_to(date_hash)) }
     scope :in_range, ->(range) { joins(:interval).merge(Interval.in_range(range)) }
     scope :active, -> { where(deleted_at: nil) }

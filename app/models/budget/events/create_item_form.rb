@@ -152,7 +152,11 @@ module Budget
         end
       end
 
+<<<<<<< HEAD
       attr_reader :current_user, :amount, :budget_category_id, :event_type, :month, :year, :data, :budget_item_key
+=======
+      attr_reader :current_user, :amount, :budget_category_id, :event_type, :month, :year, :data, :key
+>>>>>>> 1304541 (Update interval to belong to a user)
     end
     # rubocop:enable Metrics/ClassLength
   end

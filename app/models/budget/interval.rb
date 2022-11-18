@@ -3,6 +3,7 @@
 module Budget
   class Interval < ApplicationRecord
     include Presentable
+    belongs_to :user
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     has_many :maturity_intervals,
              class_name: 'CategoryMaturityInterval',
@@ -14,9 +15,11 @@ module Budget
 
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
+    validates :month, uniqueness: { scope: %i[year user_id] }
     validate :close_out_completed_at_end_of_month
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
+    scope :belonging_to, ->(user) { where(user: user) }
 
     scope :prior_to, lambda { |date_hash|
       month, year = date_hash.symbolize_keys.values_at(:month, :year)
@@ -53,8 +56,8 @@ module Budget
       find_or_create_by(month: month, year: year, user_id: user_id)
     end
 
-    def self.current
-      unclosed.ordered.take
+    def self.current(user:)
+      belonging_to(user).unclosed.ordered.take
     end
 
     def set_up?

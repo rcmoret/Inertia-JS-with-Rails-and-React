@@ -22,11 +22,15 @@ module Budget
     private
 
     def interval
-      @interval ||= Budget::Interval.for(month: base_interval_month, year: base_interval_year)
+      @interval ||= Budget::Interval.for(
+        month: base_interval_month,
+        year: base_interval_year,
+        user_id: current_user.id
+      )
     end
 
     def current_interval
-      @current_interval ||= Budget::Interval.current
+      @current_interval ||= Budget::Interval.current(user: current_user)
     end
 
     def target_interval_month

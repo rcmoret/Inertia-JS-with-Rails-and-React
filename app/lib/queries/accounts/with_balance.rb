@@ -9,7 +9,7 @@ module Queries
 
       def initialize(user_id:, month:, year:)
         @user_id = user_id
-        @interval = Budget::Interval.for(month: month, year: year)
+        @interval = Budget::Interval.for(month: month, year: year, user_id: user_id)
       end
 
       def call

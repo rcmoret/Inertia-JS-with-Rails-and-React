@@ -8,7 +8,7 @@ module Budget
 
     def index
       if month.nil? || year.nil?
-        current_interval = Budget::Interval.current
+        current_interval = Budget::Interval.current(user: current_user)
         redirect_to budget_path(month: current_interval.month, year: current_interval.year)
       else
         render inertia: 'BudgetItemIndexApp', props: props

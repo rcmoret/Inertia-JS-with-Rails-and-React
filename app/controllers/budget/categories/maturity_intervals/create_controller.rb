@@ -26,7 +26,11 @@ module Budget
         end
 
         def interval
-          @interval ||= Budget::Interval.for(month: post_params[:month], year: post_params[:year])
+          @interval ||= Budget::Interval.for(
+            month: post_params[:month],
+            year: post_params[:year],
+            user_id: current_user.id
+          )
         end
 
         def budget_category_id

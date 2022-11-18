@@ -12,7 +12,7 @@ module Accounts
     private
 
     def current_interval
-      Budget::Interval.current
+      Budget::Interval.current(user: current_user)
     end
 
     def month
