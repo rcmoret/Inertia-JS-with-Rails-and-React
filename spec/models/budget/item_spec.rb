@@ -18,19 +18,6 @@ RSpec.describe Budget::Item, type: :model do
     it { is_expected.to validate_presence_of(:key) }
   end
 
-  describe '#current' do
-    before { Timecop.travel(year, month, 10) }
-    let(:month) { (1..12).to_a.sample }
-    let(:year) { (2000..2099).to_a.sample }
-
-    subject { described_class.current.to_sql }
-
-    it {
-      should include
-      %(WHERE "budget_items"."month" = '#{month}' AND "budget_items"."year" = '#{year}')
-    }
-  end
-
   describe 'validation of uniqueness for weekly items per interval' do
     specify do
       budget_interval = FactoryBot.create(:budget_interval)

@@ -417,14 +417,11 @@ const DetailForm = props => {
   const [term, setTerm] = useState("")
   const selectFilter = createFilter({ matchFrom: "start" })
   const optionsFn = () => {
-    const nullOption = { value: null, label: "Petty Cash" }
-    // debugger
-    if (baseOptions.map(o => o.value).includes(originalBudgetItemKey)) {
-      return [nullOption, ...baseOptions.sort(sortByLabel)]
-    } else if (isNew) {
-      return [nullOption, ...baseOptions].sort(sortByLabel)
+    const options = [{ value: null, label: "Petty Cash" }, ...baseOptions]
+    if (isNew || options.map(o => o.value).includes(originalBudgetItemKey)) {
+      return options.sort(sortByLabel)
     } else {
-      return [nullOption, ...[{ value: originalBudgetItemKey, label: budgetCategoryName }, ...baseOptions].sort(sortByLabel)]
+      return [{ value: originalBudgetItemKey, label: budgetCategoryName }, ...options].sort(sortByLabel)
     }
   }
   const availableOptions = optionsFn()
