@@ -38,7 +38,6 @@ module Budget
         @data = params[:data]
         @budget_item_key = params[:budget_item_key]
         @current_user = current_user
-        super()
       end
 
       def save

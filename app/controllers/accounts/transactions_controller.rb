@@ -3,21 +3,15 @@
 module Accounts
   class TransactionsController < ApplicationController
     before_action :set_selected_account_info
+    before_action :redirect_to_current, if: -> { month.nil? || year.nil? }
+    before_action :redirect_to_slug, unless: -> { slug == identifier }
 
     include GraphQuery
     include GraphQueries::AccountQueries
 
-    # rubocop:disable Metrics/AbcSize
     def index
-      if slug != identifier
-        redirect_to account_transactions_path(slug, month: month, year: year)
-      elsif month.nil? || year.nil?
-        redirect_to account_transactions_path(slug, month: current_interval.month, year: current_interval.year)
-      else
-        render inertia: 'AccountTransactionsIndexApp', props: props
-      end
+      render inertia: 'AccountTransactionsIndexApp', props: props
     end
-    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -33,6 +27,14 @@ module Accounts
           identifier_param
         end
       end
+    end
+
+    def redirect_to_current
+      redirect_to account_transactions_path(slug, month: current_interval.month, year: current_interval.year)
+    end
+
+    def redirect_to_slug
+      redirect_to account_transactions_path(slug, month: month, year: year)
     end
 
     def slug

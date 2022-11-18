@@ -32,7 +32,6 @@ module Budget
         @budget_item_key = params[:budget_item_key]
         @event_type = params[:event_type]
         @data = params[:data]
-        super()
       end
 
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
