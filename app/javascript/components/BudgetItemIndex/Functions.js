@@ -129,11 +129,11 @@ export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => 
 
 export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
-  const { budgetCategoryId, key, amount, month, year } = itemProps
+  const { budgetCategoryId, budgetItemKey, amount, month, year } = itemProps
   const events = [
     {
       budgetCategoryId,
-      key,
+      budgetItemKey,
       amount,
       eventType: "item_create",
       month,
@@ -144,10 +144,10 @@ export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
   postEvents({ events, month, year }, callbacks)
 };
 
-export const postItemAdjustEvent = ({ key, amount, month, year }, suppliedCallbacks = {}) => {
+export const postItemAdjustEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
   const event = {
-    budgetItemKey: key,
+    budgetItemKey: id,
     amount,
     eventType: "item_adjust",
     data: null
@@ -155,13 +155,14 @@ export const postItemAdjustEvent = ({ key, amount, month, year }, suppliedCallba
   postEvents({ events: [event], month, year }, callbacks)
 };
 
-export const postItemDeleteEvent = ({ id, amount, month, year }, suppliedCallbacks = {}) => {
+export const postItemDeleteEvent = ({ itemKey, amount, month, year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
   const event = {
-    budgetItemId: id,
+    budgetItemKey: itemKey,
     eventType: "item_delete",
     data: null
   }
+  console.log({ event })
   postEvents({ events: [event], month, year }, callbacks)
 };
 

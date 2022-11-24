@@ -107,10 +107,12 @@ const dataFor = (data) => {
 
 export const newItemEvent = (item, month, year, eventType = "item_create") => {
   const { amount, budgetCategoryId, data } = item
+  const budgetItemKey = item.budgetItemKey || generateIdentifer()
 
   return eventForm({
     amount,
     budgetCategoryId,
+    budgetItemKey,
     eventType,
     month,
     year,

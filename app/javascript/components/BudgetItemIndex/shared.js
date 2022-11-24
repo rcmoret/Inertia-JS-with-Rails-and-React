@@ -130,10 +130,10 @@ const EditLink = ({ itemKey, fns, showForm }) => {
   }
 }
 
-const DeleteLink = ({ id, isDeletable, fns, name, month, year }) => {
+const DeleteLink = ({ itemKey, isDeletable, fns, name, month, year }) => {
   const onClick = () => {
     if(window.confirm(copy.deleteConfirmation(name))) {
-      postItemDeleteEvent({ id, month, year }, { onSuccess: fns.onPostSuccess })
+      postItemDeleteEvent({ itemKey, month, year }, { onSuccess: fns.onPostSuccess })
     } else {
       return null
     }

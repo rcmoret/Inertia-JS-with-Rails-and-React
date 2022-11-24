@@ -57,7 +57,7 @@ const Form = ({ model, fns, details, month, year }) => {
       fns.onPostSuccess(page)
     }
     postItemAdjustEvent(
-      { key, amount: updateAmount, month, year },
+      { id: key, amount: updateAmount, month, year },
       { onSuccess }
     )
   }

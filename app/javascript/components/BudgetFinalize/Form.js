@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { asOption, sortByName as sortFn } from '../../lib/Functions';
+import { asOption, generateIdentifer, sortByName as sortFn } from '../../lib/Functions';
 import { extraFrom } from './Functions';
 import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
 
@@ -19,14 +19,14 @@ const Form = props => {
       .filter(item => item.budgetCategoryId === category.id)
       .map(({ budgetItemId, budgeted }) => ({
         name: `${budgetItemId} - ${MoneyFormatter(budgeted, { decorate: true })}`,
-        budgetItemId,
+        budgetItemKey: budgetItemId,
         budgeted,
         eventType: 'rollover_item_adjust',
       }))
     const newItem = (_item, index) => (
       {
         name: `New (${index})`,
-        budgetItemId: uuid(),
+        budgetItemKey: generateIdentifer(),
         budgeted: 0,
         eventType: 'rollover_item_create',
       }
@@ -49,7 +49,7 @@ const Form = props => {
         const inputAmount = isAccrual ? MoneyFormatter(item.remaining) : ''
         const status = isAccrual ? 'rolloverAll' : null
         const rolloverAmount = isAccrual ? item.remaining : null
-        const targetItemId = baseItems.length === 1 && availableItems.length <= 1 ? targetItems[0].budgetItemId : null
+        const targetItemId = baseItems.length === 1 && availableItems.length <= 1 ? targetItems[0].budgetItemKey : null
         return { ...item, inputAmount, status, rolloverAmount, targetItemId }
       }),
       targetItems

@@ -53,7 +53,7 @@ module Budget
 
     def events
       @events ||= params.require(:events).map do |event_params|
-        event_params.permit(:budget_item_id, :amount, :event_type, :month, :year, :budget_category_id, :data)
+        event_params.permit(:budget_item_key, :amount, :event_type, :month, :year, :budget_category_id, :data)
       end
     end
 
