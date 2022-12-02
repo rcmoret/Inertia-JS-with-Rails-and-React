@@ -1,16 +1,25 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 module GraphQueries
-  module AccountQueries
-    def accounts_for(user)
+  class AccountQueries
+    include Singleton
+
+    class << self
+      extend Forwardable
+      def_delegators :instance, :accounts_belonging_to, :full_accounts_belonging_to, :transactions_query
+    end
+
+    def accounts_belonging_to(user)
       <<-GQL
         {
-          #{base_accounts_query(user.id)}
+          #{base_query(user.id)}
         }
       GQL
     end
 
-    def full_accounts_for(user, include_archived:)
+    def full_accounts_belonging_to(user, include_archived:)
       <<-GQL
         {
           accounts(userId: #{user.id} includeArchived: #{include_archived}) {
@@ -26,10 +35,10 @@ module GraphQueries
       GQL
     end
 
-    def account_transactions_query(user_id, slug, month, year)
+    def transactions_query(user_id, slug, month, year)
       <<~GQL
         {
-          #{base_accounts_query(user_id)}
+          #{base_query(user_id)}
           budget(userId: #{user_id}) {
             interval(month: #{month}, year: #{year}) {
               firstDate
@@ -84,7 +93,7 @@ module GraphQueries
 
     private
 
-    def base_accounts_query(user_id)
+    def base_query(user_id)
       <<-GQL
           accounts(userId: #{user_id}) {
             id

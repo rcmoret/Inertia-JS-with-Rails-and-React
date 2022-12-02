@@ -62,47 +62,13 @@ module Budget
     end
 
     def query
-      <<~GQL
-        {
-          budget {
-            categories(includeArchived: true) {
-              id
-              defaultAmount
-              name
-              iconClassName
-              isAccrual
-              isExpense
-              isMonthly
-            }
-            baseInterval: interval(month: #{base_interval_month}, year: #{base_interval_year}) {
-              month
-              year
-              items {
-                name
-                budgetCategoryId
-                budgeted: amount
-                spent
-                isAccrual
-                isExpense
-                isMonthly
-              }
-            }
-            targetInterval: interval(month: #{month}, year: #{year}) {
-              month
-              year
-              items {
-                key
-                name
-                budgetCategoryId
-                amount
-                isAccrual
-                isExpense
-                isMonthly
-              }
-            }
-          }
-        }
-      GQL
+      GraphQueries::BudgetItems.setup_query(
+        current_user.id,
+        month: month,
+        year: year,
+        base_interval_month: base_interval_month,
+        base_interval_year: base_interval_year
+      )
     end
 
     def additional_props

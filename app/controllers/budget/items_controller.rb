@@ -4,7 +4,6 @@ module Budget
   class ItemsController < ApplicationController
     include AccountsHelper
     include GraphQuery
-    include GraphQueries::BudgetItems
 
     def index
       if month.nil? || year.nil?
@@ -26,7 +25,12 @@ module Budget
     end
 
     def query
-      budget_item_index_query(month: month, year: year, include_deleted: include_deleted?)
+      GraphQueries::BudgetItems.index_query(
+        user: current_user,
+        month: month,
+        year: year,
+        include_deleted: include_deleted?
+      )
     end
 
     def include_deleted?

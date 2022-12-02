@@ -13,27 +13,7 @@ module Budget
       private
 
       def query
-        <<~GQL
-          {
-            budget(userId: #{current_user.id}) {
-              categories(includeArchived: #{include_archived?}) {
-                id
-                archivedAt
-                defaultAmount
-                isAccrual
-                isArchived
-                isExpense
-                isMonthly
-                isPerDiemEnabled
-                name
-                slug
-                icon { id className name }
-                maturityIntervals { id month year }
-              }
-              icons { id className name }
-            }
-          }
-        GQL
+        GraphQueries::BudgetCategories.index_query(current_user.id, include_archived: include_archived?)
       end
 
       def include_archived?

@@ -68,39 +68,13 @@ module Budget
     end
 
     def query
-      <<~GQL
-        {
-          budget {
-            categories {
-              id
-              name
-              iconClassName
-              isAccrual
-              isExpense
-              isMonthly
-            }
-            baseInterval: interval(month: #{base_interval_month}, year: #{base_interval_year}) {
-              discretionary { amount }
-              month
-              year
-              items(reviewableOnly: true) {
-                budgetItemId: id
-                budgetCategoryId
-                remaining
-              }
-            }
-            targetInterval: interval(month: #{target_interval_month}, year: #{target_interval_year}) {
-              month
-              year
-              items {
-                budgetItemId: id
-                budgetCategoryId
-                budgeted: amount
-              }
-            }
-          }
-        }
-      GQL
+      GraphQueries::BudgetItems.finalize_query(
+        current_user.id,
+        base_interval_month: base_interval_month,
+        base_interval_year: base_interval_year,
+        target_interval_month: target_interval_month,
+        target_interval_year: target_interval_year
+      )
     end
 
     def additional_props

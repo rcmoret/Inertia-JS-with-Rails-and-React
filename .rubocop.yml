@@ -68,6 +68,11 @@ Lint/MissingSuper:
   Exclude:
     - app/models/budget/events/*
 
+Metrics/ClassLength:
+  Exclude:
+    - app/lib/graph_queries/**/*
+    - app/graph_queries/**/*
+
 Rails/UnknownEnv:
   Environments:
     - demo

@@ -7,7 +7,6 @@ module Accounts
     before_action :redirect_to_slug, unless: -> { slug == identifier }
 
     include GraphQuery
-    include GraphQueries::AccountQueries
 
     def index
       render inertia: 'AccountTransactionsIndexApp', props: props
@@ -50,7 +49,7 @@ module Accounts
     end
 
     def query
-      account_transactions_query(current_user.id, slug, month, year)
+      GraphQueries::AccountQueries.transactions_query(current_user.id, slug, month, year)
     end
 
     def namespace

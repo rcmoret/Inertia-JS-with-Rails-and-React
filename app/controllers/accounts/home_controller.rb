@@ -3,7 +3,6 @@
 module Accounts
   class HomeController < ApplicationController
     include GraphQuery
-    include GraphQueries::AccountQueries
 
     def index
       render inertia: 'AccountHomeApp', props: props
@@ -24,7 +23,7 @@ module Accounts
     end
 
     def query
-      accounts_for(current_user)
+      GraphQueries::AccountQueries.accounts_belonging_to(current_user)
     end
 
     def namespace
