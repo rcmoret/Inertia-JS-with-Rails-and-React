@@ -24,7 +24,7 @@ module Budget
     }
     scope :unclosed, -> { where(close_out_completed_at: nil) }
 
-    # rubocop:disable Metric/BlockLength
+    # rubocop:disable Metrics/BlockLength
     scope :in_range, lambda { |beginning_month:, beginning_year:, ending_month:, ending_year:|
       if beginning_year > ending_year || (beginning_year == ending_year && beginning_month > ending_month)
         raise QueryError
@@ -41,7 +41,7 @@ module Budget
           .or(where(year: ending_year, month: ..ending_month))
       end
     }
-    # rubocop:enable Metric/BlockLength
+    # rubocop:enable Metrics/BlockLength
 
     attr_accessor :user_id
 

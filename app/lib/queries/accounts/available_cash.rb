@@ -55,7 +55,6 @@ module Queries
         TRANSACTIONS[:clearance_date].eq(nil)
       end
 
-
       attr_reader :budget_interval
 
       delegate :user_id, :date_range, :current?, to: :budget_interval
