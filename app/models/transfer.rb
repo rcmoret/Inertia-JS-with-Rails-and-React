@@ -5,14 +5,9 @@ class Transfer < ApplicationRecord
   belongs_to :to_transaction, class_name: 'Transaction::Entry'
 
   after_create :update_transactions!
+  around_destroy :handle_destroy
 
   scope :recent_first, -> { order(created_at: :desc) }
-
-  def destroy
-    update_transactions!(destroy: true)
-    super
-    transactions.each(&:destroy)
-  end
 
   def to_hash
     attributes.symbolize_keys.merge(
@@ -22,6 +17,12 @@ class Transfer < ApplicationRecord
   end
 
   private
+
+  def handle_destroy
+    update_transactions!(destroy: true)
+    yield
+    transactions.each(&:destroy)
+  end
 
   def update_transactions!(destroy: false)
     transfer_id = destroy ? nil : id

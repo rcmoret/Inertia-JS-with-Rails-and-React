@@ -20,11 +20,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
   end
 
   describe 'validations' do
+    let(:user) { FactoryBot.create(:user) }
+
     describe 'event type validation' do
       context 'when a valid event' do
         it 'is a valid form object' do
           event_type = Budget::EventTypes::ADJUST_EVENTS.sample
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           expect(form).to be_valid
         end
       end
@@ -32,13 +34,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
       context 'when an invalid event' do
         it 'is an invalid form object' do
           event_type = 'nonsense_event'
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           expect(form).to_not be_valid
         end
 
         it 'has a meaningful error' do
           event_type = 'nonsense_event'
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           form.valid?
           expect(form.errors['event_type'])
             .to include 'is not included in the list'
@@ -49,19 +51,19 @@ RSpec.describe Budget::Events::AdjustItemForm do
     describe 'item validation' do
       context 'when a budget item exists' do
         it 'is a valid form object' do
-          form = build_form(budget_item_key: budget_item.key)
+          form = build_form(user, budget_item_key: budget_item.key)
           expect(form).to be_valid
         end
       end
 
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
-          form = build_form(budget_item_key: '0')
+          form = build_form(user, budget_item_key: '0')
           expect(form).not_to be_valid
         end
 
         it 'returns a meaniful error message' do
-          form = build_form(budget_item_key: '0')
+          form = build_form(user, budget_item_key: '0')
           form.valid?
           expect(form.errors['budget_item']).to include 'can\'t be blank'
         end
@@ -71,12 +73,12 @@ RSpec.describe Budget::Events::AdjustItemForm do
     describe 'amount validation' do
       context 'when a float' do
         it 'is an invalid form object' do
-          form = build_form(amount: 0.4)
+          form = build_form(user, amount: 0.4)
           expect(form).to_not be_valid
         end
 
         it 'has a meaningful error message' do
-          form = build_form(amount: 0.4)
+          form = build_form(user, amount: 0.4)
           form.valid?
           expect(form.errors['amount']).to include 'must be an integer'
         end
@@ -86,7 +88,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when the amount is positive' do
           it 'is valid' do
             budget_item(:revenue)
-            form = build_form(amount: 129_50)
+            form = build_form(user, amount: 129_50)
             expect(form).to be_valid
           end
         end
@@ -94,13 +96,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when the amount is negative' do
           it 'is not valid' do
             budget_item(:revenue)
-            form = build_form(amount: -129_50)
+            form = build_form(user, amount: -129_50)
             expect(form).not_to be_valid
           end
 
           it 'provides an error message' do
             budget_item(:revenue)
-            form = build_form(amount: -129_50)
+            form = build_form(user, amount: -129_50)
             form.valid?
             expect(form.errors['amount']).to include 'revenue items must be greater than or equal to $0.00'
           end
@@ -111,7 +113,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when the amount is negative' do
           it 'is valid' do
             budget_item(:expense)
-            form = build_form(amount: -32_09)
+            form = build_form(user, amount: -32_09)
             expect(form).to be_valid
           end
         end
@@ -119,13 +121,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when the amount is positive' do
           it 'is not valid' do
             budget_item(:expense)
-            form = build_form(amount: 32_09)
+            form = build_form(user, amount: 32_09)
             expect(form).not_to be_valid
           end
 
           it 'provides an error message' do
             budget_item(:expense)
-            form = build_form(amount: 32_09)
+            form = build_form(user, amount: 32_09)
             form.valid?
             expect(form.errors['amount']).to include 'expense items must be less than or equal to $0.00'
           end
@@ -135,14 +137,16 @@ RSpec.describe Budget::Events::AdjustItemForm do
   end
 
   describe '.save' do
+    let(:user) { FactoryBot.create(:user) }
+
     describe 'creates an event' do
       it 'adds an adjustment event' do
-        form = build_form(event_type: 'item_adjust')
+        form = build_form(user, event_type: 'item_adjust')
         expect { form.save }.to(change { Budget::ItemEvent.item_adjust.count }.from(0).to(+1))
       end
 
       it 'returns true' do
-        form = build_form(event_type: 'item_adjust')
+        form = build_form(user, event_type: 'item_adjust')
         expect(form.save).to be true
       end
     end
@@ -150,7 +154,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
     describe 'pre-save validations' do
       context 'when invalid' do
         it 'returns false' do
-          form = build_form(amount: -9.33)
+          form = build_form(user, amount: -9.33)
           expect(form.save).to be false
         end
       end
@@ -163,7 +167,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when increasing an expense' do
           it 'calls new with the correct args' do
             stub_budget_item(id: budget_item.id, amount: -22_89, expense: true)
-            form = build_form(amount: -32_89)
+            form = build_form(user, amount: -32_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
               .with(hash_including(item_id: budget_item.id, amount: -10_00))
@@ -174,7 +178,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when decreasing an expense' do
           it 'calls new with the correct args' do
             stub_budget_item(id: budget_item.id, amount: -22_89, expense: true)
-            form = build_form(amount: -15_89)
+            form = build_form(user, amount: -15_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
               .with(hash_including(item_id: budget_item.id, amount: 7_00))
@@ -185,7 +189,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when increasing a revenue' do
           it 'calls new with the correct args' do
             stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
-            form = build_form(amount: 32_89)
+            form = build_form(user, amount: 32_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
               .with(hash_including(item_id: budget_item.id, amount: 10_00))
@@ -196,7 +200,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         context 'when decreasing a revenue' do
           it 'calls new with the correct args' do
             stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
-            form = build_form(amount: 15_89)
+            form = build_form(user, amount: 15_89)
             expect(Budget::ItemEvent)
               .to receive(:new)
               .with(hash_including(item_id: budget_item.id, amount: -7_00))
@@ -208,7 +212,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
           it 'calls new and passes in the json' do
             stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
             data = { 'info' => rand(100) }
-            form = build_form(data: data)
+            form = build_form(user, data: data)
             expect(Budget::ItemEvent)
               .to receive(:new)
               .with(hash_including(data: data))
@@ -218,7 +222,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         it 'calls save on the new event object' do
           stub_budget_item(id: budget_item.id, amount: 22_89, expense: false)
-          form = build_form(amount: 15_89)
+          form = build_form(user, amount: 15_89)
           expect(event_double).to receive(:save)
           form.save
         end
@@ -229,12 +233,12 @@ RSpec.describe Budget::Events::AdjustItemForm do
       before { stub_new_event_with_errors! }
 
       it 'returns false' do
-        form = build_form
+        form = build_form(user)
         expect(form.save).to be false
       end
 
       it 'includes the event errors' do
-        form = build_form
+        form = build_form(user)
         form.save
         expect(form.errors['count']).to include 'cannot be greater than 0'
       end
@@ -254,8 +258,8 @@ RSpec.describe Budget::Events::AdjustItemForm do
     }
   end
 
-  def build_form(**options)
-    described_class.new(default_form_params.merge(options))
+  def build_form(user, **options)
+    described_class.new(user, default_form_params.merge(options))
   end
 
   def event_double(**options)

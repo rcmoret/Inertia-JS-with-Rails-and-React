@@ -6,6 +6,7 @@ module Transaction
     belongs_to :budget_item, class_name: 'Budget::Item', optional: true
     belongs_to :entry,
                optional: false,
+               inverse_of: :details,
                foreign_key: :transaction_entry_id
     has_one :account, through: :entry
     validates :amount, presence: true

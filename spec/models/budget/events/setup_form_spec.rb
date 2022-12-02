@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Budget::Events::SetupForm do
+  let(:user) { FactoryBot.create(:user) }
+
   describe 'interval presence validation' do
     before do
       allow(Budget::Interval)
@@ -15,7 +17,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'records an error' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
+      form = described_class.new(month: month, year: year, user: user, events: events_params)
 
       form.save
 
@@ -24,7 +26,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'returns false' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
+      form = described_class.new(user: user, month: month, year: year, events: events_params)
       expect(form.save).to be false
     end
   end
@@ -46,7 +48,7 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'records an error' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
+      form = described_class.new(user: user, month: month, year: year, events: events_params)
 
       form.save
 
@@ -55,13 +57,13 @@ RSpec.describe Budget::Events::SetupForm do
 
     it 'returns false' do
       events_params = [{ event_type: valid_create_event }]
-      form = described_class.new(month: month, year: year, user_id: 1, events: events_params)
+      form = described_class.new(user: user, month: month, year: year, events: events_params)
       expect(form.save).to be false
     end
   end
 
   describe 'events form validation' do
-    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
+    subject { described_class.new(user: user, month: month, year: year, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
@@ -91,14 +93,16 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   context 'when the form does not save correctly' do
-    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
+    subject { described_class.new(user: user, month: month, year: year, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
         .to receive(:new)
         .and_return(form_double)
+      FactoryBot.create(:budget_interval, user: user, month: month, year: year)
     end
 
+    let(:user) { FactoryBot.create(:user) }
     let(:errors_double) do
       instance_double(ActiveModel::Errors).tap do |double|
         allow(double).to receive(:each).and_yield('create.0.amount', "Can't be blank")
@@ -121,7 +125,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe 'updates to the interval' do
-    subject { described_class.new(month: interval.month, year: interval.year, user_id: 1, events: events_params) }
+    subject { described_class.new(user: interval.user, month: interval.month, year: interval.year, events: events_params) }
 
     around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
     before do
@@ -156,7 +160,7 @@ RSpec.describe Budget::Events::SetupForm do
     end
 
     context 'when the start and end dates are pre-popluated' do
-      let(:today) { Date.today }
+      let(:today) { Time.zone.today }
       let(:interval) do
         FactoryBot.create(:budget_interval,
                           start_date: Date.new(today.year, today.month, 2),
@@ -175,15 +179,15 @@ RSpec.describe Budget::Events::SetupForm do
     context 'when the start and end dates are not populated and values are provided' do
       subject do
         described_class.new(
+          user: interval.user,
           month: interval.month,
           year: interval.year,
-          user_id: 1,
           events: events_params,
           start_date: start_date,
           end_date: end_date
         )
       end
-      let(:today) { Date.today }
+      let(:today) { Time.zone.today }
       let(:start_date) { DateTime.new(today.year, today.month, 2) }
       let(:end_date) { DateTime.new(today.year, today.month, -2) }
 
@@ -204,7 +208,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe 'initializing and saving the events form' do
-    subject { described_class.new(month: month, year: year, user_id: 1, events: events_params) }
+    subject { described_class.new(user: user, month: month, year: year, events: events_params) }
 
     before do
       allow(Budget::Events::Form)
@@ -217,7 +221,7 @@ RSpec.describe Budget::Events::SetupForm do
     it 'initializes the events form' do
       expect(Budget::Events::Form)
         .to receive(:new)
-        .with(events: events_params)
+        .with(user, events: events_params)
       subject.save
     end
 
@@ -235,7 +239,7 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe '.save' do
-    subject { described_class.new(month: month, year: year, user_id: 1, events: []) }
+    subject { described_class.new(user: user, month: month, year: year, events: []) }
 
     before do
       allow(Budget::Events::Form)

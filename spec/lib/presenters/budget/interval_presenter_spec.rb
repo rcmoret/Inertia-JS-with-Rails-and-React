@@ -6,7 +6,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
   describe '#current?' do
     context 'in the past' do
       specify do
-        interval = FactoryBot.build(:budget_interval, year: (Date.today.year + 1))
+        interval = FactoryBot.build(:budget_interval, year: (Time.zone.today.year + 1))
 
         subject = described_class.new(interval)
 
@@ -16,7 +16,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
     context 'in the future' do
       specify do
-        interval = FactoryBot.build(:budget_interval, year: (Date.today.year - 1))
+        interval = FactoryBot.build(:budget_interval, year: (Time.zone.today.year - 1))
 
         subject = described_class.new(interval)
 
@@ -26,8 +26,8 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
     context 'in current month' do
       specify do
-        today = Date.today
-        interval = FactoryBot.build(:budget_interval, year: today.year, month: today.month)
+        today = Time.zone.today
+        interval = FactoryBot.create(:budget_interval, year: today.year, month: today.month)
 
         subject = described_class.new(interval)
 
@@ -83,20 +83,18 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
   end
 
   describe '#days_remaining' do
-    let(:today) { Date.new(year, month, 15) }
     let(:year) { 2021 }
     let(:month) { 3 }
+    let(:interval) { FactoryBot.create(:budget_interval, year: year, month: month) }
 
     context 'in current month' do
-      before do
-        FactoryBot.create(:budget_interval, :closed_out, year: year, month: today.month - 1)
-        Timecop.travel(today)
+      around do
+        Timecop.travel(Date.new(year, month, 15))
+        interval.prev.update(close_out_completed_at: 1.second.ago)
       end
 
       # context 'when using the last biz day of the month'
       specify do
-        interval = FactoryBot.build(:budget_interval, year: year, month: today.month)
-
         subject = described_class.new(interval)
 
         expect(subject.days_remaining).to be 17
@@ -104,8 +102,6 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
       # context 'when using a calendar month month'
       xspecify do
-        interval = FactoryBot.build(:budget_interval, year: year, month: today.month)
-
         subject = described_class.new(interval)
 
         expect(subject.days_remaining).to be 17
@@ -115,12 +111,10 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
     context 'in a past month' do
       before { Timecop.travel(future_month) }
 
-      let(:future_month) { Date.new(year + 1, today.month, 10) }
+      let(:future_month) { Date.new(year + 1, month, 10) }
 
       # context 'when using the last biz day of the month'
       specify do
-        interval = FactoryBot.build(:budget_interval, year: year, month: today.month)
-
         subject = described_class.new(interval)
 
         expect(subject.days_remaining).to be 31
@@ -128,8 +122,6 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
       # context 'when using a calendar month month'
       xspecify do
-        interval = FactoryBot.build(:budget_interval, year: year, month: today.month)
-
         subject = described_class.new(interval)
 
         expect(subject.days_remaining).to be 32

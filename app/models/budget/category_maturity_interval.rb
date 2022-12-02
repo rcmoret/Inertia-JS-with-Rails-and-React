@@ -2,8 +2,8 @@
 
 module Budget
   class CategoryMaturityInterval < ApplicationRecord
-    belongs_to :interval, foreign_key: :budget_interval_id
-    belongs_to :category, foreign_key: :budget_category_id
+    belongs_to :interval, foreign_key: :budget_interval_id, inverse_of: :maturity_intervals
+    belongs_to :category, foreign_key: :budget_category_id, inverse_of: :maturity_intervals
 
     validates :category, uniqueness: { scope: :interval }
     validate :category_accrual?

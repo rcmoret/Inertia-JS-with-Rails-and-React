@@ -9,7 +9,7 @@ FactoryBot.define do
       [
         {
           amount: rand(-1000..1000),
-          budget_item: build(:weekly_item),
+          budget_item: create(:weekly_item),
         },
       ]
     end

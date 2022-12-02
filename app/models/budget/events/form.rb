@@ -7,7 +7,8 @@ module Budget
 
       validate :all_valid_event_types
 
-      def initialize(events_data)
+      def initialize(current_user, events_data)
+        @current_user = current_user
         @events_data = events_data.symbolize_keys.fetch(:events, [{}])
       end
 
@@ -45,7 +46,7 @@ module Budget
       end
 
       def forms
-        @forms ||= events_data.map { |event_data| FormGateway.form_for(event_data) }
+        @forms ||= events_data.map { |event_data| FormGateway.form_for(current_user, event_data) }
       end
 
       def promote_errors(model, index)
@@ -54,7 +55,7 @@ module Budget
         end
       end
 
-      attr_reader :events_data
+      attr_reader :current_user, :events_data
     end
   end
 end

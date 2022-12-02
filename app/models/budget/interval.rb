@@ -3,8 +3,14 @@
 module Budget
   class Interval < ApplicationRecord
     include Presentable
-    has_many :items, foreign_key: :budget_interval_id
-    has_many :item_views, foreign_key: :budget_interval_id
+    has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
+    has_many :maturity_intervals,
+             class_name: 'CategoryMaturityInterval',
+             dependent: :destroy,
+             inverse_of: :interval,
+             foreign_key: :budget_interval_id
+    has_many :item_views, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
+    belongs_to :user
 
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
@@ -43,10 +49,8 @@ module Budget
     }
     # rubocop:enable Metrics/BlockLength
 
-    attr_accessor :user_id
-
     def self.for(month:, year:, user_id:)
-      find_or_create_by(month: month, year: year).tap { |interval| interval.user_id = user_id }
+      find_or_create_by(month: month, year: year, user_id: user_id)
     end
 
     def self.current

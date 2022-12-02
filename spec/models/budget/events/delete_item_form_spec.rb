@@ -20,11 +20,13 @@ RSpec.describe Budget::Events::DeleteItemForm do
   end
 
   describe 'validations' do
+    let(:user) { FactoryBot.create(:user) }
+
     describe 'event type validation' do
       context 'when a valid event' do
         it 'is a valid form object' do
           event_type = Budget::EventTypes::DELETE_EVENTS.sample
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           expect(form).to be_valid
         end
       end
@@ -32,13 +34,13 @@ RSpec.describe Budget::Events::DeleteItemForm do
       context 'when an invalid event' do
         it 'is an invalid form object' do
           event_type = 'nonsense_event'
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           expect(form).to_not be_valid
         end
 
         it 'has a meaningful error' do
           event_type = 'nonsense_event'
-          form = build_form(event_type: event_type)
+          form = build_form(user, event_type: event_type)
           form.valid?
           expect(form.errors['event_type'])
             .to include 'is not included in the list'
@@ -49,19 +51,19 @@ RSpec.describe Budget::Events::DeleteItemForm do
     describe 'item validation' do
       context 'when a budget item exists' do
         it 'is a valid form object' do
-          form = build_form(budget_item_key: budget_item.key)
+          form = build_form(user, budget_item_key: budget_item.key)
           expect(form).to be_valid
         end
       end
 
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
-          form = build_form(budget_item_key: SecureRandom.hex(6))
+          form = build_form(user, budget_item_key: SecureRandom.hex(6))
           expect(form).not_to be_valid
         end
 
         it 'returns a meaniful error message' do
-          form = build_form(budget_item_key: SecureRandom.hex(6))
+          form = build_form(user, budget_item_key: SecureRandom.hex(6))
           form.valid?
           expect(form.errors['budget_item']).to include 'can\'t be blank'
         end
@@ -71,7 +73,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
     describe 'item transacations validations' do
       context 'when there are no transactions details' do
         it 'is a valid form object' do
-          form = build_form
+          form = build_form(user)
           expect(form).to be_valid
         end
       end
@@ -80,12 +82,12 @@ RSpec.describe Budget::Events::DeleteItemForm do
         before { FactoryBot.create(:transaction_detail, budget_item: budget_item) }
 
         it 'is an invalid form object' do
-          form = build_form
+          form = build_form(user)
           expect(form).to_not be_valid
         end
 
         it 'returns a meaningful error message' do
-          form = build_form
+          form = build_form(user)
           form.valid?
           expect(form.errors['budget_item']).to include 'cannot delete an item with transaction details'
         end
@@ -95,24 +97,26 @@ RSpec.describe Budget::Events::DeleteItemForm do
     describe 'cannot call a duplicate delete event' do
       it 'is invalid' do
         FactoryBot.create(:budget_item_event, :item_delete, item: budget_item, amount: 0)
-        form = build_form
+        form = build_form(user)
         expect(form).to_not be_valid
       end
     end
   end
 
   describe 'save' do
+    let(:user) { FactoryBot.create(:user) }
+
     before { travel_to Time.current }
     after { travel_back }
 
     context 'when the happy path' do
       it 'returns true' do
-        form = build_form
+        form = build_form(user)
         expect(form.save).to be true
       end
 
       it 'updates the deleted at timestamp' do
-        form = build_form
+        form = build_form(user)
         expect { form.save }
           .to(change { budget_item.reload.deleted_at }
           .from(nil)
@@ -120,7 +124,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
       end
 
       it 'creates an event record' do
-        form = build_form
+        form = build_form(user)
         expect { form.save }.to(change { Budget::ItemEvent.delete_events.count }
           .from(0).to(+1))
       end
@@ -128,12 +132,12 @@ RSpec.describe Budget::Events::DeleteItemForm do
 
     context 'when there are pre-save errors' do
       it 'returns false' do
-        form = build_form(budget_item_key: SecureRandom.hex(6))
+        form = build_form(user, budget_item_key: SecureRandom.hex(6))
         expect(form.save).to be false
       end
 
       it 'returns a meaningful error message' do
-        form = build_form(budget_item_key: SecureRandom.hex(6))
+        form = build_form(user, budget_item_key: SecureRandom.hex(6))
         form.save
         expect(form.errors['budget_item']).to include 'can\'t be blank'
       end
@@ -142,13 +146,13 @@ RSpec.describe Budget::Events::DeleteItemForm do
     context 'when the underlying record has errors' do
       it 'returns false' do
         stub_item_find_by_with_error!
-        form = build_form
+        form = build_form(user)
         expect(form.save).to be false
       end
 
       it 'returns a meaningful error message' do
         stub_item_find_by_with_error!
-        form = build_form
+        form = build_form(user)
         form.save
         expect(form.errors['count']).to include 'cannot be greater than 0'
       end
@@ -162,8 +166,8 @@ RSpec.describe Budget::Events::DeleteItemForm do
     }
   end
 
-  def build_form(**options)
-    described_class.new(default_form_params.merge(options))
+  def build_form(user, **options)
+    described_class.new(user, default_form_params.merge(options))
   end
 
   def budget_item(*traits, **attributes)

@@ -9,9 +9,9 @@ module Budget
       validate :interval_needs_setup!
       validate :events_form_valid!
 
-      def initialize(**options)
-        @events_form = Budget::Events::Form.new(events: options.delete(:events))
-        @interval = Interval.for(options.slice(:user_id, :month, :year))
+      def initialize(user:, **options)
+        @events_form = Budget::Events::Form.new(user, events: options.delete(:events))
+        @interval = Interval.for(user_id: user.id, **options.slice(:month, :year))
         @options = options
       end
 

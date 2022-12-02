@@ -11,6 +11,6 @@ class ApplicationController < ActionController::Base
   end
 
   def demo_env?
-    Rails.env == 'demo'
+    Rails.env.demo?
   end
 end

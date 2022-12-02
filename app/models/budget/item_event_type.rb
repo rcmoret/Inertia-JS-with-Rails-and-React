@@ -7,6 +7,7 @@ module Budget
     validates :name,
               uniqueness: true,
               inclusion: { in: VALID_ITEM_TYPES }
+    has_many :events, class_name: 'ItemEvent', dependent: :restrict_with_exception
 
     VALID_ITEM_TYPES.each do |event_type|
       define_singleton_method event_type.to_sym do

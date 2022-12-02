@@ -20,10 +20,10 @@ module Budget
           REGISTERED_EVENT_TYPES.include?(event_type)
         end
 
-        def form_for(event)
+        def form_for(current_user, event)
           event_type = event.fetch(:event_type)
           form_class = REGISTERED_CLASSES.find { |potential_hanlder| potential_hanlder.applies?(event_type) }
-          return form_class.new(event) unless form_class.nil?
+          return form_class.new(current_user, event) unless form_class.nil?
 
           raise MissingFormClassError, "no form_class register for #{event_type}"
         end

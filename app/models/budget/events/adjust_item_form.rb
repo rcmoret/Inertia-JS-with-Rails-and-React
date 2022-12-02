@@ -27,7 +27,7 @@ module Budget
                 },
                 if: :revenue?
 
-      def initialize(params)
+      def initialize(_user, params)
         @amount = params[:amount]
         @budget_item_key = params[:budget_item_key]
         @event_type = params[:event_type]

@@ -4,12 +4,16 @@ class Account < ApplicationRecord
   include Slugable
 
   belongs_to :user
+  # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :transaction_views, class_name: 'Transaction::EntryView'
-  has_many :transactions, class_name: 'Transaction::Entry'
+  # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :transactions, class_name: 'Transaction::Entry', dependent: :restrict_with_exception
   has_many :details,
            class_name: 'Transaction::Detail',
            through: :transactions
+  # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :detail_views, class_name: 'Transaction::DetailView'
+  # rubocop:enable Rails/HasManyOrHasOneDependent
   scope :for, ->(user) { where(user: user) }
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
@@ -26,7 +30,7 @@ class Account < ApplicationRecord
     end
   }
   validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_id }
-  validates_presence_of :name, :priority, :slug
+  validates :name, :priority, :slug, presence: true
 
   class << self
     def available_cash(user)
@@ -54,9 +58,11 @@ class Account < ApplicationRecord
     archived_at.present?
   end
 
+  # rubocop:disable Rails/ActiveRecordOverride
   def destroy
-    transactions.any? ? update(archived_at: Time.current) : super
+    transactions.any? ? archive! : super
   end
+  # rubocop:enable Rails/ActiveRecordOverride
 
   def to_s
     name
@@ -71,4 +77,14 @@ class Account < ApplicationRecord
   def active?
     archived_at.nil?
   end
+
+  def archive!
+    update(archived_at: Time.current)
+  end
+
+  # def handle_destroy
+  #   require 'pry'
+  #   binding.pry
+  #   transactions.any? ? archive!: yield
+  # end
 end

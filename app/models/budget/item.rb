@@ -6,20 +6,27 @@ module Budget
 
     has_many :transaction_details,
              class_name: 'Transaction::Detail',
-             foreign_key: :budget_item_id
-    has_many :events, class_name: 'ItemEvent', foreign_key: :budget_item_id
+             foreign_key: :budget_item_id,
+             inverse_of: :budget_item,
+             dependent: :restrict_with_exception
+    has_many :events,
+             class_name: 'ItemEvent',
+             foreign_key: :budget_item_id,
+             inverse_of: :item,
+             dependent: :restrict_with_exception
 
-    belongs_to :category, foreign_key: :budget_category_id
+    belongs_to :category, foreign_key: :budget_category_id, inverse_of: :items
     belongs_to :interval,
                class_name: 'Interval',
-               foreign_key: :budget_interval_id
-    has_many :maturity_intervals, through: :category
+               foreign_key: :budget_interval_id,
+               inverse_of: :items
+    has_many :maturity_intervals, through: :category, inverse_of: :items
 
     validates :key, uniqueness: true, presence: true, length: { is: 12 }
     validates :category, presence: true
-    validates_uniqueness_of :budget_category_id,
-                            scope: :budget_interval_id,
-                            if: -> { weekly? && active? }
+    # rubocop:disable Rails/UniqueValidationWithoutIndex
+    validates :budget_category_id, uniqueness: { scope: :budget_interval_id, if: -> { weekly? && active? } }
+    # rubocop:enable Rails/UniqueValidationWithoutIndex
 
     scope :current, -> { where(budget_interval: Interval.current) }
     scope :prior_to, ->(date_hash) { joins(:interval).merge(Interval.prior_to(date_hash)) }

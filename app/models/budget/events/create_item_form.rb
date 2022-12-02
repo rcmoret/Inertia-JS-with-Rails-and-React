@@ -29,7 +29,7 @@ module Budget
                 if: :revenue?
       validates :budget_item_key, presence: true, length: { is: 12 }
 
-      def initialize(params)
+      def initialize(current_user, params)
         @event_type = params[:event_type]
         @amount = params[:amount]
         @month = params[:month].to_i
@@ -37,6 +37,7 @@ module Budget
         @budget_category_id = params[:budget_category_id]
         @data = params[:data]
         @budget_item_key = params[:budget_item_key]
+        @current_user = current_user
         super()
       end
 
@@ -101,7 +102,7 @@ module Budget
       end
 
       def interval
-        @interval ||= Budget::Interval.for(month: month, year: year, user_id: 1)
+        @interval ||= Budget::Interval.for(month: month, year: year, user_id: current_user.id)
       end
 
       def promote_errors(model_errors)
@@ -143,7 +144,7 @@ module Budget
 
       def pre_setup_event_type
         case event_type
-        when SETUP_ITEM_CREATE, ITEM_CREATE
+        when ITEM_CREATE
           PRE_SETUP_ITEM_CREATE
         when MULTI_ITEM_ADJUST_CREATE, PRE_SETUP_MULTI_ITEM_ADJUST_CREATE
           PRE_SETUP_MULTI_ITEM_ADJUST_CREATE
@@ -151,7 +152,8 @@ module Budget
           event_type
         end
       end
-      attr_reader :amount, :budget_category_id, :event_type, :month, :year, :data, :budget_item_key
+
+      attr_reader :current_user, :amount, :budget_category_id, :event_type, :month, :year, :data, :budget_item_key
     end
     # rubocop:enable Metrics/ClassLength
   end

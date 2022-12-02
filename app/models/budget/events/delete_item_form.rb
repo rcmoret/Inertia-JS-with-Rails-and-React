@@ -15,7 +15,7 @@ module Budget
       validate :no_transaction_details_present!
       validate :no_delete_events_present!
 
-      def initialize(params)
+      def initialize(_user, params)
         @event_type = params[:event_type]
         @budget_item_key = params[:budget_item_key]
         @data = params[:data]

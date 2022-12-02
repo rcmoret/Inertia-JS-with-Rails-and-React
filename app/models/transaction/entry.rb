@@ -6,7 +6,7 @@ module Transaction
     include Presentable
 
     belongs_to :account
-    belongs_to :transfer, required: false
+    belongs_to :transfer, optional: true
     has_many :details,
              foreign_key: :transaction_entry_id,
              dependent: :destroy,

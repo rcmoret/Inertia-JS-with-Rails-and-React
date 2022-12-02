@@ -16,7 +16,7 @@ RSpec.describe Transaction::Entry, type: :model do
     let!(:this_months) { create_account_entries(account, 2.days.ago) }
     let!(:next_months) { create_account_entries(account, 2.days.from_now) }
     let(:pending) { create_account_entries(account, nil) }
-    let(:dates) { (2.months.ago..Date.today) }
+    let(:dates) { (2.months.ago..Time.zone.today) }
 
     context 'when pending false (default)' do
       subject { described_class.between(dates) }
@@ -179,7 +179,7 @@ RSpec.describe Transaction::Entry, type: :model do
       let(:transaction) { transfer.from_transaction }
 
       it 'allows other attributes to be updated' do
-        expect(transaction.update(clearance_date: Date.today)).to be true
+        expect(transaction.update(clearance_date: Time.zone.today)).to be true
       end
     end
   end

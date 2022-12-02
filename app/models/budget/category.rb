@@ -5,13 +5,17 @@ module Budget
     include Presentable
     include Messages
     include Slugable
-    has_many :items, foreign_key: :budget_category_id
-    has_many :item_views, foreign_key: :budget_category_id, class_name: 'ItemView'
+    has_many :items, foreign_key: :budget_category_id, inverse_of: :category, dependent: :restrict_with_exception
+    # rubocop:disable Rails/HasManyOrHasOneDependent
+    has_many :item_views, foreign_key: :budget_category_id, class_name: 'ItemView', inverse_of: :category
+    # rubocop:enable Rails/HasManyOrHasOneDependent
     has_many :transaction_details, through: :items
     has_many :events, through: :items
     has_many :maturity_intervals,
              -> { ordered },
              class_name: 'CategoryMaturityInterval',
+             dependent: :destroy,
+             inverse_of: :category,
              foreign_key: :budget_category_id
     belongs_to :icon, optional: true
 
@@ -28,7 +32,9 @@ module Budget
               },
               if: :revenue?
 
-    validates_uniqueness_of :name, :slug, conditions: -> { active }
+    # rubocop:disable Rails/UniqueValidationWithoutIndex
+    validates :name, :slug, uniqueness: { conditions: -> { active } }
+    # rubocop:enable Rails/UniqueValidationWithoutIndex
     validates :default_amount, :name, presence: true
     validate :accrual_on_expense
     validate :per_diem_disabled, if: :monthly?
@@ -64,16 +70,18 @@ module Budget
     end
 
     def archive!
-      update(archived_at: Time.now)
+      update(archived_at: Time.current)
     end
 
     def unarchive!
       update(archived_at: nil)
     end
 
+    # rubocop:disable Rails/ActiveRecordOverride
     def destroy
-      items.any? ? archive! : super
+      items.none? ? super : archive!
     end
+    # rubocop:enable Rails/ActiveRecordOverride
 
     private
 

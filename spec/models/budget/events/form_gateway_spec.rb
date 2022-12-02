@@ -19,7 +19,9 @@ RSpec.describe Budget::Events::FormGateway do
     end
   end
 
-  describe 'form_for' do
+  describe '.form_for' do
+    let(:user) { FactoryBot.create(:user) }
+
     context 'when a create event' do
       it 'returns the create event form object initialized with event data' do
         event = {
@@ -27,9 +29,9 @@ RSpec.describe Budget::Events::FormGateway do
           budget_item_id: rand(100),
           amount: rand(1000),
         }
-        expect(Budget::Events::CreateItemForm).to receive(:new).with(event)
+        expect(Budget::Events::CreateItemForm).to receive(:new).with(user, event)
 
-        described_class.form_for(event)
+        described_class.form_for(user, event)
       end
     end
 
@@ -40,7 +42,7 @@ RSpec.describe Budget::Events::FormGateway do
           budget_item_id: rand(100),
           amount: rand(1000),
         }
-        expect { described_class.form_for(event) }
+        expect { described_class.form_for(user, event) }
           .to raise_error(described_class::MissingFormClassError)
       end
     end

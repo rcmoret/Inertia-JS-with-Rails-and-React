@@ -4,10 +4,11 @@ FactoryBot.define do
   factory :budget_interval, class: 'Budget::Interval' do
     month { (1..12).to_a.sample }
     year { (2018..2030).to_a.sample }
+    association :user
 
     trait :current do
-      month { Date.today.month }
-      year { Date.today.year }
+      month { Time.zone.today.month }
+      year { Time.zone.today.year }
     end
 
     trait :set_up do

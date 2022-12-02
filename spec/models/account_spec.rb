@@ -123,6 +123,7 @@ RSpec.describe Account, type: :model do
 
     context 'transactions exist' do
       before { FactoryBot.create(:transaction_entry, account: account) }
+
       it 'soft deletes the account' do
         expect { subject }.to(change { account.reload.archived_at })
       end
