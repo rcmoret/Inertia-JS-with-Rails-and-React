@@ -73,8 +73,11 @@ RSpec.describe Budget::Events::SetupForm do
 
     let(:errors_double) do
       instance_double(ActiveModel::Errors).tap do |double|
-        allow(double).to receive(:each).and_yield(:event_type, 'No registered handler')
+        allow(double).to receive(:each).and_yield(error_double)
       end
+    end
+    let(:error_double) do
+      instance_double(ActiveModel::Error, attribute: 'event_type', full_message: 'No registered handler')
     end
     let(:events_form_double) do
       instance_double(Budget::Events::Form, valid?: false, errors: errors_double)
@@ -105,8 +108,11 @@ RSpec.describe Budget::Events::SetupForm do
     let(:user) { FactoryBot.create(:user) }
     let(:errors_double) do
       instance_double(ActiveModel::Errors).tap do |double|
-        allow(double).to receive(:each).and_yield('create.0.amount', "Can't be blank")
+        allow(double).to receive(:each).and_yield(error_double)
       end
+    end
+    let(:error_double) do
+      instance_double(ActiveModel::Error, attribute: 'create.0.amount', full_message: "Can't be blank")
     end
     let(:form_double) do
       instance_double(Budget::Events::Form, valid?: true, save: false, errors: errors_double)

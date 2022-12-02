@@ -10,7 +10,7 @@ module Budget
     end
 
     def complete
-      form = Budget::Events::Form.new(events: events_params)
+      form = Budget::Events::Form.new(current_user, events: events_params)
       if form.save
         interval.update(close_out_completed_at: Time.current)
         redirect_to "/budget/#{target_interval_month}/#{target_interval_year}"

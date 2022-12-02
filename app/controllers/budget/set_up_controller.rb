@@ -21,6 +21,7 @@ module Budget
 
     def form
       @form ||= Budget::Events::SetupForm.new(
+        user: current_user,
         events: events,
         month: month,
         year: year
