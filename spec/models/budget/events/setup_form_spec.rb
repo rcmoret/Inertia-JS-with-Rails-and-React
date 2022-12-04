@@ -131,15 +131,19 @@ RSpec.describe Budget::Events::SetupForm do
   end
 
   describe 'updates to the interval' do
-    subject { described_class.new(user: interval.user, month: interval.month, year: interval.year, events: events_params) }
+    subject do
+      described_class.new(user: interval.user, month: interval.month, year: interval.year, events: events_params)
+    end
 
     around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
+
     before do
       allow(Budget::Events::Form)
         .to receive(:new)
         .and_return(instance_double(Budget::Events::Form, save: true, valid?: true))
     end
-    let(:interval) { FactoryBot.create(:budget_interval, month: month, year: year) }
+
+    let(:interval) { FactoryBot.create(:budget_interval, user: user, month: month, year: year) }
     let(:events_params) { [{ event_type: valid_create_event }] }
 
     it "updates the interval's set up completed at timestamp" do
@@ -169,6 +173,7 @@ RSpec.describe Budget::Events::SetupForm do
       let(:today) { Time.zone.today }
       let(:interval) do
         FactoryBot.create(:budget_interval,
+                          user: user,
                           start_date: Date.new(today.year, today.month, 2),
                           end_date: Date.new(today.year, today.month, -2))
       end
@@ -193,6 +198,7 @@ RSpec.describe Budget::Events::SetupForm do
           end_date: end_date
         )
       end
+
       let(:today) { Time.zone.today }
       let(:start_date) { DateTime.new(today.year, today.month, 2) }
       let(:end_date) { DateTime.new(today.year, today.month, -2) }
@@ -221,6 +227,7 @@ RSpec.describe Budget::Events::SetupForm do
         .to receive(:new)
         .and_return(form_double)
     end
+
     let(:form_double) { instance_double(Budget::Events::Form, valid?: true, save: true) }
     let(:events_params) { [{ event_type: valid_create_event }] }
 
@@ -252,6 +259,7 @@ RSpec.describe Budget::Events::SetupForm do
         .to receive(:new)
         .and_return(form_double)
     end
+
     let(:form_double) { instance_double(Budget::Events::Form, valid?: true, save: true) }
 
     it 'returns true' do

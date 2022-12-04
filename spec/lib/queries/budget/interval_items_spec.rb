@@ -38,7 +38,8 @@ RSpec.describe Queries::Budget::IntervalItems do
       FactoryBot.create(:budget_interval, month: budget_interval.month, year: (budget_interval.year + 1))
                 .tap { |interval| interval.user_id = user.id }
     end
-    let!(:maturity_interval) do
+
+    before do
       FactoryBot.create(:maturity_interval, category: rent, interval: future_interval)
     end
 
@@ -125,10 +126,10 @@ RSpec.describe Queries::Budget::IntervalItems do
 
       it 'returns the count of transaction details' do
         subject = described_class.new(
+          user_id: user.id,
           month: budget_interval.month,
           year: budget_interval.year,
-          include_deleted: false,
-          user_id: budget_interval.user_id
+          include_deleted: false
         ).call
 
         expect(subject.first.transactions_count)
@@ -137,10 +138,10 @@ RSpec.describe Queries::Budget::IntervalItems do
 
       it 'returns the sum of the transaction details' do
         subject = described_class.new(
+          user_id: user.id,
           month: budget_interval.month,
           year: budget_interval.year,
-          include_deleted: false,
-          user_id: budget_interval.user_id
+          include_deleted: false
         ).call
 
         expected_sum = grocery_transaction_entries.flat_map(&:details).sum(&:amount)
@@ -170,7 +171,8 @@ RSpec.describe Queries::Budget::IntervalItems do
         expect(subject.last.icon_class_name).to eq rent.icon.class_name
         expect(subject.last.month).to be budget_interval.month
         expect(subject.last.year).to be budget_interval.year
-        expect(subject.last.upcoming_maturity_interval).to eq({ month: future_interval.month, year: future_interval.year })
+        expect(subject.last.upcoming_maturity_interval).to eq({ month: future_interval.month,
+                                                                year: future_interval.year, })
       end
 
       it 'returns an array of events' do

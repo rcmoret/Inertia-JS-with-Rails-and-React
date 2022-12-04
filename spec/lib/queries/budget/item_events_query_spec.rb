@@ -12,9 +12,7 @@ RSpec.describe Queries::Budget::ItemEventsQuery do
 
     it 'returns an empty collection' do
       subject = described_class.new(
-        month: budget_interval.month,
-        year: budget_interval.year,
-        user_id: budget_interval.user_id
+        month: budget_interval.month, year: budget_interval.year, user_id: budget_interval.user_id
       ).call
 
       expect(subject.fetch(budget_item.id).collection).to be_empty
@@ -22,9 +20,7 @@ RSpec.describe Queries::Budget::ItemEventsQuery do
 
     it 'returns zero for the amount' do
       subject = described_class.new(
-        month: budget_interval.month,
-        year: budget_interval.year,
-        user_id: budget_interval.user_id
+        month: budget_interval.month, year: budget_interval.year, user_id: budget_interval.user_id
       ).call
 
       expect(subject.fetch(budget_item.id).amount).to be_zero
@@ -46,9 +42,7 @@ RSpec.describe Queries::Budget::ItemEventsQuery do
 
     it "returns the sum of events' amount attribute" do
       subject = described_class.new(
-        month: budget_interval.month,
-        year: budget_interval.year,
-        user_id: budget_interval.user_id
+        month: budget_interval.month, year: budget_interval.year, user_id: budget_interval.user_id
       ).call
 
       expect(subject.fetch(budget_item.id).amount).to be events.sum(&:amount)

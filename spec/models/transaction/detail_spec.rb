@@ -9,8 +9,9 @@ RSpec.describe Transaction::Detail, type: :model do
     end
 
     let(:budget_item) { FactoryBot.create(:budget_item) }
-    it { should belong_to(:entry).required }
-    it { should belong_to(:budget_item).optional(true) }
+
+    it { is_expected.to belong_to(:entry).required }
+    it { is_expected.to belong_to(:budget_item).optional(true) }
   end
 
   describe 'validations' do
@@ -39,7 +40,7 @@ RSpec.describe Transaction::Detail, type: :model do
     describe 'amount validation' do
       it 'validates the presence' do
         detail = described_class.new transaction_entry_id: entry.id, amount: nil
-        expect(detail).to_not be_valid
+        expect(detail).not_to be_valid
       end
 
       it 'validates the presence of amount' do
@@ -59,7 +60,7 @@ RSpec.describe Transaction::Detail, type: :model do
       let(:entry) { FactoryBot.create(:transaction_entry) }
       let(:item) { FactoryBot.create(:monthly_expense) }
 
-      it { should_not be_valid }
+      it { is_expected.not_to be_valid }
 
       it 'has an error' do
         subject.valid?

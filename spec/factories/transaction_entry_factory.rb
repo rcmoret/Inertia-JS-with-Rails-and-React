@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :transaction_entry, class: Transaction::Entry do
+  factory :transaction_entry, class: 'Transaction::Entry' do
     association :account
     budget_exclusion { false }
     clearance_date { (2..5).to_a.sample.days.ago }

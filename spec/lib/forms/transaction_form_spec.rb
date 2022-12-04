@@ -25,7 +25,7 @@ RSpec.describe Forms::TransactionForm do
 
         it 'creates a transaction entry' do
           expect { described_class.new(transaction_entry, params).save }
-            .to change { Transaction::Entry.count }
+            .to change(Transaction::Entry, :count)
             .by(+1)
         end
 

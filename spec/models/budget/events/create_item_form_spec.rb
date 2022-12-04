@@ -3,22 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Budget::Events::CreateItemForm do
-  describe '.applies?' do # inherited from the base class but needs to be tested here
-    context 'when an applicable event' do
-      it 'returns true' do
-        event_type = Budget::EventTypes::CREATE_EVENTS.sample
-        expect(described_class.applies?(event_type)).to be true
-      end
-    end
-
-    context 'when a non-applicable event' do
-      it 'returns false' do
-        event_type = Budget::EventTypes::ADJUST_EVENTS.sample
-        expect(described_class.applies?(event_type)).to be false
-      end
-    end
-  end
-
   describe 'event type validation' do
     let(:user) { FactoryBot.create(:user) }
 
@@ -34,7 +18,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       it 'is an invalid form object' do
         event_type = 'nonsense_event'
         form = new_object(user, event_type: event_type)
-        expect(form).to_not be_valid
+        expect(form).not_to be_valid
       end
 
       it 'has a meaningful error' do
@@ -60,7 +44,7 @@ RSpec.describe Budget::Events::CreateItemForm do
     context 'when a float' do
       it 'is an invalid form object' do
         form = new_object(user, amount: 0.4)
-        expect(form).to_not be_valid
+        expect(form).not_to be_valid
       end
 
       it 'has a meaningful error message' do
@@ -107,7 +91,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       it 'creates an item' do
         form = new_object(user)
         expect { form.save }
-          .to change { Budget::Item.count }
+          .to change(Budget::Item, :count)
           .by(+1)
       end
 
@@ -145,8 +129,9 @@ RSpec.describe Budget::Events::CreateItemForm do
     end
 
     context 'when creating an invalid weekly item' do
+      let(:category) { budget_category(:expense, :weekly) }
+
       it 'returns false' do
-        category = budget_category(:expense, :weekly)
         item = FactoryBot.create(:budget_item, category: category)
         interval = item.interval
         form = new_object(
@@ -156,11 +141,11 @@ RSpec.describe Budget::Events::CreateItemForm do
           month: interval.month,
           year: interval.year
         )
+
         expect(form.save).to be false
       end
 
       it 'contains an error message' do
-        category = budget_category(:expense, :weekly)
         item = FactoryBot.create(:budget_item, category: category)
         interval = item.interval
         form = new_object(
@@ -213,7 +198,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       it 'does not create an interval object' do
         form = new_object(user, month: 0)
-        expect { form.save }.to_not(change { Budget::Interval.count })
+        expect { form.save }.not_to(change { Budget::Interval.count })
       end
 
       it 'has a meaningful error message' do

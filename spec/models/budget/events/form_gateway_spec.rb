@@ -24,11 +24,7 @@ RSpec.describe Budget::Events::FormGateway do
 
     context 'when a create event' do
       it 'returns the create event form object initialized with event data' do
-        event = {
-          event_type: Budget::EventTypes::CREATE_EVENTS.sample,
-          budget_item_id: rand(100),
-          amount: rand(1000),
-        }
+        event = { event_type: Budget::EventTypes::CREATE_EVENTS.sample, budget_item_id: rand(100), amount: rand(1000) }
         expect(Budget::Events::CreateItemForm).to receive(:new).with(user, event)
 
         described_class.form_for(user, event)
@@ -37,11 +33,8 @@ RSpec.describe Budget::Events::FormGateway do
 
     context 'when an unregistered event' do
       it 'raises an error' do
-        event = {
-          event_type: 'unregistered_event',
-          budget_item_id: rand(100),
-          amount: rand(1000),
-        }
+        event = { event_type: 'unregistered_event', budget_item_id: rand(100), amount: rand(1000) }
+
         expect { described_class.form_for(user, event) }
           .to raise_error(described_class::MissingFormClassError)
       end

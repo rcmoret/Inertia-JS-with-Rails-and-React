@@ -3,31 +3,34 @@
 require 'rails_helper'
 
 RSpec.describe Budget::CategoryMaturityInterval, type: :model do
-  it { should delegate_method(:month).to(:interval) }
-  it { should delegate_method(:year).to(:interval) }
+  it { is_expected.to delegate_method(:month).to(:interval) }
+  it { is_expected.to delegate_method(:year).to(:interval) }
 
   describe 'belongs to' do
-    let(:category) { FactoryBot.create(:category, :accrual) }
-    let(:interval) { FactoryBot.create(:budget_interval) }
     subject { described_class.new(category: category, interval: interval) }
 
-    it { should belong_to(:interval) }
-    xit { should belong_to(:category) }
+    let(:category) { FactoryBot.create(:category, :accrual) }
+    let(:interval) { FactoryBot.create(:budget_interval) }
+
+    it { is_expected.to belong_to(:interval) }
+    xit { is_expected.to belong_to(:category) }
   end
 
   describe 'requires interval and catgory' do
-    context 'budget interval is null' do
-      let(:category) { FactoryBot.create(:category, :accrual) }
+    context 'when the budget interval is null' do
       subject { described_class.new(category: category, interval: nil) }
+
+      let(:category) { FactoryBot.create(:category, :accrual) }
 
       it 'raises an error' do
         expect { subject.save! }.to raise_error ActiveRecord::RecordInvalid
       end
     end
 
-    context 'budget category is null' do
-      let(:interval) { FactoryBot.create(:budget_interval) }
+    context 'when the budget category is null' do
       subject { described_class.new(category: nil, interval: interval) }
+
+      let(:interval) { FactoryBot.create(:budget_interval) }
 
       it 'raises an error' do
         expect { subject.save! }.to raise_error NoMethodError

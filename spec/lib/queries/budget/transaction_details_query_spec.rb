@@ -11,13 +11,8 @@ RSpec.describe Queries::Budget::TransactionDetailsQuery do
       before { FactoryBot.create(:budget_item, budget_interval_id: interval.id) }
 
       it 'returns an empty result set' do
-        subject = described_class.new(
-          month: interval.month,
-          year: interval.year,
-          user_id: interval.user_id
-        ).call
+        subject = described_class.new(month: interval.month, year: interval.year, user_id: user.id).call
 
-        expect(subject.fetch(1).collection).to be_empty
         expect(subject.fetch(1).transactions_count).to be_zero
         expect(subject.fetch(1).transactions_total).to be_zero
       end
@@ -33,22 +28,14 @@ RSpec.describe Queries::Budget::TransactionDetailsQuery do
       end
 
       it 'returns a result set including transactions count and total' do
-        subject = described_class.new(
-          month: interval.month,
-          year: interval.year,
-          user_id: interval.user_id
-        ).call
+        subject = described_class.new(month: interval.month, year: interval.year, user_id: user.id).call
 
         expect(subject.fetch(budget_item.id).transactions_total).to be transaction_details.sum(&:amount)
         expect(subject.fetch(budget_item.id).transactions_count).to be transaction_details.size
       end
 
       it 'returns a result set including an array of details' do
-        subject = described_class.new(
-          month: interval.month,
-          year: interval.year,
-          user_id: interval.user_id
-        ).call
+        subject = described_class.new(month: interval.month, year: interval.year, user_id: user.id).call
 
         expected_details = transaction_details.map do |detail|
           {

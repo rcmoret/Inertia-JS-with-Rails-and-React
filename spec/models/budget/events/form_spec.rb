@@ -25,12 +25,19 @@ RSpec.describe Budget::Events::Form do
 
   describe 'initializing the new event form objects' do
     context 'when providing a single item array that is valid' do
-      it 'initializes a create item event form object' do
-        params = { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
-        expect(Budget::Events::CreateItemForm)
+      let(:params) { { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] } }
+
+      before do
+        allow(Budget::Events::CreateItemForm)
           .to receive(:new)
           .with(user, params[:events].first.symbolize_keys)
           .and_return(OpenStruct.new(save: true))
+      end
+
+      it 'initializes a create item event form object' do
+        expect(Budget::Events::CreateItemForm)
+          .to receive(:new)
+          .with(user, params[:events].first.symbolize_keys)
         described_class.new(user, params).save
       end
     end
@@ -77,6 +84,7 @@ RSpec.describe Budget::Events::Form do
           .with(user, params[:events].first.symbolize_keys)
           .and_call_original
       end
+
       let(:params) do
         { events: [{ event_type: Budget::EventTypes::CREATE_EVENTS.sample }] }
       end

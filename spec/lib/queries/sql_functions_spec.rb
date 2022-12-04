@@ -68,12 +68,12 @@ RSpec.describe Queries::SQLFunctions do
   end
 
   describe '.lpad' do
+    let(:node) { Arel::Nodes::Quoted.new('hello, world') }
+
     specify do
-      node = Arel::Nodes::Quoted.new('hello, world')
       length = 4
       padder = 0
-      expect(Arel::Nodes::NamedFunction)
-        .to receive(:new)
+      expect(Arel::Nodes::NamedFunction).to receive(:new)
         .with('lpad', [node, length, Arel::Nodes::Quoted.new(padder.to_s)])
 
       described_class.lpad(node, length, padder)
@@ -81,11 +81,11 @@ RSpec.describe Queries::SQLFunctions do
   end
 
   describe '.sql_to_date' do
+    let(:node) { Arel::Nodes::Quoted.new('hello, world') }
+
     specify do
-      node = Arel::Nodes::Quoted.new('hello, world')
       format = 'mmyyyy'
-      expect(Arel::Nodes::NamedFunction)
-        .to receive(:new)
+      expect(Arel::Nodes::NamedFunction).to receive(:new)
         .with('to_date', [node, Arel::Nodes::Quoted.new(format)])
 
       described_class.sql_to_date(node, format)

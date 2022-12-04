@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Presenters::Budget::IntervalPresenter do
   describe '#current?' do
-    context 'in the past' do
+    context 'when in the past' do
       specify do
         interval = FactoryBot.build(:budget_interval, year: (Time.zone.today.year + 1))
 
@@ -14,7 +14,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
       end
     end
 
-    context 'in the future' do
+    context 'when in the future' do
       specify do
         interval = FactoryBot.build(:budget_interval, year: (Time.zone.today.year - 1))
 
@@ -24,7 +24,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
       end
     end
 
-    context 'in current month' do
+    context 'when in current month' do
       specify do
         today = Time.zone.today
         interval = FactoryBot.create(:budget_interval, year: today.year, month: today.month)
@@ -69,15 +69,15 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
 
         expect(subject.closed_out?).to be true
       end
+    end
 
-      context 'when close out completed at is nil' do
-        specify do
-          interval = FactoryBot.build(:budget_interval, close_out_completed_at: nil)
+    context 'when close out completed at is nil' do
+      specify do
+        interval = FactoryBot.build(:budget_interval, close_out_completed_at: nil)
 
-          subject = described_class.new(interval)
+        subject = described_class.new(interval)
 
-          expect(subject.closed_out?).to be false
-        end
+        expect(subject.closed_out?).to be false
       end
     end
   end
@@ -87,7 +87,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
     let(:month) { 3 }
     let(:interval) { FactoryBot.create(:budget_interval, year: year, month: month) }
 
-    context 'in current month' do
+    context 'when in current month' do
       around do
         Timecop.travel(Date.new(year, month, 15))
         interval.prev.update(close_out_completed_at: 1.second.ago)
@@ -108,7 +108,7 @@ RSpec.describe Presenters::Budget::IntervalPresenter do
       end
     end
 
-    context 'in a past month' do
+    context 'when in a past month' do
       before { Timecop.travel(future_month) }
 
       let(:future_month) { Date.new(year + 1, month, 10) }

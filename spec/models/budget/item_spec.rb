@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Budget::Item, type: :model do
-  xit { should belong_to(:category).required }
-  xit { should belong_to(:interval).required }
-  it { should have_many(:transaction_details) }
-  it { should delegate_method(:name).to(:category) }
-  it { should delegate_method(:icon_class_name).to(:category) }
-  it { should delegate_method(:expense?).to(:category) }
-  it { should delegate_method(:monthly?).to(:category) }
+  xit { is_expected.to belong_to(:category).required }
+  xit { is_expected.to belong_to(:interval).required }
+  it { is_expected.to have_many(:transaction_details) }
+  it { is_expected.to delegate_method(:name).to(:category) }
+  it { is_expected.to delegate_method(:icon_class_name).to(:category) }
+  it { is_expected.to delegate_method(:expense?).to(:category) }
+  it { is_expected.to delegate_method(:monthly?).to(:category) }
 
   describe 'key validations' do
     subject { FactoryBot.build(:budget_item) }
@@ -30,9 +30,11 @@ RSpec.describe Budget::Item, type: :model do
     end
   end
 
-  context 'deleting an item' do
+  context 'when deleting an item' do
     before { travel_to Time.current }
+
     after { travel_back }
+
     context 'when transaction details are present' do
       it 'raises an error' do
         transaction_detail = FactoryBot.create(:transaction_detail)
@@ -47,11 +49,7 @@ RSpec.describe Budget::Item, type: :model do
         subject = FactoryBot.create(:budget_item)
 
         expect { subject.delete }
-          .to(
-            change { subject.reload.deleted_at }
-            .from(nil)
-            .to(Time.current)
-          )
+          .to(change { subject.reload.deleted_at }.from(nil).to(Time.current))
       end
     end
   end
