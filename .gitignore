@@ -34,6 +34,7 @@
 
 /public/assets/*
 /public/packs/js/
+/public/packs/manifest.json
 /public/assets/*
 /public/packs-test
 /node_modules
