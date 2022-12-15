@@ -30,7 +30,7 @@ module Accounts
     end
 
     def account
-      @account ||= Account.new(create_params)
+      @account ||= current_user.accounts.build(create_params)
     end
 
     def include_archived?
