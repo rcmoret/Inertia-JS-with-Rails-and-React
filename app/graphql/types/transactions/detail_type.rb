@@ -3,7 +3,7 @@
 module Types
   module Transactions
     class DetailType < BaseObject
-      field :id, ID, 'primary key', null: false
+      field :key, ID, 'identifier', null: false
       field :entry_id, ID, 'primary key of the parent record', null: false
       field :account_id, ID, 'Primary key of the associated financial account', null: false
       field :account_name, String, 'Name of the associated financial account', null: false

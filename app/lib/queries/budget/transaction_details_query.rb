@@ -48,7 +48,7 @@ module Queries
 
       def json_object
         SQLFunctions.json_build_object(
-          Arel::Nodes::Quoted.new('id'), TRANSACTION_DETAILS[:id],
+          Arel::Nodes::Quoted.new('key'), TRANSACTION_DETAILS[:key],
           Arel::Nodes::Quoted.new('amount'), TRANSACTION_DETAILS[:amount],
           Arel::Nodes::Quoted.new('updated_at'), TRANSACTION_DETAILS[:updated_at],
           Arel::Nodes::Quoted.new('account_name'), ACCOUNTS[:name],
@@ -76,7 +76,7 @@ module Queries
       end
 
       class QueryResult
-        DETAIL_KEYS = %i[id amount updated_at account_name clearance_date description].freeze
+        DETAIL_KEYS = %i[key amount updated_at account_name clearance_date description].freeze
 
         def initialize(result_hash)
           @budget_item_id = result_hash.fetch('budget_item_id')

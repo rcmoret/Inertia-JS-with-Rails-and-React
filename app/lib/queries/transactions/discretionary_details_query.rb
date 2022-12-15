@@ -6,7 +6,7 @@ module Queries
       include Shared
 
       SELECTS = {
-        'id' => TRANSACTION_DETAILS[:id],
+        'key' => TRANSACTION_DETAILS[:key],
         'amount' => TRANSACTION_DETAILS[:amount],
         'updated_at' => TRANSACTION_DETAILS[:updated_at],
         'account_name' => ACCOUNTS[:name].as('account_name'),

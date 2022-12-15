@@ -17,7 +17,13 @@ RSpec.describe Forms::TransactionForm do
               clearanceDate: Time.current.to_date,
               notes: nil,
               receipt: nil,
-              detailsAttributes: { '0' => { amount: 100_00, budgetItemKey: budget_item.key } },
+              detailsAttributes: {
+                '0' => {
+                  key: SecureRandom.hex(6),
+                  amount: 100_00,
+                  budgetItemKey: budget_item.key,
+                },
+              },
             }
           )
         end

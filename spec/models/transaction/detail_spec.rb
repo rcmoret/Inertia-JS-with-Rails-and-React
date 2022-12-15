@@ -19,7 +19,7 @@ RSpec.describe Transaction::Detail, type: :model do
 
     describe 'a valid detail' do
       it 'returns true for valid?' do
-        detail = described_class.new transaction_entry_id: entry.id, amount: 100
+        detail = described_class.new(transaction_entry_id: entry.id, amount: 100, key: SecureRandom.hex(6))
         expect(detail).to be_valid
       end
     end

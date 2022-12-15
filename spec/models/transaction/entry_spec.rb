@@ -42,7 +42,13 @@ RSpec.describe Transaction::Entry, type: :model do
 
     let(:transaction_entry) do
       FactoryBot.build :transaction_entry,
-                       details_attributes: [{ amount: rand(10_000), budget_item_id: nil }],
+                       details_attributes: [
+                         {
+                           key: SecureRandom.hex(6),
+                           amount: rand(10_000),
+                           budget_item_id: nil,
+                         },
+                       ],
                        budget_exclusion: true,
                        account: account
     end

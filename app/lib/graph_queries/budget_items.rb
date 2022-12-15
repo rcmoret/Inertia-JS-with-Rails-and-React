@@ -37,7 +37,7 @@ module GraphQueries
                 amount
                 overUnderBudget
                 transactionDetails {
-                  id
+                  key
                   accountName
                   amount
                   clearanceDate
@@ -71,7 +71,7 @@ module GraphQueries
                 }
                 transactionDetailCount
                 transactionDetails {
-                  id
+                  key
                   accountName
                   amount
                   clearanceDate

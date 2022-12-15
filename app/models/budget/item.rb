@@ -2,6 +2,7 @@
 
 module Budget
   class Item < ApplicationRecord
+    include HasKeyIdentifier
     include Presentable
 
     has_many :transaction_details,
@@ -22,13 +23,11 @@ module Budget
                inverse_of: :items
     has_many :maturity_intervals, through: :category, inverse_of: :items
 
-    validates :key, uniqueness: true, presence: true, length: { is: 12 }
     validates :category, presence: true
     # rubocop:disable Rails/UniqueValidationWithoutIndex
     validates :budget_category_id, uniqueness: { scope: :budget_interval_id, if: -> { weekly? && active? } }
     # rubocop:enable Rails/UniqueValidationWithoutIndex
 
-    # scope :current, -> { where(budget_interval: Interval.current) }
     scope :prior_to, ->(date_hash) { joins(:interval).merge(Interval.prior_to(date_hash)) }
     scope :in_range, ->(range) { joins(:interval).merge(Interval.in_range(range)) }
     scope :active, -> { where(deleted_at: nil) }
@@ -47,10 +46,6 @@ module Budget
              :name,
              :per_diem_enabled,
              to: :category
-
-    def self.for(key)
-      find_by(arel_table[:key].lower.eq(key.to_s.downcase))
-    end
 
     def delete
       raise NonDeleteableError if transaction_details.any?

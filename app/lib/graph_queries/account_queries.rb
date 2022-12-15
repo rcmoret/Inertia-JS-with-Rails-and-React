@@ -77,7 +77,7 @@ module GraphQueries
               transferId
               updatedAt
               details {
-                id
+                key
                 amount
                 budgetItemKey
                 budgetCategoryId

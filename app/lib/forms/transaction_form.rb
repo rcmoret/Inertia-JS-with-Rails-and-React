@@ -10,7 +10,7 @@ module Forms
       :description,
       :notes,
       :receipt,
-      { detailsAttributes: %i[id amount budgetItemKey _destroy].freeze }.freeze,
+      { detailsAttributes: %i[id key amount budgetItemKey _destroy].freeze }.freeze,
     ].freeze
 
     def initialize(transaction_entry, raw_params)
@@ -28,8 +28,9 @@ module Forms
 
     def parameters
       details_attributes = initial_parameters.delete(:details_attributes).values.map do |detail_attrs|
+        detail_id = transaction_entry.details.find_by(key: detail_attrs.fetch(:key))&.id
         budget_item_id = Budget::Item.for(detail_attrs.delete(:budget_item_key))&.id
-        detail_attrs.merge(budget_item_id: budget_item_id)
+        detail_attrs.merge(budget_item_id: budget_item_id, id: detail_id)
       end
 
       initial_parameters.merge(details_attributes: details_attributes)

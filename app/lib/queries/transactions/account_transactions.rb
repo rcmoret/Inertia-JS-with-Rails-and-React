@@ -81,7 +81,7 @@ module Queries
       class QueryResult
         include Presentable
 
-        DETAIL_ATTRS = %w[id amount budget_item_id budget_category_id budget_category_name icon_class_name].freeze
+        DETAIL_ATTRS = %w[key amount budget_item_id budget_category_id budget_category_name icon_class_name].freeze
 
         def initialize(result_hash)
           SELECTS.each_key do |attribute_name|

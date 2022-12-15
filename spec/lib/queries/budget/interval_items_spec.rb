@@ -27,12 +27,19 @@ RSpec.describe Queries::Budget::IntervalItems do
       [FactoryBot.create(:budget_item_event, :create_event, item: rent_item)]
     end
     let!(:grocery_transaction_entries) do
-      FactoryBot.create_list(:transaction_entry,
-                             2,
-                             description: 'Publix',
-                             account: account,
-                             clearance_date: 2.days.ago,
-                             details_attributes: [{ amount: -100_00, budget_item: grocery_item }])
+      2.times.map do
+        FactoryBot.create(:transaction_entry,
+                          description: 'Publix',
+                          account: account,
+                          clearance_date: 2.days.ago,
+                          details_attributes: [
+                            {
+                              key: SecureRandom.hex(6),
+                              amount: -100_00,
+                              budget_item: grocery_item,
+                            },
+                          ])
+      end
     end
     let(:future_interval) do
       FactoryBot.create(:budget_interval, month: budget_interval.month, year: (budget_interval.year + 1))

@@ -7,9 +7,8 @@ import { parseISO } from 'date-fns'
 
 import { fromDateString } from "../../lib/DateFormatter";
 import evalInput from "../../lib/dynamicInputEvaluator";
-import { asOption, isMatureAccrual, sortByLabel } from "../../lib/Functions";
+import { asOption, generateIdentifier, isMatureAccrual, sortByLabel } from "../../lib/Functions";
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
-import { v4 as uuid } from "uuid";
 
 import Button from "../shared/Button";
 import Cell from "../shared/Cell";
@@ -20,10 +19,10 @@ import Row from "../shared/Row";
 import TextInput, { AmountInput } from "../shared/TextInput";
 
 const newDetail = () => ({
-  uuid: uuid(),
   amount: "",
   budgetItemKey: null,
   isNew: true,
+  key: generateIdentifier(),
   updatedAttributes: {}
 })
 
@@ -114,12 +113,11 @@ const Form = props => {
   const handleSubmit = event => {
     event.preventDefault();
     const detailsAttributes = updatedTransaction.details.map(detail => {
-      const { id, budgetItemKey, isMarkedForDelete, isNew } = detail
+      const { id, budgetItemKey, isMarkedForDelete, key } = detail
       if (isMarkedForDelete) {
-        return { id, _destroy: true }
+        return { key, _destroy: true }
       } else {
-        const amount = decimalToInt(detail.amount)
-        return isNew ? { amount, budgetItemKey } : { id, amount, budgetItemKey }
+        return { amount: decimalToInt(detail.amount), budgetItemKey, key }
       }
     })
     makeRequest({
@@ -168,22 +166,22 @@ const Form = props => {
       ...attributes,
       details: [...attributes.details, { ...newDetail() }],
     }),
-    remove: uuid => updateAttributes({
+    remove: key => updateAttributes({
       ...attributes,
       details: attributes.details.reduce((array, detail) => {
-        if (uuid === detail.uuid && detail.isNew) {
+        if (key === detail.key && detail.isNew) {
           return array
-        } else if (uuid === detail.uuid) {
+        } else if (key === detail.key) {
           return [...array, { ...detail, isMarkedForDelete: true }]
         } else {
           return [...array, detail]
         }
       }, [])
     }),
-    update: (uuid, payload) => updateAttributes({
+    update: (key, payload) => updateAttributes({
       ...attributes,
       details: attributes.details.map(detail => {
-        if (detail.uuid === uuid) {
+        if (detail.key === key) {
           return { ...detail, updatedAttributes: { ...detail.updatedAttributes, ...payload } }
         } else {
           return detail
@@ -368,13 +366,13 @@ const Details = props => {
         </Row>
         {details.map(detail => (
           <DetailForm
-            key={detail.uuid}
+            key={detail.key}
             detail={detail}
             interval={interval}
             isBudgetExclusion={isBudgetExclusion}
             items={items}
             iconClassName="fa fa-times-circle"
-            onClick={() => remove(detail.uuid)}
+            onClick={() => remove(detail.key)}
             update={update}
           />
         ))}
@@ -398,7 +396,7 @@ const Details = props => {
 const DetailForm = props => {
   const { detail, iconClassName, interval, isBudgetExclusion, items, onClick, update } = props
   const originalBudgetItemKey = detail.budgetItemKey
-  const { uuid, amount, budgetItemKey, budgetCategoryName, isMarkedForDelete, isNew } = { ...detail, ...detail.updatedAttributes }
+  const { key, amount, budgetItemKey, budgetCategoryName, isMarkedForDelete, isNew } = { ...detail, ...detail.updatedAttributes }
   const { month, year } = interval
 
   const valueFn = item => item.key
@@ -428,17 +426,17 @@ const DetailForm = props => {
 
   const value = availableOptions.find(item => item.value === budgetItemKey)
   const handleAmountChange = event => {
-    update(uuid, { amount: event.target.value })
+    update(key, { amount: event.target.value })
   }
   const handleItemChange = event => {
     const selectedItem = props.items.find(item => item.key === event.value)
     if (selectedItem && selectedItem.isMonthly && amount === "") {
-      update(uuid, { budgetItemKey: event.value, amount: MoneyFormatter(selectedItem.remaining) })
+      update(key, { budgetItemKey: event.value, amount: MoneyFormatter(selectedItem.remaining) })
     } else {
-      update(uuid, { budgetItemKey: event.value })
+      update(key, { budgetItemKey: event.value })
     }
   }
-  const handleCalculate = () => update(uuid, { amount: evalInput(amount) })
+  const handleCalculate = () => update(key, { amount: evalInput(amount) })
   const isEligibleForCalculation = amount !== evalInput(amount)
   const handleKeyDown = event => {
     if (event.which === 13 && isEligibleForCalculation) {

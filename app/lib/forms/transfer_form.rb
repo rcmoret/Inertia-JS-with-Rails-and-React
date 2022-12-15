@@ -46,7 +46,7 @@ module Forms
       transfer.build_from_transaction(
         description: "Transfer to #{to_account}",
         account: from_account,
-        details_attributes: [{ amount: -amount }]
+        details_attributes: [{ key: SecureRandom.hex(6), amount: -amount }]
       )
     end
 
@@ -54,7 +54,7 @@ module Forms
       transfer.build_to_transaction(
         description: "Transfer from #{from_account}",
         account: to_account,
-        details_attributes: [{ amount: amount }]
+        details_attributes: [{ key: SecureRandom.hex(6), amount: amount }]
       )
     end
 
