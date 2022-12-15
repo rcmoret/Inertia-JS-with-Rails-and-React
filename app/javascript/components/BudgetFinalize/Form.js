@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { asOption, generateIdentifer, sortByName as sortFn } from '../../lib/Functions';
+import { asOption, generateIdentifier, sortByName as sortFn } from '../../lib/Functions';
 import { extraFrom } from './Functions';
 import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
 
@@ -26,7 +26,7 @@ const Form = props => {
     const newItem = (_item, index) => (
       {
         name: `New (${index})`,
-        budgetItemKey: generateIdentifer(),
+        budgetItemKey: generateIdentifier(),
         budgeted: 0,
         eventType: 'rollover_item_create',
       }

@@ -11,7 +11,7 @@ import Row from "../shared/Row";
 import {
   asOption,
   clearedMonthly,
-  generateIdentifer,
+  generateIdentifier,
   sortByName,
   sortByClearedThenName
 } from "../../lib/Functions";
@@ -21,7 +21,7 @@ import { titleize } from "../../lib/copy/functions"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 
 const newItemModel = category => {
-  const key = generateIdentifer()
+  const key = generateIdentifier()
 
   return {
     ...category,

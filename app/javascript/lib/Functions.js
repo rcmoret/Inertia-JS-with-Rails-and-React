@@ -107,7 +107,7 @@ const dataFor = (data) => {
 
 export const newItemEvent = (item, month, year, eventType = "item_create") => {
   const { amount, budgetCategoryId, data } = item
-  const budgetItemKey = item.budgetItemKey || generateIdentifer()
+  const budgetItemKey = item.budgetItemKey || generateIdentifier()
 
   return eventForm({
     amount,
@@ -139,4 +139,4 @@ export const deleteItemEvent = (item, eventType = "item_delete") => (
   })
 );
 
-export const generateIdentifer = () => uuid().replace(/-/g, '').slice(0,12);
+export const generateIdentifier = () => uuid().replace(/-/g, '').slice(0,12);

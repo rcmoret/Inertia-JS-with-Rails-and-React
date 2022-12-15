@@ -5,7 +5,7 @@ import {
   asOption,
   isExpense,
   isRevenue,
-  generateIdentifer,
+  generateIdentifier,
   sortByName,
 } from "../../lib/Functions";
 import { postItemCreateEvent } from "./Functions";
@@ -42,7 +42,7 @@ const CreateItemForm = (props) => {
   const [form, updateForm] = useState({
     amount: "",
     categoryId: null,
-    budgetItemKey: generateIdentifer()
+    budgetItemKey: generateIdentifier()
   })
 
   const handleInputChange = event => updateForm({ ...form, amount: event.target.value })
