@@ -21,8 +21,8 @@ const BudgetSetupApp = ({ budget, ...props }) => {
   const dispatch = (event, payload) => setFormObject(reducer(event, form, payload))
   const { categories, categoryOptions, selectedCategory, month, year } = form
   const models = categories.reduce((array, category) => {
-    const existingItems = form.existingItems.filter(item => item.budgetCategoryId === category.id)
-    const newItems = form.newItems.filter(item => item.budgetCategoryId === category.id)
+    const existingItems = form.existingItems.filter(item => item.budgetCategorySlug === category.slug)
+    const newItems = form.newItems.filter(item => item.budgetCategorySlug === category.slug)
 
     const object = {
       ...category,

@@ -15,10 +15,11 @@ module Budget
         private
 
         def maturity_interval
-          @maturity_interval ||= Budget::CategoryMaturityInterval.new(
-            interval: interval,
-            budget_category_id: budget_category_id
-          )
+          @maturity_interval ||= Budget::CategoryMaturityInterval.new(interval: interval, category: category)
+        end
+
+        def category
+          @category ||= current_user.budget_categories.find_by!(slug: params.fetch(:slug))
         end
 
         def post_params
@@ -31,10 +32,6 @@ module Budget
             year: post_params[:year],
             user_id: current_user.id
           )
-        end
-
-        def budget_category_id
-          params.fetch(:id)
         end
 
         def redirect_url

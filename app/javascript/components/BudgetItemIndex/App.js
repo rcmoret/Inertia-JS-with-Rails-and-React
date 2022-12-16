@@ -51,7 +51,7 @@ const App = ({ budget, ...props }) => {
       isRendered: false,
       notes: "",
       selectedItemId: null,
-      selectedCategoryId: null,
+      selectedCategorySlug: null,
     },
     isDayToDayFormShown: false,
     isMonthlyFormShown: false,
@@ -123,7 +123,7 @@ const App = ({ budget, ...props }) => {
       adjustmentItems: [],
       isRendered: false,
       selectedItemId: null,
-      selectedCategoryId: null,
+      selectedCategorySlug: null,
     },
   })
   const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
@@ -131,11 +131,11 @@ const App = ({ budget, ...props }) => {
 
   const [items, updateItemsState] = useState(budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays)))
 
-  const existingItemCategoryIds = items.map(item => item.budgetCategoryId)
+  const existingItemCategoryNames = items.map(item => item.name)
   const availableDayToDayCategories = budget
     .categories
     .filter(isDayToDay)
-    .filter(category => !existingItemCategoryIds.includes(category.id))
+    .filter(category => !existingItemCategoryNames.includes(category.name))
 
   const availableMonthlyCategories = budget.categories.filter(isMonthly)
 

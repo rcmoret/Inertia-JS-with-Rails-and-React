@@ -31,6 +31,7 @@ const newItemModel = category => {
     amount: 0,
     bottomLineChange: 0,
     budgetCategoryId: category.id,
+    budgetCategorySlug: category.slug,
     difference: 0,
     eventType: copy.multiItemAdjustForm.events.create,
     inputAmount: "",
@@ -54,7 +55,7 @@ const MultiItemAdjustForm = props => {
   const {
     adjustmentItems,
     notes,
-    selectedCategoryId,
+    selectedCategorySlug,
     selectedItemId,
   } = formData
   const { month, year } = interval
@@ -75,28 +76,29 @@ const MultiItemAdjustForm = props => {
   const handleItemSelectChange = event => updateAdjustItemsForm({ selectedItemId: event.value })
   const selectedItem = itemOptions.find(item => item.value ===  selectedItemId)
   const categoryLabelFn = category => `${category.name} - ${MoneyFormatter(category.defaultAmount, { decorate: true, absolute: true })}`
-  const newDayToDayCategoryIds = adjustmentItems.reduce((arr, item) =>
-    item.eventType === copy.multiItemAdjustForm.events.create ? [...arr, item.budgetCategory] : arr,
+  const categoryValueFn = category => category.slug
+  const newDayToDayCategoryNames = adjustmentItems.reduce((arr, item) =>
+    item.eventType === copy.multiItemAdjustForm.events.create ? [...arr, item.name] : arr,
     []
   )
   const categoryOptions = [
     { value: null, label: titleize(copy.multiItemAdjustForm.availableCategories) },
     ...availableCategories
-    .filter(category => !newDayToDayCategoryIds.includes(category.id))
+    .filter(category => !newDayToDayCategoryNames.includes(category.name))
     .sort(sortByName)
-    .map(category => asOption(category, { labelFn: categoryLabelFn }))
+    .map(category => asOption(category, { labelFn: categoryLabelFn, valueFn: categoryValueFn }))
   ]
-  const handleCategorySelectChange = event => updateAdjustItemsForm({ selectedCategoryId: event.value })
+  const handleCategorySelectChange = event => updateAdjustItemsForm({ selectedCategorySlug: event.value })
   const handleNotesChange = event => updateAdjustItemsForm({ notes: event.target.value })
-  const selectedCategory = categoryOptions.find(category => category.value ===  selectedCategoryId)
+  const selectedCategory = categoryOptions.find(category => category.value ===  selectedCategorySlug)
   const bottomLineChange = adjustmentItems.reduce((sum, item) => sum + item.bottomLineChange, 0)
   const addCategoryItem = () => {
-    const category = availableCategories.find(category => selectedCategoryId === category.id)
+    const category = availableCategories.find(category => selectedCategorySlug === category.slug)
     if (category === undefined) {
       return null
     } else {
       updateAdjustItemsForm({
-        selectedCategoryId: null,
+        selectedCategorySlug: null,
         adjustmentItems: [
           ...adjustmentItems,
           newItemModel(category),

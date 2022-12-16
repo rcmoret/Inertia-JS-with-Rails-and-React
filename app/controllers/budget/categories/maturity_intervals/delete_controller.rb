@@ -15,7 +15,19 @@ module Budget
         private
 
         def maturity_interval
-          Budget::CategoryMaturityInterval.find(params.fetch(:id))
+          @maturity_interval ||= Budget::CategoryMaturityInterval.find_by(interval: interval, category: category)
+        end
+
+        def category
+          @category ||= current_user.budget_categories.find_by!(slug: params.fetch(:slug))
+        end
+
+        def interval
+          @interval ||= Budget::Interval.for(
+            month: params.fetch(:month),
+            year: params.fetch(:year),
+            user_id: current_user.id
+          )
         end
 
         def redirect_url

@@ -9,13 +9,13 @@ const Form = props => {
   const baseIntervalItems = baseInterval.items
   const targetIntervalItems = targetInterval.items
 
-  const baseIntervalCategoryIds = baseIntervalItems.map(item => item.budgetCategoryId)
-  const targetIntervalCategoryIds = targetIntervalItems.map(item => item.budgetCategoryId)
+  const baseIntervalCategorySlugs = baseIntervalItems.map(item => item.budgetCategorySlug)
+  const targetIntervalCategorySlugs = targetIntervalItems.map(item => item.budgetCategorySlug)
 
   const newModel = category => {
     const { isAccrual, isMonthly } = category
     const availableItems = targetIntervalItems
-      .filter(item => item.budgetCategoryId === category.id)
+      .filter(item => item.budgetCategorySlug === category.slug)
       .map(({ key, budgeted }) => ({
         name: `${key} - ${MoneyFormatter(budgeted, { decorate: true })}`,
         budgetItemKey: key,
@@ -33,7 +33,7 @@ const Form = props => {
       }
     )
 
-    const baseItems = baseIntervalItems.filter(item => item.budgetCategoryId === category.id)
+    const baseItems = baseIntervalItems.filter(item => item.budgetCategorySlug === category.slug)
 
     const newItemEvents = () => {
       if ((isMonthly && !isAccrual) || availableItems.length === 0) {
@@ -58,7 +58,7 @@ const Form = props => {
   }
 
   const models = categories.reduce((array, category) => {
-    if (baseIntervalCategoryIds.includes(category.id)) {
+    if (baseIntervalCategorySlugs.includes(category.slug)) {
       return [...array, newModel(category)]
     } else {
       return array
@@ -68,10 +68,10 @@ const Form = props => {
   const availableCategories = categories
     .sort(sortFn)
     .reduce((array, category) => {
-    if (targetIntervalCategoryIds.includes(category.id)) {
+    if (targetIntervalCategorySlugs.includes(category.slug)) {
       return array
     } else {
-      return [...array, asOption(category)]
+      return [...array, asOption(category, { valueFn: cat => cat.slug })]
     }
   }, [])
 
@@ -94,8 +94,8 @@ const Form = props => {
 
 export const reducer = (event, form, payload) => {
   const updateBudgetModel = (form, formProps) => {
-    const { budgetCategoryId, key, ...objectProps } = formProps
-    const model = form.models.find(model => model.id === budgetCategoryId)
+    const { budgetCategorySlug, key, ...objectProps } = formProps
+    const model = form.models.find(model => model.slug === budgetCategorySlug)
     const originalItem = model.baseItems.find(item => item.key === key)
     const rolloverAmount = objectProps.hasOwnProperty("inputAmount") ?
       decimalToInt(objectProps.inputAmount) : originalItem.rolloverAmount
@@ -119,7 +119,7 @@ export const reducer = (event, form, payload) => {
       ...model,
       baseItems: model.baseItems.map(item => item.key === key ? updatedItem : item),
     }
-    const models = form.models.map(model => model.id === budgetCategoryId ? updatedModel : model)
+    const models = form.models.map(model => model.slug === budgetCategorySlug ? updatedModel : model)
     const updatedData = () => {
       if (status === "rolloverAll") {
         return form.rolloverItem.data.filter(datum => datum.key === key)

@@ -129,10 +129,10 @@ export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => 
 
 export const postItemCreateEvent = (itemProps, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
-  const { budgetCategoryId, budgetItemKey, amount, month, year } = itemProps
+  const { budgetCategorySlug, budgetItemKey, amount, month, year } = itemProps
   const events = [
     {
-      budgetCategoryId,
+      budgetCategorySlug,
       budgetItemKey,
       amount,
       eventType: "item_create",
@@ -176,12 +176,14 @@ export const eventsFrom = (items, month, notes, year) => {
         adjustmentAmount,
         eventType,
         isMarkedForDelete,
+        slug,
       } = item
       const event = isMarkedForDelete ? "delete" : eventType.split("_").reverse()[0]
       return {
         key,
         name,
         event,
+        budgetCategorySlug: slug,
         originalAmount: MoneyFormatter(amount, { decorate: true }),
         adjustmentAmount: MoneyFormatter(adjustmentAmount, { decorate: true }),
         updatedAmount: MoneyFormatter(amount + adjustmentAmount, { decorate: true }),
@@ -200,10 +202,11 @@ export const eventsFrom = (items, month, notes, year) => {
       eventType,
       isMarkedForDelete,
       isNewItem,
+      slug,
     } = item
     const amount = item.amount + adjustmentAmount
     if (isNewItem) {
-      const object = { amount, budgetCategoryId, data }
+      const object = { amount, budgetCategorySlug: slug, data }
       return newItemEvent(object, month, year, eventType)
     } else if (isMarkedForDelete) {
       const object = { key, data }

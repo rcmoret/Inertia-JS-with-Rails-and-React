@@ -26,7 +26,7 @@ const CategorySelect = ({ categories, dispatch, rolloverItem }) => {
   const options = [nullOption, ...categories]
   const onChange = event => {
     const category = categories.find(category => category.value === event.value)
-    dispatch("updateRolloverItem", { budgetCategoryId: category.value, name: category.label })
+    dispatch("updateRolloverItem", { budgetCategorySlug: category.value, name: category.label })
   }
 
   return (

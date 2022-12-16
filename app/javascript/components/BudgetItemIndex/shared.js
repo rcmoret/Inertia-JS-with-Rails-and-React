@@ -158,10 +158,10 @@ export  const AccrualMaturityInfo = ({ model, fns, month, year }) => {
   if (!model.isAccrual || isMatureAccrual(model, month, year)) {
     return null
   } else {
-    const { budgetCategoryId, maturityMonth, maturityYear } = model
+    const { budgetCategorySlug, maturityMonth, maturityYear } = model
     const copy = maturityMonth ? `Maturing ${maturityMonth}/${maturityYear}` : "No upcoming maturity date"
     const returnUrl = `/budget/${month}/${year}`
-    const post = () => Inertia.post(`/budget/categories/${budgetCategoryId}/maturity_intervals?redirect_to=${returnUrl}`,
+    const post = () => Inertia.post(`/budget/categories/${budgetCategorySlug}/maturity_intervals?redirect_to=${returnUrl}`,
       { interval: { month, year } },
       { onSuccess: fns.onPostSuccess }
     )

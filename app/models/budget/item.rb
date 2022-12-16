@@ -38,7 +38,7 @@ module Budget
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :accruals, -> { joins(:category).merge(Category.accruals) }
     scope :non_accruals, -> { joins(:category).merge(Category.non_accruals) }
-    scope :belonging_to, ->(user) { joins(:category).merge(Category.where(user: user)) }
+    scope :belonging_to, ->(user) { joins(:category).merge(Category.belonging_to(user)) }
 
     delegate :accrual,
              :expense?,

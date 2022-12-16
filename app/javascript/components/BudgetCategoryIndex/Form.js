@@ -13,7 +13,6 @@ import { decimalToInt } from "../../lib/MoneyFormatter";
 
 const Form = ({ category, closeForm, icons, onSubmit, update }) => {
   const {
-    id,
     accrual,
     archivedAt,
     displayAmount,

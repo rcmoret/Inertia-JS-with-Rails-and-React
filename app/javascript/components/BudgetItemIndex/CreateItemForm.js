@@ -18,7 +18,7 @@ import Button, { DisabledButton } from "../shared/Button";
 import Row from "../shared/Row";
 
 const FormButton = ({ form, onSubmit }) => {
-  if (form.amount !== "" && form.categoryId !== null) {
+  if (form.amount !== "" && form.categorySlug !== null) {
     return (
       <Button
         bgColor="bg-green-600"
@@ -41,19 +41,22 @@ const CreateItemForm = (props) => {
   const { availableCategories, isFormShown, month, toggleForm, year, fns } = props
   const [form, updateForm] = useState({
     amount: "",
-    categoryId: null,
+    categorySlug: null,
   })
 
   const handleInputChange = event => updateForm({ ...form, amount: event.target.value })
   const handleSelectChange = event => {
     if (form.amount === "") {
-      updateForm({ ...form, amount: MoneyFormatter(event.defaultAmount, { decorate: false }), categoryId: event.value })
+      updateForm({ ...form, amount: MoneyFormatter(event.defaultAmount, { decorate: false }), categorySlug: event.value })
     } else {
-      updateForm({ ...form, categoryId: event.value })
+      updateForm({ ...form, categorySlug: event.value })
     }
   }
   const categoryOption = category => ({
-    ...asOption(category, { labelFn: cat => `${cat.name} - ${MoneyFormatter(cat.defaultAmount, { absolute: true })}` }),
+    ...asOption(category, {
+      labelFn: cat => `${cat.name} - ${MoneyFormatter(cat.defaultAmount, { absolute: true })}`,
+      valueFn: cat => cat.slug,
+    }),
     defaultAmount: category.defaultAmount,
   })
   const expenseOptions = availableCategories.filter(isExpense).sort(sortByName).map(categoryOption)
@@ -65,14 +68,14 @@ const CreateItemForm = (props) => {
     { label: titleize(titles.expenses), options: expenseOptions },
     { label: titleize(titles.revenues), options: revenueOptions },
   ]
-  const value = availableCategories.find(c => c.value === form.categoryId)
+  const value = availableCategories.find(c => c.value === form.categorySlug)
   const onSuccess = page => {
     toggleForm()
     fns.onPostSuccess(page)
   }
   const onSubmit = () => {
     postItemCreateEvent(
-      { budgetItemKey: generateIdentifier(), budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
+      { budgetItemKey: generateIdentifier(), budgetCategorySlug: form.categorySlug, amount: decimalToInt(form.amount), month, year, },
       { onSuccess }
     )
   }

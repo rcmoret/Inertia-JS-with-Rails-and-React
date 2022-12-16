@@ -18,6 +18,7 @@ module Budget
              inverse_of: :category,
              foreign_key: :budget_category_id
     belongs_to :user
+    scope :beloning_to, ->(user) { where(user: user) }
     belongs_to :icon, optional: true
 
     validates :default_amount,

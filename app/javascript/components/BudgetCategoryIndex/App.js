@@ -47,7 +47,7 @@ export const App = props => {
     }
   const [pageData, updatePageData] = usePageData(`budget/category`, {
     areFiltersShown: false,
-    showFormForId: null,
+    showFormForSlug: null,
     showMaturityIntervalsForIds: [],
     filters: [
       { name: "adjective", value: "all" },
@@ -56,7 +56,7 @@ export const App = props => {
     ],
     newCategory,
   })
-  const { areFiltersShown, filters, showMaturityIntervalsForIds, showFormForId } = pageData
+  const { areFiltersShown, filters, showMaturityIntervalsForIds, showFormForSlug } = pageData
   const categories = props.budget.categories.map(c => c.icon === null ? { ...c, icon: { id: null } } : c)
   const updateFilters = ({ name, value }) => updatePageData({
     ...pageData,
@@ -141,25 +141,25 @@ export const App = props => {
   const icons = props.budget.icons.map(asOption).sort(sortByLabel)
   const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForId: null })
   const categoryFns = {
-    isFormShown: id => showFormForId === id,
-    openForm: id => updatePageData({ ...pageData, showFormForId: id }),
+    isFormShown: slug => showFormForSlug === slug,
+    openForm: slug => updatePageData({ ...pageData, showFormForSlug: slug }),
     closeForm,
-    isDetailShown: id => showMaturityIntervalsForIds.includes(id),
-    hideMaturityIntervals: id => updatePageData({
+    isDetailShown: slug => showMaturityIntervalsForIds.includes(slug),
+    hideMaturityIntervals: slug => updatePageData({
       ...pageData,
-      showMaturityIntervalsForIds:  pageData.showMaturityIntervalsForIds.filter(i => i !== id),
+      showMaturityIntervalsForIds:  pageData.showMaturityIntervalsForIds.filter(s => s !== slug),
     }),
-    showMaturityIntervals: id => updatePageData({
+    showMaturityIntervals: slug => updatePageData({
       ...pageData,
       showMaturityIntervalsForIds: [
         ...pageData.showMaturityIntervalsForIds,
-        id,
+        slug,
       ]
     }),
   }
   const newFormFns = {
     closeForm,
-    renderForm: () => updatePageData({ ...pageData, showFormForId: "new" }),
+    renderForm: () => updatePageData({ ...pageData, showFormForSlug: "new" }),
   }
 
   return (
@@ -180,13 +180,13 @@ export const App = props => {
               category={pageData.newCategory}
               fns={newFormFns}
               icons={icons}
-              isFormShown={showFormForId === "new"}
+              isFormShown={showFormForSlug === "new"}
               onSubmit={submitNewCategory}
               update={updateNewCategory}
             />
-            {categories.filter(categoryFilter).sort(sortFn).map(category => (
+            {categories.filter(categoryFilter).sort(sortFn).map((category, index) => (
               <Category
-                key={category.id}
+                key={index}
                 category={category}
                 icons={icons}
                 fns={categoryFns}
@@ -201,9 +201,9 @@ export const App = props => {
 }
 
 const Category = ({ icons, fns, ...props }) => {
-  const { id, archivedAt, name } = props.category
+  const { id, archivedAt, name, slug } = props.category
   const { closeForm, isFormShown, ...maturityFns } = fns
-  if (isFormShown(id)) {
+  if (isFormShown(slug)) {
     const [category, updateCategory] = useState({
       ...props.category,
       displayAmount: MoneyFormatter(props.category.defaultAmount),
@@ -211,7 +211,7 @@ const Category = ({ icons, fns, ...props }) => {
       isNew: false,
       updatedAttributes: {},
     })
-    const onSubmit = () => Inertia.put(`/budget/categories/${id}${props.queryParams}`,
+    const onSubmit = () => Inertia.put(`/budget/categories/${slug}${props.queryParams}`,
         { category: requestBody(category.updatedAttributes) },
         { onSuccess: closeForm }
     )
@@ -229,15 +229,15 @@ const Category = ({ icons, fns, ...props }) => {
     const deleteCategory = () => {
       const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`)
       if (isConfirmed) {
-        Inertia.delete(`/budget/categories/${id}${props.queryParams}`)
+        Inertia.delete(`/budget/categories/${slug}${props.queryParams}`)
       }
     }
     const restoreCategory = () => {
       const body = { archivedAt: null }
-      Inertia.put(`/budget/categories/${id}`, { category: body })
+      Inertia.put(`/budget/categories/${slug}`, { category: body })
     }
     const deleteOrRestoreCategory = () => archivedAt ? restoreCategory() : deleteCategory()
-    const openForm = () => fns.openForm(id)
+    const openForm = () => fns.openForm(slug)
     return (
       <Show category={props.category} openForm={openForm} deleteOrRestoreCategory={deleteOrRestoreCategory} maturityFns={maturityFns} />
     )

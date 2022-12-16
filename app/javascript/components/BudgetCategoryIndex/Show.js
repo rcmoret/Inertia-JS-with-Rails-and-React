@@ -11,9 +11,8 @@ import Link from "../shared/Link";
 import Row, { StripedRow } from "../shared/Row";
 import TextInput from "../shared/TextInput";
 
-const Show = ({ category, deleteOrRestoreCategory, maturityFns, ...props }) => {
+const Show = ({ category, deleteOrRestoreCategory, maturityFns, openForm, ...props }) => {
   const {
-    id,
     archivedAt,
     defaultAmount,
     icon,
@@ -29,16 +28,14 @@ const Show = ({ category, deleteOrRestoreCategory, maturityFns, ...props }) => {
   const expenseOrRevenue = isExpense ? "expense" : "revenue"
   const monthlyOrDaytoDay = isMonthly ? "monthly" : "day-to-day"
   const description = `${[monthlyOrDaytoDay, expenseOrRevenue].join(" ")}${isAccrual ? " accrual" : ""}`
-  const isDetailShown = maturityFns.isDetailShown(id)
-  const openForm = () => props.openForm(id)
+  const isDetailShown = maturityFns.isDetailShown(slug)
   const fns = {
-    hide: () => maturityFns.hideMaturityIntervals(id),
-    show: () => maturityFns.showMaturityIntervals(id),
+    hide: () => maturityFns.hideMaturityIntervals(slug),
+    show: () => maturityFns.showMaturityIntervals(slug),
   }
 
   return (
     <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible"}}>
-      <div className="hidden">{id}</div>
       <div className="w-2/12">
         {name}
       </div>
@@ -55,7 +52,7 @@ const Show = ({ category, deleteOrRestoreCategory, maturityFns, ...props }) => {
         <IconInfo icon={icon} />
       </div>
       <div className="w-1/10">
-        {isAccrual && <MaturityIntervals id={id} isDetailShown={isDetailShown} maturityIntervals={maturityIntervals} fns={fns} />}
+        {isAccrual && <MaturityIntervals slug={slug} isDetailShown={isDetailShown} maturityIntervals={maturityIntervals} fns={fns} />}
       </div>
       <div className="w-1/10 text-right pr-4">
         {isPerDiemEnabled && <span>true</span>}
@@ -82,7 +79,7 @@ const IconInfo = ({ icon }) => {
   }
 }
 
-const MaturityIntervals = ({ id, isDetailShown, maturityIntervals, fns }) => {
+const MaturityIntervals = ({ slug, isDetailShown, maturityIntervals, fns }) => {
   if (isDetailShown) {
     const [form, updateForm] = useState({
       isShown: false,
@@ -90,19 +87,19 @@ const MaturityIntervals = ({ id, isDetailShown, maturityIntervals, fns }) => {
       year: "",
     })
 
-    const showForm = () => updateForm({ isShown: true })
-    const hideForm = () => updateForm({ isShown: false })
+    const showForm = () => updateForm({ ...form, isShown: true })
+    const hideForm = () => updateForm({ ...form, isShown: false })
     return (
       <div>
         <Link color="text-blue-700" onClick={fns.hide}>
           <Icon className="fas fa-calendar" />
         </Link>
         <div>
-          {maturityIntervals.map(maturityInterval => (
-            <MaturityInterval key={maturityInterval.id} {...maturityInterval} />
+          {maturityIntervals.map((maturityInterval, index) => (
+            <MaturityInterval key={index} slug={slug} {...maturityInterval} />
           ))}
         </div>
-        {form.isShown && <MaturityIntervalForm id={id} form={form} updateForm={updateForm} hideForm={hideForm} />}
+        {form.isShown && <MaturityIntervalForm slug={slug} form={form} updateForm={updateForm} hideForm={hideForm} />}
         {!form.isShown && <Link color="text-blue-700" onClick={showForm}><Icon className="fas fa-plus"/></Link>}
       </div>
     )
@@ -115,11 +112,12 @@ const MaturityIntervals = ({ id, isDetailShown, maturityIntervals, fns }) => {
   }
 }
 
-const MaturityInterval = ({ id, month, year }) => {
+const MaturityInterval = ({ slug, month, year }) => {
   const onClick = () => {
     const isConfirmed = window.confirm("Are you sure you want to delete this?")
     if (isConfirmed) {
-      Inertia.delete(`/budget/categories/maturity_intervals/${id}?redirect_to=/budget/categories`)
+      const url = `/budget/categories/${slug}/maturity_intervals/${month}/${year}?redirect_to=/budget/categories`
+      Inertia.delete(url)
     }
   }
 
@@ -137,13 +135,13 @@ const MaturityInterval = ({ id, month, year }) => {
   )
 }
 
-const MaturityIntervalForm = ({ id, hideForm, form, updateForm }) => {
+const MaturityIntervalForm = ({ slug, hideForm, form, updateForm }) => {
   const handleInputChange = event => updateForm({ ...form, [event.target.name]: event.target.value })
   const handleSelectChange= event => updateForm({ ...form,  month: event.value })
   const options = monthOptions()
   const { month, year } = form
   const value = options.find(option => option.value === month)
-  const submit = () => Inertia.post(`/budget/categories/${id}/maturity_intervals?redirect_to=/budget/categories`,
+  const submit = () => Inertia.post(`/budget/categories/${slug}/maturity_intervals?redirect_to=/budget/categories`,
     { interval: { month, year } },
     { onSuccess: hideForm }
   )

@@ -23,7 +23,7 @@ export default ({ name, collection, dispatch }) => {
           <Point>{name}</Point>
         </TitleRow>
         {collection.map(model => (
-          <ModelForm key={model.id} model={model} dispatch={dispatch} />
+          <ModelForm key={model.slug} model={model} dispatch={dispatch} />
         ))}
       </Section>
     )
@@ -31,7 +31,7 @@ export default ({ name, collection, dispatch }) => {
 };
 
 const ModelForm = ({ dispatch, model }) => {
-  const { id, baseItems, iconClassName, name, targetItems } = model
+  const { slug, baseItems, iconClassName, name, targetItems } = model
 
   return (
     <StripedRow styling={{overflow: null}}>
@@ -41,7 +41,7 @@ const ModelForm = ({ dispatch, model }) => {
           <TargetItemSelect
             key={item.key}
             baseItem={item}
-            categoryId={id}
+            categorySlug={slug}
             dispatch={dispatch}
             targetItems={targetItems}
           />
@@ -49,7 +49,7 @@ const ModelForm = ({ dispatch, model }) => {
       </div>
       <div width="w-5/12">
         {model.baseItems.map(item => (
-          <BaseItem key={item.key} item={item} categoryId={id} dispatch={dispatch} />
+          <BaseItem key={item.key} item={item} categorySlug={slug} dispatch={dispatch} />
         ))}
       </div>
       <div className="w-3/12 text-right">
@@ -86,7 +86,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
       <ItemsWrapper>
         <div className ="w-full">Target Items</div>
         {displayItems.map(item => (
-          <TargetItem key={item.key} multiple={true} baseItems={baseItems} item={item} />
+          <TargetItem key={item.budgetItemKey} multiple={true} baseItems={baseItems} item={item} />
         ))}
       </ItemsWrapper>
     )
@@ -135,7 +135,7 @@ const TargetItem = ({ item, baseItems, multiple }) => {
   )
 }
 
-const BaseItem = ({ item, dispatch, categoryId }) => {
+const BaseItem = ({ item, dispatch, categorySlug }) => {
   const {
     key,
     inputAmount,
@@ -143,17 +143,17 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
     remaining,
   } = item
   const inputChange = event => dispatch("updateBudgetModel", {
-    budgetCategoryId: categoryId,
+    budgetCategorySlug: categorySlug,
     key,
     inputAmount: event.target.value,
   })
   const selectAll = () => dispatch("updateBudgetModel", {
-    budgetCategoryId: categoryId,
+    budgetCategorySlug: categorySlug,
     key,
     inputAmount: MoneyFormatter(remaining),
   })
   const selectNone = () => dispatch("updateBudgetModel", {
-    budgetCategoryId: categoryId,
+    budgetCategorySlug: categorySlug,
     key,
     inputAmount: "0.00",
   })
@@ -241,7 +241,7 @@ const Amount = ({ amount }) => (
   />
 );
 
-const TargetItemSelect = ({ categoryId, baseItem, dispatch, targetItems }) => {
+const TargetItemSelect = ({ categorySlug, baseItem, dispatch, targetItems }) => {
   const itemOptions = targetItems
     .sort((a, b) => {
       if (a.isNew && b.isNew) {
@@ -262,7 +262,7 @@ const TargetItemSelect = ({ categoryId, baseItem, dispatch, targetItems }) => {
     dispatch("updateBudgetModel", {
       targetItemKey: event.value,
       key: baseItem.key,
-      budgetCategoryId: categoryId,
+      budgetCategorySlug: categorySlug,
     })
   }
 

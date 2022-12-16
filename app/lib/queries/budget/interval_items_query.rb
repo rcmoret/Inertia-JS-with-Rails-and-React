@@ -7,6 +7,7 @@ module Queries
 
       CATEGORY_SELECTS = {
         'name' => BUDGET_CATEGORIES[:name].as('name'),
+        'budget_category_slug' => BUDGET_CATEGORIES[:slug].as('budget_category_slug'),
         'expense' => BUDGET_CATEGORIES[:expense].as('expense'),
         'monthly' => BUDGET_CATEGORIES[:monthly].as('monthly'),
         'accrual' => BUDGET_CATEGORIES[:accrual].as('accrual'),

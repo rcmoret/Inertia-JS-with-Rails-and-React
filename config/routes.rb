@@ -35,9 +35,9 @@ Rails.application.routes.draw do
 
     get '/categories', to: 'categories/index#call', as: :categories
     post '/categories', to: 'categories/create#call'
-    put '/categories/:id', to: 'categories/update#call'
-    delete '/categories/:id', to: 'categories/delete#call'
-    post '/categories/:id/maturity_intervals', to: 'categories/maturity_intervals/create#call'
-    delete '/categories/maturity_intervals/:id', to: 'categories/maturity_intervals/delete#call'
+    put '/categories/:slug', to: 'categories/update#call'
+    delete '/categories/:slug', to: 'categories/delete#call'
+    post '/categories/:slug/maturity_intervals', to: 'categories/maturity_intervals/create#call'
+    delete '/categories/:slug/maturity_intervals/:month/:year', to: 'categories/maturity_intervals/delete#call'
   end
 end

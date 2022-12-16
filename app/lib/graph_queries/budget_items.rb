@@ -16,9 +16,9 @@ module GraphQueries
         {
           budget(userId: #{user.id}) {
             categories {
-              id
               defaultAmount
               name
+              slug
               isAccrual
               isExpense
               isMonthly
@@ -48,7 +48,7 @@ module GraphQueries
               }
               items(includeDeleted: #{include_deleted}) {
                 key
-                budgetCategoryId
+                budgetCategorySlug
                 name
                 amount
                 difference
@@ -91,8 +91,8 @@ module GraphQueries
         {
           budget(userId: #{current_user_id}) {
             categories {
-              id
               name
+              slug
               iconClassName
               isAccrual
               isExpense
@@ -104,7 +104,7 @@ module GraphQueries
               year
               items(reviewableOnly: true) {
                 key
-                budgetCategoryId
+                budgetCategorySlug
                 remaining
               }
             }
@@ -113,7 +113,7 @@ module GraphQueries
               year
               items {
                 key
-                budgetCategoryId
+                budgetCategorySlug
                 budgeted: amount
               }
             }
@@ -127,9 +127,9 @@ module GraphQueries
         {
           budget(userId: #{current_user_id}) {
             categories(includeArchived: true) {
-              id
               defaultAmount
               name
+              slug
               iconClassName
               isAccrual
               isExpense
@@ -140,7 +140,7 @@ module GraphQueries
               year
               items {
                 name
-                budgetCategoryId
+                budgetCategorySlug
                 budgeted: amount
                 spent
                 isAccrual
@@ -154,7 +154,7 @@ module GraphQueries
               items {
                 key
                 name
-                budgetCategoryId
+                budgetCategorySlug
                 amount
                 isAccrual
                 isExpense

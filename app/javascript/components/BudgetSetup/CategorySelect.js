@@ -12,21 +12,21 @@ import { titleize } from "../../lib/copy/functions"
 
 const CategorySelect = props => {
   const { categoryOptions, dispatch, selectedCategory } = props
-  const { budgetCategoryId, displayAmount } = selectedCategory
+  const { budgetCategorySlug, displayAmount } = selectedCategory
   const nullOption = { value: null, label: "" }
-  const value = categoryOptions.find(option => option.value === budgetCategoryId)
-  const onChange = event => { dispatch("categorySelectUpdate", { budgetCategoryId: event.value }) }
+  const value = [nullOption, ...categoryOptions].find(option => option.value === budgetCategorySlug)
+  const onChange = event => { dispatch("categorySelectUpdate", { budgetCategorySlug: event.value }) }
   const handleAmountChange = event => dispatch("categorySelectUpdate", { displayAmount: event.target.value })
   const onClick = event => {
     event.preventDefault();
-    dispatch("addItem", { budgetCategoryId: budgetCategoryId })
+    dispatch("addItem", { slug: budgetCategorySlug })
   }
   const groupedOptions = [
     nullOption,
     { label: "Day to Day", options: categoryOptions.filter(c => !c.isMonthly).sort(sortFn) },
     { label: "Monthly", options: categoryOptions.filter(c => c.isMonthly).sort(sortFn) },
   ]
-  const buttonDisabled = budgetCategoryId === null || displayAmount === ""
+  const buttonDisabled = budgetCategorySlug === null || displayAmount === ""
 
   return (
     <div className="w-full justify-between flex">
@@ -43,7 +43,7 @@ const CategorySelect = props => {
            onChange={handleAmountChange}
            classes={["p-1 h-full text-right w-8/12 rounded border border-gray-400 border-solid"]}
            placeholder="amount"
-           value={selectedCategory.displayAmount}
+           value={displayAmount}
          />
       </div>
       <AddItemButton buttonDisabled={buttonDisabled} onClick={onClick}>

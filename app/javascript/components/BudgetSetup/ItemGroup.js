@@ -26,7 +26,7 @@ const ItemGroup = ({ collection, name, dispatch }) => {
           </div>
         </TitleRow>
         {collection.map(model => (
-          <ModelForms key={model.key} model={model} dispatch={dispatch} />
+          <ModelForms key={model.slug} model={model} dispatch={dispatch} />
         ))}
       </Section>
     )
@@ -151,7 +151,7 @@ export const NewItem = ({ item, index, dispatch, hasBorder }) => {
   }
   const requeueCategory = event => {
     event.preventDefault()
-    dispatch("requeueCategory", { id: item.budgetCategoryId })
+    dispatch("requeueCategory", { slug: item.budgetCategorySlug })
   }
   const selectSpent = () => {
     dispatch("adjustNewItem", { id: id, displayAmount: MoneyFormatter(spent), status: "spent" })

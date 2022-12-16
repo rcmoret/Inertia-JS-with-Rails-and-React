@@ -4,22 +4,26 @@ import { generateIdentifier, eventForm } from "../../lib/Functions";
 
 export const isSubmittable = ({ models, rolloverItem }) => {
   const baseItems = models.reduce((array, model) => [...array, ...model.baseItems], [])
-  return rolloverItem.budgetCategoryId !== null && baseItems.every(item => item.targetItemKey !== null && item.status !== null)
+  return rolloverItem.budgetCategorySlug !== null && baseItems.every(item => item.targetItemKey !== null && item.status !== null)
 }
 
 export const formReducer = ({ models, month, rolloverItem, year }) => {
   const newEvent = (baseItem, targetItems, id) => {
-    const { key, rolloverAmount, targetItemKey } = baseItem
+    const { key, budgetCategorySlug, rolloverAmount, targetItemKey } = baseItem
     const targetItem = targetItems.find(targetItem => targetItem.budgetItemKey === targetItemKey)
-    const { budgeted, eventType } = targetItem
+    const { budgeted, eventType, budgetItemKey } = targetItem
 
-    const amount = (rolloverAmount + budgeted)
-    const data = { [key]: { amount: MoneyFormatter(rolloverAmount) } }
+    const eventParams = {
+      amount: (rolloverAmount + budgeted),
+      data: { [key]: { amount: MoneyFormatter(rolloverAmount) } },
+      eventType,
+      budgetItemKey,
+    }
 
     if (targetItem.eventType === "rollover_item_create") {
-      return { amount, data, eventType, budgetCategoryId: id, month, year, budgetItemKey: targetItem.budgetItemKey }
+      return { ...eventParams, budgetCategorySlug, month, year }
     } else {
-      return { amount, data, eventType, budgetItemKey: targetItem.budgetItemKey }
+      return eventParams
     }
   }
 
@@ -57,7 +61,7 @@ export const formReducer = ({ models, month, rolloverItem, year }) => {
       eventForm({
         amount: (rolloverItem.discretionary + rolloverItem.extraBalance),
         budgetItemKey: generateIdentifier(),
-        budgetCategoryId: rolloverItem.budgetCategoryId,
+        budgetCategorySlug: rolloverItem.budgetCategorySlug,
         data: rolloverItem.data,
         eventType: "rollover_item_create",
         month: month,

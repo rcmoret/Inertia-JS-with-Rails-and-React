@@ -35,28 +35,29 @@ const Form = (props) => {
   const { month, year } = targetInterval
   const categories = props.categories.map(category => ({ ...category, requeuedAt: null }))
 
-  const existingItems = targetInterval.items.map(item => existingItem(item))
+  const existingItems = targetInterval.items.map(existingItem)
 
-  const targetIntervalDayToDayCategoryIds = existingItems
-    .filter(item => !item.isMonthly).map(i => i.budgetCategoryId)
-  const excludeDayToDayFilter = objectId => !targetIntervalDayToDayCategoryIds.includes(objectId)
+  const targetIntervalDayToDayCategorySlugs = existingItems
+    .filter(item => !item.isMonthly).map(i => i.budgetCategorySlug)
+  const excludeDayToDayFilter = objectSlug => !targetIntervalDayToDayCategorySlugs.includes(objectSlug)
 
-  const defaultAmountLookUp = item => categories.find(c => c.id === item.budgetCategoryId).defaultAmount
-  const excludeAccrualsFilter = categoryId => {
-    const accrualCategoryIds = existingItems.filter(i => i.isAccrual).map(i => i.budgetCategoryId)
-    return !accrualCategoryIds.includes(categoryId)
+  const defaultAmountLookUp = item => categories.find(c => c.slug === item.budgetCategorySlug).defaultAmount
+  const excludeAccrualsFilter = categorySlug => {
+    const accrualCategorySlugs = existingItems.filter(i => i.isAccrual).map(i => i.budgetCategorySlug)
+    return !accrualCategorySlugs.includes(categorySlug)
   }
   const newItems = baseInterval.items
     .filter(item => {
-      const { budgetCategoryId } = item
-      return excludeDayToDayFilter(budgetCategoryId) && excludeAccrualsFilter(budgetCategoryId)
+      const { budgetCategorySlug } = item
+      return excludeDayToDayFilter(budgetCategorySlug) && excludeAccrualsFilter(budgetCategorySlug)
     })
     .map(item => newItem({ item, defaultAmount: defaultAmountLookUp(item) }))
 
-  const baseIntervalDayToDayCategoryIds = newItems.map(i => i.budgetCategoryId)
+  const baseIntervalDayToDayCategorySlugs = newItems.map(i => i.budgetCategorySlug)
+  const valueFn = category => category.slug
   const categoryOptions = categories
-    .filter(category => excludeDayToDayFilter(category.id) && !baseIntervalDayToDayCategoryIds.includes(category.id))
-    .map(category => ({ ...asOption(category), isMonthly: category.isMonthly }))
+    .filter(category => excludeDayToDayFilter(category.slug) && !baseIntervalDayToDayCategorySlugs.includes(category.slug))
+    .map(category => ({ ...asOption(category, { valueFn }), isMonthly: category.isMonthly }))
 
   return {
     existingItems,
@@ -64,16 +65,16 @@ const Form = (props) => {
     removedItems: [],
     categoryOptions,
     categories,
-    selectedCategory: { budgetCategoryId: null, displayAmount: "" },
+    selectedCategory: { budgetCategorySlug: null, displayAmount: "" },
     month,
     year,
   }
 };
 
 export const reducer = (event, form, payload) => {
-  const category = form.categories.find(c => c.id === payload.budgetCategoryId)
+  const category = form.categories.find(c => c.slug === payload.slug)
   const newItem = () => {
-    const { id, defaultAmount, isAccrual, isExpense, isMonthly, iconClassName, name } = category
+    const { slug, defaultAmount, isAccrual, isExpense, isMonthly, iconClassName, name } = category
     const { displayAmount } = form.selectedCategory
     const uid = uuid()
 
@@ -81,14 +82,13 @@ export const reducer = (event, form, payload) => {
       id: uid,
       amount: decimalToInt(displayAmount),
       budgeted: 0,
-      budgetCategoryId: id,
+      budgetCategorySlug: slug,
       defaultAmount: defaultAmount,
       displayAmount: displayAmount,
       iconClassName: iconClassName,
       isAccrual: isAccrual,
       isExpense: isExpense,
       isMonthly: isMonthly,
-      data: { uuid: uid },
       name: name,
       status: null,
       spent: 0,
@@ -97,14 +97,15 @@ export const reducer = (event, form, payload) => {
 
   switch(event) {
     case "addItem":
+      debugger
       return {
         ...form,
-        selectedCategory: { budgetCategoryId: null, displayAmount: "" },
+        selectedCategory: { budgetCategorySlug: null, displayAmount: "" },
         newItems: [
           ...form.newItems,
           newItem(),
         ],
-        categoryOptions: form.categoryOptions.filter(option => option.value !== category.id || category.isMonthly),
+        categoryOptions: form.categoryOptions.filter(option => option.value !== category.slug || category.isMonthly),
       }
     case "adjustExistingItem":
       return {
@@ -141,7 +142,7 @@ export const reducer = (event, form, payload) => {
     case "requeueCategory":
       return {
         ...form,
-        categories: form.categories.map(category => category.id === payload.id ? { ...category, requeuedAt: new Date () } : category),
+        categories: form.categories.map(category => category.slug === payload.slug ? { ...category, requeuedAt: new Date () } : category),
       }
     default:
      return form

@@ -16,7 +16,6 @@ module GraphQueries
         {
           budget(userId: #{current_user_id}) {
             categories(includeArchived: #{include_archived}) {
-              id
               archivedAt
               defaultAmount
               isAccrual
@@ -27,7 +26,7 @@ module GraphQueries
               name
               slug
               icon { id className name }
-              maturityIntervals { id month year }
+              maturityIntervals { month year }
             }
             icons { id className name }
           }

@@ -10,6 +10,8 @@ export const sortByLabel = (obj1, obj2) => (
 
 export const sortByPriorty = (a, b) => a.priority - b.priority;
 
+export const sortByValue = (a, b) => a.value - b.value;
+
 export const sortByClearanceDate = (txn1, txn2) => {
   const today = new Date().toISOString().split("T")[0]
   if (txn1.clearanceDate === txn2.clearanceDate) {
@@ -106,12 +108,12 @@ const dataFor = (data) => {
 };
 
 export const newItemEvent = (item, month, year, eventType = "item_create") => {
-  const { amount, budgetCategoryId, data } = item
+  const { amount, budgetCategorySlug, data } = item
   const budgetItemKey = item.budgetItemKey || generateIdentifier()
 
   return eventForm({
     amount,
-    budgetCategoryId,
+    budgetCategorySlug,
     budgetItemKey,
     eventType,
     month,
