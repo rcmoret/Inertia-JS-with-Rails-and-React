@@ -10,7 +10,7 @@ module Types
 
       field :category, CategoryType, null: false do
         description 'Budget Category by id'
-        argument :id, Integer, required: true
+        argument :slug, String, required: true
       end
 
       field :icons, [IconType], 'Icons available', null: false
@@ -23,7 +23,7 @@ module Types
 
       field :item, ItemType, null: false do
         description 'Budget Item and related data'
-        argument :id, Integer, required: true
+        argument :key, String, required: true
       end
     end
   end

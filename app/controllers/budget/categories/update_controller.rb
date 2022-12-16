@@ -26,7 +26,7 @@ module Budget
       end
 
       def category
-        @category ||= ::Budget::Category.find(params.fetch(:id))
+        @category ||= current_user.budget_categories.find(params.fetch(:id))
       end
 
       def include_archived?

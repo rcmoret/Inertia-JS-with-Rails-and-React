@@ -26,7 +26,7 @@ module Budget
       end
 
       def category
-        @category ||= ::Budget::Category.new(create_params)
+        @category ||= current_user.budget_categories.build(create_params)
       end
 
       def include_archived?

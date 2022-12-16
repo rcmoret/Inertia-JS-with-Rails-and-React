@@ -17,6 +17,7 @@ module Budget
              dependent: :destroy,
              inverse_of: :category,
              foreign_key: :budget_category_id
+    belongs_to :user
     belongs_to :icon, optional: true
 
     validates :default_amount,

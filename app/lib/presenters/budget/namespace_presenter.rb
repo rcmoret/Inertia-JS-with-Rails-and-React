@@ -7,19 +7,15 @@ module Presenters
         @user_id = user_id
       end
 
-      attr_reader :user_id
-
       def categories(include_archived: false)
-        base_scope = include_archived ? ::Budget::Category.all : ::Budget::Category.active
+        categories_scope = user_category_scope.includes(:icon).includes(maturity_intervals: [:interval])
+        categories_scope = user_category_scope.active unless include_archived
 
-        base_scope
-          .includes(:icon)
-          .includes(maturity_intervals: [:interval])
-          .map(&:as_presenter)
+        categories_scope.map(&:as_presenter)
       end
 
-      def category(id:)
-        ::Budget::Category.find(id).as_presenter
+      def category(slug:)
+        user_category_scope.find_by!(slug: slug).as_presenter
       end
 
       def icons
@@ -30,12 +26,22 @@ module Presenters
         ::Budget::Interval.for(month: month, year: year, user_id: user_id).as_presenter
       end
 
-      def item(id:)
+      def item(key:)
         ::Budget::Item
+          .joins(:category)
+          .merge(user_category_scope)
           .includes(events: :type)
           .includes(transaction_details: { entry: :account })
-          .find(id)
+          .for(key)
           .as_presenter
+      end
+
+      private
+
+      attr_reader :user_id
+
+      def user_category_scope
+        ::Budget::Category.where(user_id: user_id)
       end
     end
   end
