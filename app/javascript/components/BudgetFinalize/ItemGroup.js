@@ -78,7 +78,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
     const item = displayItems[0]
     return(
       <ItemsWrapper>
-        <TargetItem key={item.budgetItemKey} multiple={false} baseItems={baseItems} item={item} />
+        <TargetItem key={item.key} multiple={false} baseItems={baseItems} item={item} />
       </ItemsWrapper>
     )
   } else {
@@ -86,7 +86,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
       <ItemsWrapper>
         <div className ="w-full">Target Items</div>
         {displayItems.map(item => (
-          <TargetItem key={item.budgetItemKey} multiple={true} baseItems={baseItems} item={item} />
+          <TargetItem key={item.key} multiple={true} baseItems={baseItems} item={item} />
         ))}
       </ItemsWrapper>
     )

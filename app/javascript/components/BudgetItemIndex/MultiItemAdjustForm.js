@@ -58,7 +58,7 @@ const MultiItemAdjustForm = props => {
     selectedItemId,
   } = formData
   const { month, year } = interval
-  const adjustmentItemIds = adjustmentItems.map(item => item.id)
+  const adjustmentItemKeys = adjustmentItems.map(item => item.key)
   const itemLabelFn = item => {
     if (clearedMonthly(item)) {
       return `${item.name} - (cleared ${MoneyFormatter(item.amount, { decorate: true, absolute: true })})`
@@ -69,7 +69,7 @@ const MultiItemAdjustForm = props => {
   const itemOptions = [
     { value: null, label: titleize(copy.multiItemAdjustForm.existingItems) },
     ...items.sort(sortByClearedThenName)
-    .filter(item => !adjustmentItemIds.includes(item.id))
+    .filter(item => !adjustmentItemKeys.includes(item.key))
     .map(item => asOption(item, { labelFn: itemLabelFn }))
   ]
   const handleItemSelectChange = event => updateAdjustItemsForm({ selectedItemId: event.value })

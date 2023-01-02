@@ -130,6 +130,7 @@ export const reducer = (event, form, payload) => {
           key: key,
           amount: MoneyFormatter((originalItem.remaining - rolloverAmount), { decorate: false }),
         }
+
         if (!itemKeys.includes(key)) {
           return [
             ...form.rolloverItem.data,

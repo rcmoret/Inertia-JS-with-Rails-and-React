@@ -67,7 +67,6 @@ module Budget
         return if interval.save
 
         promote_errors(interval.errors)
-        raise ActiveRecord::Rollback
       end
 
       def create_item!
@@ -81,7 +80,6 @@ module Budget
         return if event.save
 
         promote_errors(event.errors)
-        raise ActiveRecord::Rollback
       end
 
       def budget_item
