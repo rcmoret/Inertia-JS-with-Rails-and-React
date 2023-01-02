@@ -14,12 +14,12 @@ import { decimalToInt } from "../../lib/MoneyFormatter";
 const Form = ({ category, closeForm, icons, onSubmit, update }) => {
   const {
     id,
+    accrual,
     archivedAt,
     displayAmount,
     icon,
     iconId,
     isArchived,
-    isAccrual,
     isExpense,
     isMonthly,
     isNew,
@@ -39,7 +39,7 @@ const Form = ({ category, closeForm, icons, onSubmit, update }) => {
     defaultAmount: decimalToInt(event.target.value),
     displayAmount: event.target.value,
   })
-  const handleAccrualChange = () => update({ isAccrual: !isAccrual })
+  const handleAccrualChange = () => update({ accrual: !accrual })
   const handlePerDiemChange = () => update({ isPerDiemEnabled: !isPerDiemEnabled })
   const handleIconSelectChange = event => update({ iconId: event.value })
 
@@ -58,7 +58,7 @@ const Form = ({ category, closeForm, icons, onSubmit, update }) => {
         <Row styling={{wrap: "flex-wrap"}}>
           <ExpenseRadio onChange={handleChange} isExpense={isTrue(isExpense)} isEnabled={isNew} isRevenue={isFalse(isExpense)} />
           <MonthlyRadio onChange={handleChange} isMonthly={isTrue(isMonthly)} isEnabled={isNew} isDayToDay={isFalse(isMonthly)} />
-          {isExpense && <AccrualCheckBox isAccrual={isAccrual} handleChange={handleAccrualChange} />}
+          {isExpense && <AccrualCheckBox isAccrual={accrual} handleChange={handleAccrualChange} />}
         </Row>
       </div>
       <div className="w-1/10">

@@ -49,7 +49,7 @@ module Presenters
 
       def days_remaining
         if current?
-          (last_date - today + 1).to_i
+          [(last_date - today + 1).to_i.abs, 1].max
         elsif closed_out?
           0
         else
@@ -66,10 +66,6 @@ module Presenters
 
         @available_cash ||=
           Queries::Accounts::AvailableCash.new(budget_interval: self).call
-      end
-
-      def user
-        @user ||= User.find(user_id)
       end
 
       private

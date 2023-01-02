@@ -1,10 +1,11 @@
 import Form, { reducer } from "./Form";
-import { asOption } from "../../lib/Functions";
+import { asOption, generateIdentifier } from "../../lib/Functions";
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 
 export const baseCategory = {
   id: "11",
   name: "Groceries",
+  slug: "groceries",
   iconClassName: "fa-buggy",
   isAccrual: false,
   isExpense: true,
@@ -12,18 +13,16 @@ export const baseCategory = {
 }
 
 export const baseBaseInterval = {
-  discretionary: 100,
+  discretionary: { amount: 100 },
   items: [],
 }
 
 export const baseBaseItem = {
-  budgetItemId: "1015",
   inputAmount: "",
   budgetCategoryId: "44",
   remaining: -3300,
   rolloverAmount: null,
   status: null,
-  targetItemId: null,
 }
 
 export const baseTargetInterval = {
@@ -51,14 +50,14 @@ describe("Form", () => {
   // when the category is monthly there are multiple base items & no available target items
   it("maps the base items as part of a model object adds a target event", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem1 = { ...baseBaseItem, budgetCategoryId: category.id }
-    const baseItem2 = { ...baseBaseItem, budgetCategoryId: category.id, budgetItemId: "808" }
+    const baseItem1 = { ...baseBaseItem, budgetCategoryId: category.id, key: generateIdentifier() }
+    const baseItem2 = { ...baseBaseItem, budgetCategoryId: category.id, budgetItemId: "808", key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem1, baseItem2] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
     const actual = Form(props).models.find(model => model.id === category.id)
     expect(actual).toEqual(expect.objectContaining({ ...category }))
-    expect(actual).toEqual(expect.objectContaining({ baseItems: [baseItem1, baseItem2] }))
+    expect(actual.baseItems).toEqual([{ ...baseItem1, targetItemKey: null }, { ...baseItem2, targetItemKey: null }])
     expect(actual.targetItems.length).toEqual(2)
     expect(actual.targetItems[0]).toEqual(expect.objectContaining({ budgeted: 0, eventType: "rollover_item_create" }))
     expect(actual.targetItems[1]).toEqual(expect.objectContaining({ budgeted: 0, eventType: "rollover_item_create" }))
@@ -67,27 +66,33 @@ describe("Form", () => {
   // when the category is day to day and the target event is available
   it("maps the base items as part of a model object maps a target event", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
-    const targetItem = { budgetItemId: "5515", budgetCategoryId: category.id, budgeted: -1000 }
+    const targetItem = { budgetItemId: "5515", budgetCategoryId: category.id, budgeted: -1000, key: generateIdentifier() }
     const targetInterval = { ...baseTargetInterval, items: [targetItem] }
     const props = { categories: [category], baseInterval, targetInterval }
     const actual = Form(props).models.find(model => model.id === category.id)
-    expect(actual).toEqual(expect.objectContaining({ ...category }))
-    expect(actual.baseItems[0]).toEqual({ ...baseItem, targetItemId: targetItem.budgetItemId })
+    expect(actual).toEqual(expect.objectContaining(category))
+    expect(actual.baseItems[0]).toEqual({ ...baseItem, targetItemKey: targetItem.key })
     expect(actual.targetItems.length).toEqual(1)
     expect(actual.targetItems[0]).toEqual({
-      budgetItemId: targetItem.budgetItemId,
+      budgetItemKey: targetItem.key,
       budgeted: targetItem.budgeted,
       eventType: "rollover_item_adjust",
-      name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
+      isNew: false,
+      name: `${targetItem.key} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
     })
   })
 
   // when the category is day to day, an accural & target event is an item create (no available items)
   it("maps the base items as part of a model object adds a target event", () => {
     const category = { ...baseCategory, isMonthly: false, isAccrual: true }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, rolloverAmount: baseBaseItem.remaining }
+    const baseItem = {
+      ...baseBaseItem,
+      key: generateIdentifier(),
+      budgetCategoryId: category.id,
+      rolloverAmount: baseBaseItem.remaining,
+    }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
@@ -108,9 +113,14 @@ describe("Form", () => {
   // when the category is day to day, an accrual and the target event is available
   it("maps the base items as part of a model object maps a target event", () => {
     const category = { ...baseCategory, isMonthly: false, isAccrual: true }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, rolloverAmount: baseBaseItem.remaining }
+    const baseItem = {
+      ...baseBaseItem,
+      key: generateIdentifier(),
+      budgetCategoryId: category.id,
+      rolloverAmount: baseBaseItem.remaining
+    }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
-    const targetItem = { budgetItemId: "5515", budgetCategoryId: category.id, budgeted: -1000 }
+    const targetItem = { budgetItemId: "5515", budgetCategoryId: category.id, budgeted: -1000, key: generateIdentifier() }
     const targetInterval = { ...baseTargetInterval, items: [targetItem] }
     const props = { categories: [category], baseInterval, targetInterval }
     const actual = Form(props).models.find(model => model.id === category.id)
@@ -121,21 +131,23 @@ describe("Form", () => {
         ...expectedBaseItem,
         inputAmount: MoneyFormatter(baseItem.remaining),
         status: "rolloverAll",
+        targetItemKey: targetItem.key,
       })
     ])
     expect(actual.targetItems.length).toEqual(1)
     expect(actual.targetItems[0]).toEqual({
-      budgetItemId: targetItem.budgetItemId,
+      budgetItemKey: targetItem.key,
       budgeted: targetItem.budgeted,
       eventType: "rollover_item_adjust",
-      name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
+      isNew: false,
+      name: `${targetItem.key} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`,
     })
   })
 
   // when the category is monthly & target event is an item create (no available items)
   it("maps the base items as part of a model object adds a target event", () => {
     const category = { ...baseCategory, isMonthly: true }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
@@ -150,21 +162,22 @@ describe("Form", () => {
   // when the category is monthly and the target event is available
   it("maps the base items as part of a model object maps a target event", () => {
     const category = { ...baseCategory, isMonthly: true }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
-    const targetItem = { budgetItemId: "5515", budgetCategoryId: category.id, budgeted: -1000 }
+    const targetItem = { budgetCategoryId: category.id, budgeted: -1000, key: generateIdentifier() }
     const targetInterval = { ...baseTargetInterval, items: [targetItem] }
     const props = { categories: [category], baseInterval, targetInterval }
     const actual = Form(props).models.find(model => model.id === category.id)
-    expect(actual).toEqual(expect.objectContaining({ ...category }))
-    expect(actual.baseItems[0]).toEqual({ ...baseItem, targetItemId: targetItem.budgetItemId })
+    expect(actual).toEqual(expect.objectContaining(category))
+    expect(actual.baseItems[0]).toEqual({ ...baseItem, targetItemKey: targetItem.key })
     expect(actual.targetItems.length).toEqual(2)
     expect(actual.targetItems).toEqual(expect.arrayContaining([
       {
-        budgetItemId: targetItem.budgetItemId,
+        budgetItemKey: targetItem.key,
+        isNew: false,
         budgeted: targetItem.budgeted,
         eventType: "rollover_item_adjust",
-        name: `${targetItem.budgetItemId} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`
+        name: `${targetItem.key} - ${MoneyFormatter(targetItem.budgeted, { decorate: true })}`
       },
       expect.objectContaining({ budgeted: 0, eventType: "rollover_item_create", name: "New (0)" })
     ]))
@@ -190,7 +203,7 @@ describe("Form", () => {
     const category2 = { ...baseCategory, isMonthly: true, name: "Rent", id: "212" }
     const categories = [category1, category2]
     const baseInterval = { ...baseBaseInterval }
-    const targetItem = { budgetItemId: "5515", budgetCategoryId: category1.id, budgeted: -1000 }
+    const targetItem = { budgetItemId: "5515", budgetCategoryId: category1.id, budgeted: -1000, key: generateIdentifier() }
     const targetInterval = { ...baseTargetInterval, items: [targetItem] }
     const props = { categories, baseInterval, targetInterval }
     const actual = Form(props).availableCategories
@@ -201,22 +214,23 @@ describe("Form", () => {
   // reviewItem - when no accurals are present
   it("returns 0 for the rollover amount, discretionary from baseInterval", () => {
     const category = { ...baseCategory, isMonthly: true }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
-    const { rolloverItem } = Form(props)
+    const formObject = Form(props)
+    const { rolloverItem } = formObject
     expect(rolloverItem.budgetCategoryId).toEqual(null)
     expect(rolloverItem.extraBalance).toEqual(0)
-    expect(rolloverItem.discretionary).toEqual(baseInterval.discretionary * -1)
+    expect(rolloverItem.discretionary).toEqual(baseInterval.discretionary.amount * -1)
   })
 
   // reviewItem - when accurals are present
   it("returns 0 for the rollover amount, discretionary from baseInterval", () => {
     const category1 = { ...baseCategory, isMonthly: true }
     const category2 = { ...baseCategory, isMonthly: true, isAccrual: true, id: "909" }
-    const baseItem1 = { ...baseBaseItem, budgetCategoryId: category1.id }
-    const baseItem2 = { ...baseBaseItem, budgetCategoryId: category2.id, budgetItemId: "808" }
+    const baseItem1 = { ...baseBaseItem, budgetCategoryId: category1.id, key: generateIdentifier() }
+    const baseItem2 = { ...baseBaseItem, budgetCategoryId: category2.id, budgetItemId: "808", key: generateIdentifier() }
     const categories = [category1, category2]
     const baseInterval = { ...baseBaseInterval, items: [baseItem1, baseItem2] }
     const targetInterval = { ...baseTargetInterval }
@@ -224,7 +238,7 @@ describe("Form", () => {
     const { rolloverItem } = Form(props)
     expect(rolloverItem.budgetCategoryId).toEqual(null)
     expect(rolloverItem.extraBalance).toEqual(0)
-    expect(rolloverItem.discretionary).toEqual(baseInterval.discretionary * -1)
+    expect(rolloverItem.discretionary).toEqual(baseInterval.discretionary.amount * -1)
   })
 });
 
@@ -232,14 +246,13 @@ describe("reducer", () => {
   // when event is "updateBudgetModel" and the amount is partial
   it("returns an updated item/collection when updating a partial rollover amount", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200 }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
     const form = Form(props)
-    const payload = {
-      budgetCategoryId: category.id,
-      budgetItemId: baseItem.budgetItemId,
+    const payload = { budgetCategoryId: category.id,
+      key: baseItem.key,
       inputAmount: "-12.00",
       targetItemId: "878",
     }
@@ -253,7 +266,7 @@ describe("reducer", () => {
     expect(updatedItem.targetItemId).toEqual(payload.targetItemId)
     const updatedRolloverItem = updatedForm.rolloverItem
     const expectedDataObject = {
-      [baseItem.budgetItemId]: {
+      [baseItem.key]: {
         name: category.name,
         amount: (baseItem.remaining - decimalToInt(payload.inputAmount)),
       }
@@ -265,14 +278,14 @@ describe("reducer", () => {
   // when event is "updateBudgetModel" and the amount is none (0.00)
   it("returns an updated item/collection when updating the base item and rollover item", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200 }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
     const form = Form(props)
     const payload = {
       budgetCategoryId: category.id,
-      budgetItemId: baseItem.budgetItemId,
+      key: baseItem.key,
       inputAmount: "0.00",
       targetItemId: "878",
     }
@@ -286,7 +299,7 @@ describe("reducer", () => {
     expect(updatedItem.targetItemId).toEqual(payload.targetItemId)
     const updatedRolloverItem = updatedForm.rolloverItem
     const expectedDataObject = {
-      [baseItem.budgetItemId]: {
+      [baseItem.key]: {
         name: category.name,
         amount: baseItem.remaining,
       }
@@ -297,14 +310,14 @@ describe("reducer", () => {
 
   it("returns an updated item/collection when updating the base item and rollover item", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200 }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
     const form = Form(props)
     const payload = {
       budgetCategoryId: category.id,
-      budgetItemId: baseItem.budgetItemId,
+      key: baseItem.key,
       inputAmount: MoneyFormatter(baseItem.remaining),
       targetItemId: "878",
     }
@@ -322,7 +335,7 @@ describe("reducer", () => {
 
   it("removes the data from the rollover item if swithcing to rolloverAll", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200 }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }
@@ -336,7 +349,7 @@ describe("reducer", () => {
     }
     const payload = {
       budgetCategoryId: category.id,
-      budgetItemId: baseItem.budgetItemId,
+      key: baseItem.key,
       inputAmount: MoneyFormatter(baseItem.remaining),
     }
     const updatedForm = reducer("updateBudgetModel", form, payload)
@@ -347,7 +360,7 @@ describe("reducer", () => {
   // when the event is updateRolloverItem
   it("returns an updated rollover item in the form", () => {
     const category = { ...baseCategory, isMonthly: false }
-    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200 }
+    const baseItem = { ...baseBaseItem, budgetCategoryId: category.id, remaining: -2200, key: generateIdentifier() }
     const baseInterval = { ...baseBaseInterval, items: [baseItem] }
     const targetInterval = { ...baseTargetInterval }
     const props = { categories: [category], baseInterval, targetInterval }

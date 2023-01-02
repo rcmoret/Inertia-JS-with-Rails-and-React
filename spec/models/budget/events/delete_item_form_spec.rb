@@ -159,15 +159,15 @@ RSpec.describe Budget::Events::DeleteItemForm do
     end
   end
 
-  def default_form_params
+  def default_form_params(user)
     {
-      budget_item_key: budget_item.key,
+      budget_item_key: budget_item(user: user).key,
       event_type: Budget::EventTypes::DELETE_EVENTS.sample,
     }
   end
 
   def build_form(user, **options)
-    described_class.new(user, default_form_params.merge(options))
+    described_class.new(user, default_form_params(user).merge(options))
   end
 
   def budget_item(*traits, **attributes)
@@ -185,7 +185,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
 
   def stub_item_find_by_with_error!
     allow(Budget::Item)
-      .to receive(:find_by)
+      .to receive(:for)
       .and_return(budget_item_error_double)
     allow(Budget::ItemEvent)
       .to receive(:new)

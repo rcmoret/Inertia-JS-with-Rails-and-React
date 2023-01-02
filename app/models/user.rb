@@ -7,5 +7,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :accounts, dependent: :restrict_with_exception
-  has_many :budget_categories, dependent: :restrict_with_exception
+  has_many :budget_categories, class_name: 'Budget::Category', dependent: :restrict_with_exception
 end

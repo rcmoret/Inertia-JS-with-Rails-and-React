@@ -102,7 +102,7 @@ module GraphQueries
               month
               year
               items(reviewableOnly: true) {
-                budgetItemId: key
+                key
                 budgetCategoryId
                 remaining
               }
@@ -111,7 +111,7 @@ module GraphQueries
               month
               year
               items {
-                budgetItemId: key
+                key
                 budgetCategoryId
                 budgeted: amount
               }

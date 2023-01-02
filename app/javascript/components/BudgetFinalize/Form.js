@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { asOption, generateIdentifier, sortByName as sortFn } from '../../lib/Functions';
 import { extraFrom } from './Functions';
 import MoneyFormatter, { decimalToInt } from '../../lib/MoneyFormatter';
@@ -17,10 +16,11 @@ const Form = props => {
     const { isAccrual, isMonthly } = category
     const availableItems = targetIntervalItems
       .filter(item => item.budgetCategoryId === category.id)
-      .map(({ budgetItemId, budgeted }) => ({
-        name: `${budgetItemId} - ${MoneyFormatter(budgeted, { decorate: true })}`,
-        budgetItemKey: budgetItemId,
+      .map(({ key, budgeted }) => ({
+        name: `${key} - ${MoneyFormatter(budgeted, { decorate: true })}`,
+        budgetItemKey: key,
         budgeted,
+        isNew: false,
         eventType: 'rollover_item_adjust',
       }))
     const newItem = (_item, index) => (
@@ -28,6 +28,7 @@ const Form = props => {
         name: `New (${index})`,
         budgetItemKey: generateIdentifier(),
         budgeted: 0,
+        isNew: true,
         eventType: 'rollover_item_create',
       }
     )
@@ -49,8 +50,8 @@ const Form = props => {
         const inputAmount = isAccrual ? MoneyFormatter(item.remaining) : ''
         const status = isAccrual ? 'rolloverAll' : null
         const rolloverAmount = isAccrual ? item.remaining : null
-        const targetItemId = baseItems.length === 1 && availableItems.length <= 1 ? targetItems[0].budgetItemKey : null
-        return { ...item, inputAmount, status, rolloverAmount, targetItemId }
+        const targetItemKey = baseItems.length === 1 && availableItems.length <= 1 ? targetItems[0].budgetItemKey : null
+        return { ...item, inputAmount, status, rolloverAmount, targetItemKey }
       }),
       targetItems
     }
@@ -75,7 +76,7 @@ const Form = props => {
   }, [])
 
   const rolloverItem = {
-    data: {},
+    data: [],
     discretionary: (discretionary.amount * -1),
     extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
     budgetCategoryId: null,
@@ -92,10 +93,12 @@ const Form = props => {
 };
 
 export const reducer = (event, form, payload) => {
-  const updateBudgetModel = (form, { budgetCategoryId, budgetItemId, ...objectProps }) => {
+  const updateBudgetModel = (form, formProps) => {
+    const { budgetCategoryId, key, ...objectProps } = formProps
     const model = form.models.find(model => model.id === budgetCategoryId)
-    const originalItem = model.baseItems.find(originalItem => originalItem.budgetItemId === budgetItemId)
-    const rolloverAmount = objectProps.hasOwnProperty("inputAmount") ? decimalToInt(objectProps.inputAmount) : originalItem.rolloverAmount
+    const originalItem = model.baseItems.find(item => item.key === key)
+    const rolloverAmount = objectProps.hasOwnProperty("inputAmount") ?
+      decimalToInt(objectProps.inputAmount) : originalItem.rolloverAmount
     const determineStatus = () => {
       if (rolloverAmount === 0) {
         return "rolloverNone"
@@ -114,25 +117,28 @@ export const reducer = (event, form, payload) => {
     }
     const updatedModel = {
       ...model,
-      baseItems: model.baseItems.map(item => item.budgetItemId === budgetItemId ? updatedItem : item),
+      baseItems: model.baseItems.map(item => item.key === key ? updatedItem : item),
     }
     const models = form.models.map(model => model.id === budgetCategoryId ? updatedModel : model)
     const updatedData = () => {
-      const itemData = {
-        [budgetItemId]: {
+      if (status === "rolloverAll") {
+        return form.rolloverItem.data.filter(datum => datum.key === key)
+      } else {
+        const itemKeys = form.rolloverItem.data.map(datum => datum.key)
+        const itemData = {
           name: model.name,
-          amount: (originalItem.remaining - rolloverAmount)
+          key: key,
+          amount: MoneyFormatter((originalItem.remaining - rolloverAmount), { decorate: false }),
+        }
+        if (!itemKeys.includes(key)) {
+          return [
+            ...form.rolloverItem.data,
+            itemData,
+          ].sort(sortFn)
+        } else {
+          return form.rolloverItem.data.map(datum => datum.key === key ?  itemData : datum).sort(sortFn)
         }
       }
-      return Object.entries({ ...form.rolloverItem.data, ...itemData }).reduce((newData, entry) => {
-        const key = entry[0]
-        const value = entry[1]
-        if (key !== budgetItemId || status !== "rolloverAll") {
-          return { ...newData, [key]: value }
-        } else {
-          return newData
-        }
-      }, {})
     }
 
     return {

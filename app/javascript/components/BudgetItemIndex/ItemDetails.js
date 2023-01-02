@@ -25,7 +25,7 @@ const BudgetItemDetails = ({ item, details }) => {
       {hasBudgetedPerDiem && <PerDiem item={item} />}
       <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
         {details.map(model => (
-          <BudgetItemDetail key={model.id} model={model} />
+          <BudgetItemDetail key={model.key} model={model} />
         ))}
       </Row>
     </>
@@ -81,7 +81,7 @@ const BudgetItemDetail = ({ model }) => {
   if (model.isTransactionDetail) {
     return (
       <TransactionDetail model={model}>
-        <div className="hidden">id: {model.id} - entryId: {model.entryId}</div>
+        <div className="hidden">key: {model.key} - entryId: {model.entryId}</div>
         <Row styling={{fontSize: "text-xs"}}>
           <Cell styling={{width: "w-6/12"}}>
             <div>{titleize(shared.budgeted)}:</div>

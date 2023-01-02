@@ -39,7 +39,7 @@ const ModelForm = ({ dispatch, model }) => {
         <div>{name}{" "}<i className={iconClassName} /></div>
         {model.baseItems.map(item => (
           <TargetItemSelect
-            key={item.budgetItemId}
+            key={item.key}
             baseItem={item}
             categoryId={id}
             dispatch={dispatch}
@@ -49,7 +49,7 @@ const ModelForm = ({ dispatch, model }) => {
       </div>
       <div width="w-5/12">
         {model.baseItems.map(item => (
-          <BaseItem key={item.budgetItemId} item={item} categoryId={id} dispatch={dispatch} />
+          <BaseItem key={item.key} item={item} categoryId={id} dispatch={dispatch} />
         ))}
       </div>
       <div className="w-3/12 text-right">
@@ -67,7 +67,7 @@ const ItemsWrapper = ({ children }) => (
 
 const TargetItems = ({ baseItems, targetItems }) => {
   const displayItems = targetItems.reduce((array, item) => {
-    if (baseItems.map(i => i.targetItemId).includes(item.budgetItemId)) {
+    if (baseItems.map(i => i.targetItemKey).includes(item.budgetItemKey)) {
       return [...array, item]
     } else {
       return array
@@ -78,7 +78,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
     const item = displayItems[0]
     return(
       <ItemsWrapper>
-        <TargetItem key={item.budgetItemId} multiple={false} baseItems={baseItems} item={item} />
+        <TargetItem key={item.budgetItemKey} multiple={false} baseItems={baseItems} item={item} />
       </ItemsWrapper>
     )
   } else {
@@ -86,7 +86,7 @@ const TargetItems = ({ baseItems, targetItems }) => {
       <ItemsWrapper>
         <div className ="w-full">Target Items</div>
         {displayItems.map(item => (
-          <TargetItem key={item.budgetItemId} multiple={true} baseItems={baseItems} item={item} />
+          <TargetItem key={item.budgetItemKey} multiple={true} baseItems={baseItems} item={item} />
         ))}
       </ItemsWrapper>
     )
@@ -94,16 +94,16 @@ const TargetItems = ({ baseItems, targetItems }) => {
 }
 
 const TargetItem = ({ item, baseItems, multiple }) => {
-  const { budgetItemId, budgeted } = item
+  const { budgetItemKey, budgeted } = item
   const newAmount = baseItems.reduce((sum, i) => {
-    if (i.targetItemId === item.budgetItemId && i.rolloverAmount != null) {
+    if (i.targetItemKey === item.budgetItemKey && i.rolloverAmount != null) {
       return sum + i.rolloverAmount
     } else {
       return sum
     }
   }, budgeted)
   const appliedToExtra = baseItems.reduce((sum, i) => {
-    if (i.inputAmount === "" || i.targetItemId !== budgetItemId ) {
+    if (i.inputAmount === "" || i.targetItemKey !== budgetItemKey) {
       return sum
     } else {
       return sum + i.remaining - i.rolloverAmount
@@ -137,24 +137,24 @@ const TargetItem = ({ item, baseItems, multiple }) => {
 
 const BaseItem = ({ item, dispatch, categoryId }) => {
   const {
-    budgetItemId,
+    key,
     inputAmount,
     status,
     remaining,
   } = item
   const inputChange = event => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
-    budgetItemId: budgetItemId,
+    key,
     inputAmount: event.target.value,
   })
   const selectAll = () => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
-    budgetItemId: budgetItemId,
+    key,
     inputAmount: MoneyFormatter(remaining),
   })
   const selectNone = () => dispatch("updateBudgetModel", {
     budgetCategoryId: categoryId,
-    budgetItemId: budgetItemId,
+    key,
     inputAmount: "0.00",
   })
   const partialAmount = status === "rolloverPartial" ? decimalToInt(inputAmount) : ""
@@ -166,7 +166,7 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
           amount={remaining}
           checked={status === "rolloverAll"}
           label={titleize(copy.all)}
-          name={budgetItemId}
+          name={key}
           onChange={selectAll}
           remaining={remaining}
         />
@@ -174,7 +174,7 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
           amount={0}
           checked={status === "rolloverNone"}
           label={titleize(copy.none)}
-          name={budgetItemId}
+          name={key}
           onChange={selectNone}
           remaining={remaining}
         />
@@ -182,7 +182,7 @@ const BaseItem = ({ item, dispatch, categoryId }) => {
           amount={partialAmount}
           checked={status === "rolloverPartial"}
           label={titleize(copy.partial)}
-          name={budgetItemId}
+          name={key}
           onChange={() => null}
           remaining={remaining}
         />
@@ -242,27 +242,26 @@ const Amount = ({ amount }) => (
 );
 
 const TargetItemSelect = ({ categoryId, baseItem, dispatch, targetItems }) => {
-  const isNewItem = item => item.budgetItemId.match(/^\d+$/) === null // then it's a uuid
   const itemOptions = targetItems
     .sort((a, b) => {
-      if (isNewItem(a) && !isNewItem(b)) {
+      if (a.isNew && b.isNew) {
         return 1
-      } else if (!isNewItem(b) && isNewItem(a)) {
+      } else if (!b.isNew && a.isNew) {
         return -1
       } else {
         return sortFn(a, b)
       }
     })
     .map(item => ({
-      value: item.budgetItemId,
+      value: item.budgetItemKey,
       label: item.name
     }))
   const options = [{ value: null, lable: "" }, ...itemOptions]
-  const value = options.find(option => option.value === baseItem.targetItemId)
+  const value = options.find(option => option.value === baseItem.targetItemKey)
   const onChange = event => {
     dispatch("updateBudgetModel", {
-      targetItemId: event.value,
-      budgetItemId: baseItem.budgetItemId,
+      targetItemKey: event.value,
+      key: baseItem.key,
       budgetCategoryId: categoryId,
     })
   }

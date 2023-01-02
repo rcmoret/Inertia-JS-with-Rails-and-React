@@ -3,6 +3,10 @@
 module Presenters
   module Budget
     class ItemEventPresenter < SimpleDelegator
+      def key
+        id
+      end
+
       def type_description
         type.name
       end

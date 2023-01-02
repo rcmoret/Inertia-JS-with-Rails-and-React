@@ -24,10 +24,8 @@ module Budget
       def save
         return false unless valid?
 
-        Budget::ItemEvent.transaction do
-          update_item!
-          save_event!
-        end
+        update_item!
+        save_event!
 
         errors.none?
       end
@@ -59,16 +57,12 @@ module Budget
         return if budget_item.update(deleted_at: Time.current)
 
         promote_errors(budget_item.errors)
-
-        raise ActiveRecord::Rollback
       end
 
       def save_event!
         return if event.save
 
         promote_errors(event.errors)
-
-        raise ActiveRecord::Rollback
       end
 
       def event_type_id

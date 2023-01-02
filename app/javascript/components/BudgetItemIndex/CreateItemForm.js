@@ -42,7 +42,6 @@ const CreateItemForm = (props) => {
   const [form, updateForm] = useState({
     amount: "",
     categoryId: null,
-    budgetItemKey: generateIdentifier()
   })
 
   const handleInputChange = event => updateForm({ ...form, amount: event.target.value })
@@ -73,7 +72,7 @@ const CreateItemForm = (props) => {
   }
   const onSubmit = () => {
     postItemCreateEvent(
-      { budgetItemKey: form.budgetItemKey, budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
+      { budgetItemKey: generateIdentifier(), budgetCategoryId: form.categoryId, amount: decimalToInt(form.amount), month, year, },
       { onSuccess }
     )
   }

@@ -27,7 +27,8 @@ module Budget
                 },
                 if: :revenue?
 
-      def initialize(_user, params)
+      def initialize(user, params)
+        @user = user
         @amount = params[:amount]
         @budget_item_key = params[:budget_item_key]
         @event_type = params[:event_type]
@@ -64,7 +65,7 @@ module Budget
       end
 
       def budget_item
-        @budget_item ||= Budget::Item.for(budget_item_key)
+        @budget_item ||= Budget::Item.belonging_to(user).for(budget_item_key)
       end
 
       def adjustment_amount
@@ -88,7 +89,7 @@ module Budget
         end
       end
 
-      attr_reader :amount, :budget_item_key, :event_type, :data
+      attr_reader :user, :amount, :budget_item_key, :event_type, :data
     end
   end
 end

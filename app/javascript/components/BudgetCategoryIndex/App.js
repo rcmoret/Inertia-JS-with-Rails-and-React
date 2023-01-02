@@ -34,12 +34,13 @@ const requestBody = attributes => Object.entries(attributes).reduce((acc, [key, 
 export const App = props => {
   const newCategory = {
       name: "",
-      accrual: null,
+      accrual: false,
       defaultAmount: "",
       displayAmount: "",
       expense: null,
       iconId: null,
       isNew: true,
+      isPerDiemEnabled: false,
       monthly: null,
       slug: "",
       updatedAttributes: {},
@@ -138,7 +139,7 @@ export const App = props => {
   }
   const categoryFilter = category => searchFilter(category) && adjectiveFilter(category) && adverbFilter(category)
   const icons = props.budget.icons.map(asOption).sort(sortByLabel)
-  const closeForm = () => updatePageData({ ...pageData, showFormForId: null })
+  const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForId: null })
   const categoryFns = {
     isFormShown: id => showFormForId === id,
     openForm: id => updatePageData({ ...pageData, showFormForId: id }),

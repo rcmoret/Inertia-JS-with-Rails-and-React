@@ -43,11 +43,9 @@ module Budget
       def save
         return false unless valid?
 
-        ApplicationRecord.transaction do
-          create_interval! unless interval.persisted?
-          create_item!
-          create_event!
-        end
+        create_interval! unless interval.persisted?
+        create_item!
+        create_event!
 
         errors.none?
       end
@@ -68,21 +66,18 @@ module Budget
         return if interval.save
 
         promote_errors(interval.errors)
-        raise ActiveRecord::Rollback
       end
 
       def create_item!
         return if item.save
 
         promote_errors(item.errors)
-        raise ActiveRecord::Rollback
       end
 
       def create_event!
         return if event.save
 
         promote_errors(event.errors)
-        raise ActiveRecord::Rollback
       end
 
       def event
