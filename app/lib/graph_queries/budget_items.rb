@@ -64,6 +64,7 @@ module GraphQueries
                 maturityYear
                 events {
                   id
+                  key
                   amount
                   createdAt
                   data

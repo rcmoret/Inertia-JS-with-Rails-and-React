@@ -44,5 +44,13 @@ FactoryBot.define do
       revenue
       association :category, factory: %i[category weekly revenue]
     end
+
+    transient do
+      user { create(:user) }
+    end
+
+    after(:create) do |budget_item, evaluator|
+      budget_item.category.update(user: evaluator.user) if evaluator.user
+    end
   end
 end

@@ -48,6 +48,7 @@ module Queries
       def json_object
         SQLFunctions.json_build_object(
           Arel::Nodes::Quoted.new('id'), BUDGET_ITEM_EVENTS[:id],
+          Arel::Nodes::Quoted.new('key'), BUDGET_ITEM_EVENTS[:key],
           Arel::Nodes::Quoted.new('data'), BUDGET_ITEM_EVENTS[:data],
           Arel::Nodes::Quoted.new('amount'), BUDGET_ITEM_EVENTS[:amount],
           Arel::Nodes::Quoted.new('created_at'), BUDGET_ITEM_EVENTS[:created_at],
@@ -70,7 +71,7 @@ module Queries
       end
 
       class QueryResult
-        EVENT_KEYS = %i[id amount data created_at type_description].freeze
+        EVENT_KEYS = %i[id key amount data created_at type_description].freeze
 
         def initialize(result_hash)
           @budget_item_id, @amount = result_hash.fetch_values('budget_item_id', 'amount')
