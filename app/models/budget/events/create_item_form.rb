@@ -4,8 +4,6 @@ module Budget
   module Events
     # rubocop:disable Metrics/ClassLength
     class CreateItemForm < FormBase
-      include ActiveModel::Model
-      include EventTypes
       include Messages
 
       def self.applicable_event_types
@@ -30,22 +28,21 @@ module Budget
       validates :budget_item_key, presence: true, length: { is: 12 }
 
       def initialize(current_user, params)
-        @event_type = params[:event_type]
+        super(current_user, params)
         @amount = params[:amount]
         @month = params[:month].to_i
         @year = params[:year].to_i
         @budget_category_id = params[:budget_category_id]
-        @data = params[:data]
-        @budget_item_key = params[:budget_item_key]
-        @current_user = current_user
       end
 
       def save
         return false unless valid?
 
-        create_interval! unless interval.persisted?
-        create_item!
-        create_event!
+        ItemEvent.transaction do
+          create_interval! unless interval.persisted?
+          create_item!
+          create_event!
+        end
 
         errors.none?
       end
@@ -62,33 +59,33 @@ module Budget
 
       private
 
+      attr_reader :amount, :budget_category_id, :month, :year
+
+      alias event_amount amount
+
       def create_interval!
         return if interval.save
 
         promote_errors(interval.errors)
+        raise ActiveRecord::Rollback
       end
 
       def create_item!
-        return if item.save
+        return if budget_item.save
 
-        promote_errors(item.errors)
+        promote_errors(budget_item.errors)
+        raise ActiveRecord::Rollback
       end
 
       def create_event!
         return if event.save
 
         promote_errors(event.errors)
+        raise ActiveRecord::Rollback
       end
 
-      def event
-        @event ||= Budget::ItemEvent.new(item: item,
-                                         type: ItemEventType.send(budget_item_event_type),
-                                         data: data,
-                                         amount: amount)
-      end
-
-      def item
-        @item ||= Budget::Item.new(interval: interval, category: category, key: budget_item_key)
+      def budget_item
+        @budget_item ||= Budget::Item.new(interval: interval, category: category, key: budget_item_key)
       end
 
       def category
@@ -118,7 +115,7 @@ module Budget
       end
 
       def item_attributes
-        item.to_hash.merge(
+        budget_item.to_hash.merge(
           events: [event.attributes],
           amount: amount,
           monthly: category.monthly,
@@ -130,9 +127,9 @@ module Budget
       def budget_item_event_type
         @budget_item_event_type ||=
           if interval.set_up?
-            event_type
+            ItemEventType.send(event_type)
           else
-            pre_setup_event_type
+            ItemEventType.send(pre_setup_event_type)
           end
       end
 
@@ -146,8 +143,6 @@ module Budget
           event_type
         end
       end
-
-      attr_reader :current_user, :amount, :budget_category_id, :event_type, :month, :year, :data, :budget_item_key
     end
     # rubocop:enable Metrics/ClassLength
   end

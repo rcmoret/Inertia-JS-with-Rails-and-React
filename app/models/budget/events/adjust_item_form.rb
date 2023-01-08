@@ -3,8 +3,6 @@
 module Budget
   module Events
     class AdjustItemForm < FormBase
-      include ActiveModel::Model
-      include EventTypes
       include Messages
 
       def self.applicable_event_types
@@ -27,12 +25,9 @@ module Budget
                 },
                 if: :revenue?
 
-      def initialize(user, params)
-        @user = user
+      def initialize(current_user, params)
+        super(current_user, params)
         @amount = params[:amount]
-        @budget_item_key = params[:budget_item_key]
-        @event_type = params[:event_type]
-        @data = params[:data]
       end
 
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
@@ -55,25 +50,16 @@ module Budget
 
       private
 
-      def event
-        @event ||= Budget::ItemEvent.new(
-          type_id: type_id,
-          item_id: budget_item.id,
-          data: data,
-          amount: adjustment_amount
-        )
-      end
-
       def budget_item
-        @budget_item ||= Budget::Item.belonging_to(user).for(budget_item_key)
+        @budget_item ||= Budget::Item.belonging_to(current_user).for(budget_item_key)
       end
 
-      def adjustment_amount
-        @adjustment_amount ||= amount.to_i - budget_item.amount
+      def event_amount
+        @event_amount ||= amount.to_i - budget_item.amount
       end
 
-      def type_id
-        @type_id ||= Budget::ItemEventType.for(event_type).id
+      def budget_item_event_type
+        ItemEventType.send(event_type)
       end
 
       def item_attributes
@@ -89,7 +75,7 @@ module Budget
         end
       end
 
-      attr_reader :user, :amount, :budget_item_key, :event_type, :data
+      attr_reader :amount
     end
   end
 end
