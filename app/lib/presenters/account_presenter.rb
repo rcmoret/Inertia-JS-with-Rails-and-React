@@ -17,10 +17,10 @@ module Presenters
         .map(&:as_presenter)
     end
 
-    def cash_flow?
+    def cash_flow
       super
     end
-    alias is_cash_flow cash_flow?
+    alias is_cash_flow cash_flow
 
     def archived?
       archived_at.present?
