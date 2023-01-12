@@ -125,8 +125,11 @@ const SpentOrDeposited = ({ isExpense, spent }) => {
   )
 }
 
-const DifferenceOrRemaining = ({ amount, difference, spent }) => {
+const DifferenceOrRemaining = (model) => {
+  const { amount, difference, isExpense, spent } = model
   const remainingOrDifference = (Math.abs(spent) > Math.abs(amount)) ? shared.difference : shared.remaining
+  const negativeColor = !isExpense && (Math.abs(spent) <= Math.abs(amount)) ? "black" : "red-700"
+  const amountColor = !isExpense && (Math.abs(spent) > Math.abs(amount)) ? "green-600" : "black"
 
   return (
     <Cell styling={{width: "w-full", padding: "pl-1 pr-1"}}>
@@ -134,7 +137,7 @@ const DifferenceOrRemaining = ({ amount, difference, spent }) => {
         {titleize(remainingOrDifference)}
       </div>
       <div className="w-4/12 text-right">
-        <AmountSpan amount={difference} absolute={true} negativeColor="text-red-600" />
+        <AmountSpan amount={difference} absolute={true} color={`text-${amountColor}`} negativeColor={`text-${negativeColor}`} />
       </div>
       <div className="w-1/12">
       </div>
