@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 
 import { AmountInput } from "../shared/TextInput";
-import { asOption } from "../../lib/Functions";
+import { asOption, sortByValue } from "../../lib/Functions";
 import Button from "../shared/Button";
 import Cell from "../shared/Cell";
 import { decimalToInt } from "../../lib/MoneyFormatter";
@@ -11,13 +11,13 @@ import Link from "../shared/Link";
 import Select from "react-select";
 import { StripedRow } from "../shared/Row";
 
-const newTransfer = () => ({
-  toAccountId: null,
+const newTransfer = {
   amount: "",
-});
+  toAccountId: null,
+};
 
 export const TransferRow = ({ accounts, selectedAccount }) => {
-  const [transfer, updateTransfer] = useState(newTransfer())
+  const [transfer, updateTransfer] = useState(newTransfer)
   const [isFormShown, toggleForm] = useState(false)
   const toggleFormVisibility = () => toggleForm(!isFormShown)
   const collection = accounts.filter(account => account.id !== selectedAccount.id)
@@ -27,41 +27,45 @@ export const TransferRow = ({ accounts, selectedAccount }) => {
   })
   const handleToAccountChange = ev => updateTransfer({ ...transfer, toAccountId: ev.value })
   const toAccount = collection.find(account => account.id === transfer.toAccountId)
-  const options = collection.map(asOption)
+  const options = collection.map(asOption).sort(sortByValue)
   const value = options.find(option => option.value === transfer.toAccountId)
 
-  const postTransfer = () => Inertia.post(
-    "/accounts/transfer",
-    {
-      transfer: {
-        toAccountId: transfer.toAccountId,
-        fromAccountId: selectedAccount.id,
-        amount: decimalToInt(transfer.amount),
-      },
-    },
-  )
+  const postTransfer = () => {
+    const body = {
+      toAccountId: transfer.toAccountId,
+      fromAccountId: selectedAccount.id,
+      amount: decimalToInt(transfer.amount),
+    }
+    const onSuccess = () => {
+      updateTransfer(newTransfer)
+      toggleFormVisibility()
+    }
+    Inertia.post("/accounts/transfer", { transfer: body }, { onSuccess })
+  }
 
   if (isFormShown) {
     return (
       <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible"}}>
-        <Cell styling={{ width: "w-6/12" }}>
+        <Cell styling={{ overflow: "overflow-visible", width: "w-8/12" }}>
           <Cell styling={{width: "w-1/12"}}>
             <Link onClick={toggleFormVisibility} color="text-red-800">
               <Icon className="fas fa-times" />
             </Link>
           </Cell>
-          <Cell styling={{width: "w-3/12"}}>
+          <Cell styling={{width: "w-2/12"}}>
             Create Transfer:
           </Cell>
-          <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2 ml-2", overflow: "overflow-visible"}}>
-            <Select
-              options={options}
-              onChange={handleToAccountChange}
-              placeholder="To Account"
-              value={value}
-            />
+          <Cell styling={{width: "w-4/12", wrap: "flex-wrap", margin: "mb-2 ml-2", overflow: "overflow-visible"}}>
+            <div className="w-full">
+              <Select
+                options={options}
+                onChange={handleToAccountChange}
+                placeholder="To Account"
+                value={value}
+              />
+            </div>
           </Cell>
-          <Cell styling={{ width: "w-3/12" }}>
+          <Cell styling={{ width: "w-2/12" }}>
             <AmountInput
               classes={["p-1 w-full text-right"]}
               name="amount"

@@ -162,7 +162,6 @@ export const postItemDeleteEvent = ({ itemKey, amount, month, year }, suppliedCa
     eventType: "item_delete",
     data: null
   }
-  console.log({ event })
   postEvents({ events: [event], month, year }, callbacks)
 };
 

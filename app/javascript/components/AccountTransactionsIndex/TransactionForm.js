@@ -459,8 +459,6 @@ const DetailForm = props => {
       case "Meta":
         return null
       default:
-        console.log({ event })
-        console.log(event.key)
         setTerm(`${term}${event.key}`)
         return null
     }
