@@ -4,16 +4,10 @@ class Account < ApplicationRecord
   include Slugable
 
   belongs_to :user
-  # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :transaction_views, class_name: 'Transaction::EntryView'
-  # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :transactions, class_name: 'Transaction::Entry', dependent: :restrict_with_exception
   has_many :details,
            class_name: 'Transaction::Detail',
            through: :transactions
-  # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :detail_views, class_name: 'Transaction::DetailView'
-  # rubocop:enable Rails/HasManyOrHasOneDependent
   scope :for, ->(user) { where(user: user) }
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
@@ -81,10 +75,4 @@ class Account < ApplicationRecord
   def archive!
     update(archived_at: Time.current)
   end
-
-  # def handle_destroy
-  #   require 'pry'
-  #   binding.pry
-  #   transactions.any? ? archive!: yield
-  # end
 end
