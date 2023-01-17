@@ -27,7 +27,7 @@ module Transaction
     }
     scope :cash_flow, -> { joins(:entry).merge(Entry.cash_flow) }
     scope :non_cash_flow, -> { joins(:entry).merge(Entry.non_cash_flow) }
-    scope :for, ->(user) { joins(:entry).merge(Entry.for(user)) }
+    scope :belonging_to, ->(user) { joins(:entry).merge(Entry.belonging_to(user)) }
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry

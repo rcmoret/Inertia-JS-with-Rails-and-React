@@ -2,13 +2,11 @@
 
 module Budget
   class Category < ApplicationRecord
-    include Presentable
+    include BelongsToUser
     include Messages
+    include Presentable
     include Slugable
     has_many :items, foreign_key: :budget_category_id, inverse_of: :category, dependent: :restrict_with_exception
-    # rubocop:disable Rails/HasManyOrHasOneDependent
-    has_many :item_views, foreign_key: :budget_category_id, class_name: 'ItemView', inverse_of: :category
-    # rubocop:enable Rails/HasManyOrHasOneDependent
     has_many :transaction_details, through: :items
     has_many :events, through: :items
     has_many :maturity_intervals,
@@ -17,8 +15,6 @@ module Budget
              dependent: :destroy,
              inverse_of: :category,
              foreign_key: :budget_category_id
-    belongs_to :user
-    scope :beloning_to, ->(user) { where(user: user) }
     belongs_to :icon, optional: true
 
     validates :default_amount,

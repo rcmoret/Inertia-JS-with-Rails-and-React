@@ -15,7 +15,6 @@ module Transaction
       scope :non_transfers, -> { where(transfer_id: nil) }
       scope :cash_flow, -> { joins(:account).merge(Account.cash_flow) }
       scope :non_cash_flow, -> { joins(:account).merge(Account.non_cash_flow) }
-      scope :for, ->(user) { joins(:account).merge(Account.for(user)) }
     end
   end
 end

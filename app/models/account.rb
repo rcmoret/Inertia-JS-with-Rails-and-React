@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord
+  include BelongsToUser
   include Slugable
 
-  belongs_to :user
   has_many :transactions, class_name: 'Transaction::Entry', dependent: :restrict_with_exception
   has_many :details,
            class_name: 'Transaction::Detail',
            through: :transactions
-  scope :for, ->(user) { where(user: user) }
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }

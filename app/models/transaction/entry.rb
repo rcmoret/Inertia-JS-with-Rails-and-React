@@ -2,8 +2,9 @@
 
 module Transaction
   class Entry < ApplicationRecord
-    include Scopes
+    include HasKeyIdentifier
     include Presentable
+    include Scopes
 
     belongs_to :account
     belongs_to :transfer, optional: true
@@ -20,7 +21,7 @@ module Transaction
     has_one_attached :receipt
 
     scope :total, -> { joins(:details).sum(:amount) }
-    scope :for, ->(user) { joins(:account).merge(Account.for(user)) }
+    scope :belonging_to, ->(user) { joins(:account).merge(Account.belonging_to(user)) }
 
     delegate :name, to: :account, prefix: true
 

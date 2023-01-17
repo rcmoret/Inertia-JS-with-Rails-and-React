@@ -19,7 +19,7 @@ module Transactions
     end
 
     def transaction
-      @transaction ||= Transaction::Entry.find(params.fetch(:id))
+      @transaction ||= Transaction::Entry.belonging_to(current_user).find(params.fetch(:id))
     end
 
     def current_interval

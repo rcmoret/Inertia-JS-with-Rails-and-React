@@ -2,8 +2,8 @@
 
 module Budget
   class Interval < ApplicationRecord
+    include BelongsToUser
     include Presentable
-    belongs_to :user
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     has_many :maturity_intervals,
              class_name: 'CategoryMaturityInterval',
@@ -19,7 +19,6 @@ module Budget
     validate :close_out_completed_at_end_of_month
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
-    scope :belonging_to, ->(user) { where(user: user) }
 
     scope :prior_to, lambda { |date_hash|
       month, year = date_hash.symbolize_keys.values_at(:month, :year)
