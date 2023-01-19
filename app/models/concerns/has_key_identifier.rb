@@ -12,13 +12,13 @@ module HasKeyIdentifier
     def for(key)
       find_by(arel_table[:key].lower.eq(key.to_s.downcase))
     end
+  end
 
-    private
+  private
 
-    def key_unchanged!
-      return unless persisted? && key_changed?
+  def key_unchanged!
+    return unless persisted? && key_changed?
 
-      errors.add(:key, 'cannot change an existing key')
-    end
+    errors.add(:key, 'cannot change an existing key')
   end
 end

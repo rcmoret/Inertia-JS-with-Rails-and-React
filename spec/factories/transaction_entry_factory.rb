@@ -5,6 +5,7 @@ FactoryBot.define do
     association :account
     budget_exclusion { false }
     clearance_date { (2..5).to_a.sample.days.ago }
+    key { SecureRandom.hex(6) }
     details_attributes do
       [
         {

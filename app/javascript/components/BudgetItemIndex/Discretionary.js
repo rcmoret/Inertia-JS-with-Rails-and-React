@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { shared, index as copy } from "../../lib/copy/budget";
-import { sortByClearanceDate } from "../../lib/Functions";
+import { eventAndTransactionDetailSort } from "./Functions";
 
 import AmountSpan from "../shared/AmountSpan";
 import Icon from "../shared/Icons";
@@ -125,7 +125,7 @@ const Transactions = ({ label, toggleTransactions, transactionDetails, showDiscr
 const TransactionDetails = ({ transactionDetails }) => (
   <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
     <div className="w-full"><strong>Transaction Details</strong></div>
-    {transactionDetails.sort(sortByClearanceDate).map(transactionDetail => (
+    {transactionDetails.sort(eventAndTransactionDetailSort).map(transactionDetail => (
       <TransactionDetail key={transactionDetail.key} model={transactionDetail} />
     ))}
   </Row>
