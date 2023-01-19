@@ -46,7 +46,8 @@ module Forms
       transfer.build_from_transaction(
         description: "Transfer to #{to_account}",
         account: from_account,
-        details_attributes: [{ key: SecureRandom.hex(6), amount: -amount }]
+        key: generate_key_indentifier,
+        details_attributes: [{ key: generate_key_indentifier, amount: -amount }]
       )
     end
 
@@ -54,7 +55,8 @@ module Forms
       transfer.build_to_transaction(
         description: "Transfer from #{from_account}",
         account: to_account,
-        details_attributes: [{ key: SecureRandom.hex(6), amount: amount }]
+        key: generate_key_indentifier,
+        details_attributes: [{ key: generate_key_indentifier, amount: amount }]
       )
     end
 
@@ -78,6 +80,10 @@ module Forms
       return unless to_account_id == from_account_id
 
       errors.add(:from_account, "cannot be the same account as 'to' account")
+    end
+
+    def generate_key_indentifier
+      SecureRandom.hex(6)
     end
   end
 end

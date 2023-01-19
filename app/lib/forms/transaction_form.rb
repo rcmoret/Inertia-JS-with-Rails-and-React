@@ -8,9 +8,10 @@ module Forms
       :checkNumber,
       :clearanceDate,
       :description,
+      :key,
       :notes,
       :receipt,
-      { detailsAttributes: %i[id key amount budgetItemKey _destroy].freeze }.freeze,
+      { detailsAttributes: %i[key amount budgetItemKey _destroy].freeze }.freeze,
     ].freeze
 
     def initialize(transaction_entry, raw_params)

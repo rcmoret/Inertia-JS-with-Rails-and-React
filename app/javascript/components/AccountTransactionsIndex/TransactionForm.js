@@ -33,6 +33,7 @@ export const newTransaction = (accountId, budgetExclusion) => ({
   description: "",
   details: [{ ...newDetail() }],
   isEditable: false,
+  key: generateIdentifier(),
   notes: "",
   receipt: null,
   updatedAttributes: { budgetExclusion },
@@ -106,6 +107,7 @@ const Form = props => {
     clearanceDate,
     description,
     details,
+    key,
     notes,
     receipt,
   } = updatedTransaction
@@ -122,6 +124,7 @@ const Form = props => {
     })
     makeRequest({
       accountId,
+      key,
       ...updatedTransaction.updatedAttributes,
       detailsAttributes,
     }, { onSuccess })

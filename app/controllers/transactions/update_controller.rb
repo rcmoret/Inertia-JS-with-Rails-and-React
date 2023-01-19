@@ -2,7 +2,7 @@
 
 module Transactions
   class UpdateController < ApplicationController
-    before_action :account_slug
+    include TransactionHelpers
 
     def call
       if transaction_form.save
@@ -16,26 +16,6 @@ module Transactions
 
     def transaction_form
       @transaction_form ||= Forms::TransactionForm.new(transaction, params)
-    end
-
-    def transaction
-      @transaction ||= Transaction::Entry.belonging_to(current_user).find(params.fetch(:id))
-    end
-
-    def current_interval
-      Budget::Interval.current(user: current_user)
-    end
-
-    def month
-      params.fetch(:month, current_interval.month)
-    end
-
-    def year
-      params.fetch(:year, current_interval.year)
-    end
-
-    def account_slug
-      @account_slug ||= transaction.account.slug
     end
   end
 end

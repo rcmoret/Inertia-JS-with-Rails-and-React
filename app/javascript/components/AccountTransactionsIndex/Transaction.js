@@ -24,9 +24,11 @@ export const Transaction = props => {
     renderForm,
     showDetailsForIds,
     showFormForId,
+    showFormForKey,
   } = props
   const {
     id,
+    key,
     amount,
     balance,
     budgetExclusion,
@@ -48,7 +50,7 @@ export const Transaction = props => {
     deleteTransaction: () => {
       const isConfirmed = window.confirm("Are you sure you want to delete this transaction?")
       if (isConfirmed) {
-        Inertia.delete(`/transactions/${id}?month=${month}&year=${year}`)
+        Inertia.delete(`/transactions/${key}?month=${month}&year=${year}`)
       }
     },
     renderForm: () => renderForm(id)
@@ -56,7 +58,7 @@ export const Transaction = props => {
 
   if (showFormForId === id) {
     const makeRequest = body => {
-      Inertia.put(`/transactions/${id}?month=${month}&year=${year}`,
+      Inertia.put(`/transactions/${key}?month=${month}&year=${year}`,
         { transaction: body },
         { onSuccess: closeForm, forceFormData: true },
       )
@@ -157,7 +159,7 @@ const BudgetItems = ({ details }) => {
   const sortFn = (a, b) => a.budgetCategoryName < b.budgetCategoryName ? -1 : 1
 
   return details.filter(detail => detail.budgetCategoryName).sort(sortFn).map((detail, n) => (
-    <span key={detail.id}>
+    <span key={detail.key}>
       { n > 0 && "; "}
       {detail.budgetCategoryName}
       {" "}

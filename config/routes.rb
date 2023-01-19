@@ -17,8 +17,8 @@ Rails.application.routes.draw do
 
   get '/accounts/:identifier/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
   post '/transactions', to: 'transactions/create#call'
-  put '/transactions/:id', to: 'transactions/update#call'
-  delete '/transactions/:id', to: 'transactions/delete#call'
+  put '/transactions/:key', to: 'transactions/update#call'
+  delete '/transactions/:key', to: 'transactions/delete#call'
   post '/accounts/transfer', to: 'transfers#call'
 
   namespace :budget do

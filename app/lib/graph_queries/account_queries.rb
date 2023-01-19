@@ -68,6 +68,7 @@ module GraphQueries
             slug
             transactions(month: #{month} year: #{year} userId: #{user_id}) {
               id
+              key
               amount
               budgetExclusion
               checkNumber

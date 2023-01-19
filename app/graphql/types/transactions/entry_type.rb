@@ -4,6 +4,7 @@ module Types
   module Transactions
     class EntryType < BaseObject
       field :id, ID, 'Primary key of the transaction entry', null: false
+      field :key, String, 'identifier', null: false
       field :account_id, ID, 'Primary key of the associated account', null: false
       field :amount, Integer, 'Sum of the details amounts', null: false
       field :budget_exclusion, Boolean, 'Should the transaction entry be excluded from budget calculations', null: false
