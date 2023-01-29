@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :category, class: 'Budget::Category' do
-    association :user
+    association :user_group
     default_amount { (-100..0).to_a.sample * 100 }
     sequence(:name) { |n| "Stuff - #{n}" }
     sequence(:slug) { |n| "slug-#{n}" }

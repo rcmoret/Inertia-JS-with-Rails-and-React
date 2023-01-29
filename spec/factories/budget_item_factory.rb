@@ -16,41 +16,35 @@ FactoryBot.define do
     end
 
     factory :monthly_item do
-      revenue
       association :category, factory: %i[category monthly revenue]
     end
 
     factory :monthly_expense do
-      expense
       association :category, factory: %i[category monthly expense]
     end
 
     factory :monthly_revenue do
-      revenue
       association :category, factory: %i[category monthly revenue]
     end
 
     factory :weekly_item do
-      expense
       association :category, factory: %i[category weekly]
     end
 
     factory :weekly_expense do
-      expense
       association :category, factory: %i[category weekly expense]
     end
 
     factory :weekly_revenue do
-      revenue
       association :category, factory: %i[category weekly revenue]
     end
 
     transient do
-      user { create(:user) }
+      user_group { create(:user_group) }
     end
 
     after(:create) do |budget_item, evaluator|
-      budget_item.category.update(user: evaluator.user) if evaluator.user
+      budget_item.category.update(user_group: evaluator.user_group) if evaluator.user_group
     end
   end
 end

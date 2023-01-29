@@ -6,6 +6,5 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :accounts, dependent: :restrict_with_exception
-  has_many :budget_categories, class_name: 'Budget::Category', dependent: :restrict_with_exception
+  belongs_to :user_group
 end

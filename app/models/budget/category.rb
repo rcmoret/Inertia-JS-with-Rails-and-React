@@ -2,7 +2,7 @@
 
 module Budget
   class Category < ApplicationRecord
-    include BelongsToUser
+    include BelongsToUserGroup
     include Messages
     include Presentable
     include Slugable

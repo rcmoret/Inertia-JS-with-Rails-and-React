@@ -19,7 +19,7 @@ module Budget
         end
 
         def category
-          @category ||= current_user.budget_categories.find_by!(slug: params.fetch(:slug))
+          @category ||= Budget::Category.belonging_to(current_user).find_by!(slug: params.fetch(:slug))
         end
 
         def post_params

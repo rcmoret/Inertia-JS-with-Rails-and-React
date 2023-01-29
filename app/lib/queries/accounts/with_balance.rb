@@ -8,7 +8,7 @@ module Queries
       SELECTS = ACCOUNT_WITH_TRANSACTIONS_SELECTS
 
       def initialize(user:, month:, year:)
-        @user_id = user.id
+        @user_id = user.user_group_id
         @interval = Budget::Interval.belonging_to(user).for(month: month, year: year)
       end
 
@@ -18,7 +18,7 @@ module Queries
 
       private
 
-      attr_reader :user_id, :interval
+      attr_reader :user_group_id, :interval
 
       def results
         @results ||= ApplicationRecord.connection.exec_query(query.to_sql)
@@ -33,7 +33,7 @@ module Queries
       end
 
       def where_clause
-        user_clause
+        user_group_clause
           .and(ACCOUNTS[:id].eq(account_id))
           .and(transactions_clause)
       end

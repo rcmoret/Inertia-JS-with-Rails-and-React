@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Budget::Events::CreateItemForm do
   describe 'event type validation' do
     let(:user) { FactoryBot.create(:user) }
+    let(:user_group) { user.user_group }
 
     context 'when a valid event' do
       it 'is a valid form object' do
@@ -229,10 +230,10 @@ RSpec.describe Budget::Events::CreateItemForm do
     @today ||= Time.current
   end
 
-  def new_params
+  def new_params(user)
     {
       amount: amount,
-      budget_category_id: budget_category.id,
+      budget_category_slug: budget_category(user_group: user.user_group).slug,
       event_type: Budget::EventTypes::CREATE_EVENTS.sample,
       month: budget_interval.month,
       year: budget_interval.year,
@@ -241,7 +242,7 @@ RSpec.describe Budget::Events::CreateItemForm do
   end
 
   def new_object(user, **overrides)
-    described_class.new(user, new_params.merge(overrides))
+    described_class.new(user, new_params(user).merge(overrides))
   end
 
   def budget_category(*traits, **overrides)

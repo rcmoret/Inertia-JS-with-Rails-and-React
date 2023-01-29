@@ -8,7 +8,7 @@ module Queries
       SELECTS = ACCOUNT_WITH_TRANSACTIONS_SELECTS
 
       def initialize(user:, include_archived: false)
-        @user_id = user.id
+        @user_group_id = user.user_group_id
         @include_archived = include_archived
       end
 
@@ -22,7 +22,7 @@ module Queries
 
       private
 
-      attr_reader :user_id, :include_archived
+      attr_reader :user_group_id, :include_archived
 
       def results
         @results ||= ApplicationRecord.connection.exec_query(query.to_sql).map do |result|
@@ -40,9 +40,9 @@ module Queries
 
       def where_clause
         if include_archived
-          user_clause
+          user_group_clause
         else
-          user_clause.and(exclude_inactive_clause)
+          user_group_clause.and(exclude_inactive_clause)
         end
       end
 

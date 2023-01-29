@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord
-  include BelongsToUser
+  include BelongsToUserGroup
   include Slugable
 
   has_many :transactions, class_name: 'Transaction::Entry', dependent: :restrict_with_exception
@@ -22,7 +22,7 @@ class Account < ApplicationRecord
       joins(:details).merge(details.prior_to(date))
     end
   }
-  validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_id }
+  validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_group_id }
   validates :name, :priority, :slug, presence: true
 
   delegate :to_json, to: :to_hash

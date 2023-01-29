@@ -11,9 +11,9 @@ RSpec.describe Account, type: :model do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:priority) }
-    it { is_expected.to validate_uniqueness_of(:priority).scoped_to(:user_id) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:user_id) }
-    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:priority).scoped_to(:user_group_id) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:user_group_id) }
+    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_group_id) }
   end
 
   describe 'slug format validation' do

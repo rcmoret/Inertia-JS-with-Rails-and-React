@@ -28,8 +28,8 @@ module Queries
         .join(TRANSACTIONS, Arel::Nodes::OuterJoin).on(ACCOUNT_TRANSACTIONS_JOIN)
         .join(TRANSACTION_DETAILS, Arel::Nodes::OuterJoin).on(TRANSACTION_DETAILS_JOIN)
 
-      def user_clause
-        ACCOUNTS[:user_id].eq(user_id)
+      def user_group_clause
+        ACCOUNTS[:user_group_id].eq(user_group_id)
       end
     end
   end

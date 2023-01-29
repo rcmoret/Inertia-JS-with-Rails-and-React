@@ -28,8 +28,10 @@ module Types
     end
 
     def account(slug:, user_id:)
-      Account.find_by(slug: slug, user_id: user_id)&.then do |acct|
-        Presenters::AccountPresenter.new(acct)
+      User.find(user_id).then do |user|
+        Account.belonging_to(user).find_by(slug: slug)&.then do |acct|
+          Presenters::AccountPresenter.new(acct)
+        end
       end
     end
 

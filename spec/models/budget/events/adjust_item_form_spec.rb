@@ -78,7 +78,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         end
 
         it 'has a meaningful error message' do
-          item = budget_item(:revenue, user: user)
+          item = budget_item(:revenue, user_group: user.user_group)
           form = build_form(user, budget_item_key: item.key, amount: 0.4)
           form.valid?
           expect(form.errors['amount']).to include 'must be an integer'
@@ -88,7 +88,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       context 'when the item category is a revenue' do
         context 'when the amount is positive' do
           it 'is valid' do
-            budget_item(:revenue, user: user)
+            budget_item(:revenue, user_group: user.user_group)
             form = build_form(user, amount: 129_50)
             expect(form).to be_valid
           end
@@ -96,13 +96,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when the amount is negative' do
           it 'is not valid' do
-            budget_item(:revenue, user: user)
+            budget_item(:revenue, user_group: user.user_group)
             form = build_form(user, amount: -129_50)
             expect(form).not_to be_valid
           end
 
           it 'provides an error message' do
-            budget_item(:revenue, user: user)
+            budget_item(:revenue, user_group: user.user_group)
             form = build_form(user, amount: -129_50)
             form.valid?
             expect(form.errors['amount'])
@@ -114,7 +114,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       context 'when the item category is an expense' do
         context 'when the amount is negative' do
           it 'is valid' do
-            budget_item(:expense, user: user)
+            budget_item(:expense, user_group: user.user_group)
             form = build_form(user, amount: -32_09)
             expect(form).to be_valid
           end
@@ -122,13 +122,13 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
         context 'when the amount is positive' do
           it 'is not valid' do
-            budget_item(:expense, user: user)
+            budget_item(:expense, user_group: user.user_group)
             form = build_form(user, amount: 32_09)
             expect(form).not_to be_valid
           end
 
           it 'provides an error message' do
-            budget_item(:expense, user: user)
+            budget_item(:expense, user_group: user.user_group)
             form = build_form(user, amount: 32_09)
             form.valid?
             expect(form.errors['amount']).to include 'expense items must be less than or equal to $0.00'
@@ -253,7 +253,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
 
   def default_form_params(user)
     {
-      budget_item_key: budget_item(user: user).key,
+      budget_item_key: budget_item(user_group: user.user_group).key,
       event_type: Budget::EventTypes::ADJUST_EVENTS.sample,
       amount: 0,
       data: nil,

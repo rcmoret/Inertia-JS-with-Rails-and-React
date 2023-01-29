@@ -22,7 +22,7 @@ module Budget
     private
 
     def interval
-      @interval ||= Budget::Interval.belonging_to(current).for(
+      @interval ||= Budget::Interval.belonging_to(current_user).for(
         month: base_interval_month,
         year: base_interval_year
       )

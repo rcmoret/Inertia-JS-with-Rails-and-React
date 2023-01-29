@@ -3,13 +3,13 @@
 module Presenters
   class AccountPresenter < SimpleDelegator
     def balance_prior_to(month:, year:)
-      interval = ::Budget::Interval.belonging_to(user).for(month: month, year: year).as_presenter
+      interval = ::Budget::Interval.where(user_group: user_group).for(month: month, year: year).as_presenter
 
       super(interval.first_date, include_pending: interval.future?)
     end
 
     def transactions(month:, year:)
-      interval = ::Budget::Interval.belonging_to(user).for(month: month, year: year).as_presenter
+      interval = ::Budget::Interval.where(user_group: user_group).for(month: month, year: year).as_presenter
 
       super()
         .between(interval.date_range, include_pending: interval.current?)

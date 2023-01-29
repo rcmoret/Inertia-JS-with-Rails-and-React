@@ -102,7 +102,7 @@ RSpec.describe Budget::Events::SetupForm do
       allow(Budget::Events::Form)
         .to receive(:new)
         .and_return(form_double)
-      FactoryBot.create(:budget_interval, user: user, month: month, year: year)
+      FactoryBot.create(:budget_interval, user_group: user.user_group, month: month, year: year)
     end
 
     let(:user) { FactoryBot.create(:user) }
@@ -132,7 +132,7 @@ RSpec.describe Budget::Events::SetupForm do
 
   describe 'updates to the interval' do
     subject do
-      described_class.new(user: interval.user, month: interval.month, year: interval.year, events: events_params)
+      described_class.new(user: user, month: interval.month, year: interval.year, events: events_params)
     end
 
     around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
@@ -143,7 +143,9 @@ RSpec.describe Budget::Events::SetupForm do
         .and_return(instance_double(Budget::Events::Form, save: true, valid?: true))
     end
 
-    let(:interval) { FactoryBot.create(:budget_interval, user: user, month: month, year: year) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:user_group) { user.user_group }
+    let(:interval) { FactoryBot.create(:budget_interval, user_group: user_group, month: month, year: year) }
     let(:events_params) { [{ event_type: valid_create_event }] }
 
     it "updates the interval's set up completed at timestamp" do
@@ -173,7 +175,7 @@ RSpec.describe Budget::Events::SetupForm do
       let(:today) { Time.zone.today }
       let(:interval) do
         FactoryBot.create(:budget_interval,
-                          user: user,
+                          user_group: user.user_group,
                           start_date: Date.new(today.year, today.month, 2),
                           end_date: Date.new(today.year, today.month, -2))
       end
@@ -190,7 +192,7 @@ RSpec.describe Budget::Events::SetupForm do
     context 'when the start and end dates are not populated and values are provided' do
       subject do
         described_class.new(
-          user: interval.user,
+          user: interval.user_group.users.first,
           month: interval.month,
           year: interval.year,
           events: events_params,

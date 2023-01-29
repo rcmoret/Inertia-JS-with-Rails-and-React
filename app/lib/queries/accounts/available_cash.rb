@@ -48,7 +48,7 @@ module Queries
       end
 
       def base_clause
-        user_clause.and(NON_ARCHIVED_ACCOUNT_CLAUSE)
+        user_group_clause.and(NON_ARCHIVED_ACCOUNT_CLAUSE)
       end
 
       def pending_clause
@@ -57,7 +57,7 @@ module Queries
 
       attr_reader :budget_interval
 
-      delegate :user_id, :date_range, :current?, to: :budget_interval
+      delegate :user_group_id, :date_range, :current?, to: :budget_interval
     end
   end
 end

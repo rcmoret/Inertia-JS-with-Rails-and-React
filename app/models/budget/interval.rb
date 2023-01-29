@@ -2,7 +2,7 @@
 
 module Budget
   class Interval < ApplicationRecord
-    include BelongsToUser
+    include BelongsToUserGroup
     include Presentable
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     has_many :maturity_intervals,
@@ -10,11 +10,10 @@ module Budget
              dependent: :destroy,
              inverse_of: :interval,
              foreign_key: :budget_interval_id
-    belongs_to :user
 
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
-    validates :month, uniqueness: { scope: %i[year user_id] }
+    validates :month, uniqueness: { scope: %i[year user_group_id] }
     validate :close_out_completed_at_end_of_month
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
@@ -87,17 +86,17 @@ module Budget
 
     def prev
       if month > 1
-        self.class.belonging_to(user).for(month: (month - 1), year: year)
+        self.class.where(user_group: user_group).for(month: (month - 1), year: year)
       else
-        self.class.belonging_to(user).for(month: 12, year: (year - 1))
+        self.class.where(user_group: user_group).for(month: 12, year: (year - 1))
       end
     end
 
     def next_month
       if month < 12
-        self.class.belonging_to(user).for(month: (month + 1), year: year)
+        self.class.where(user_group: user_group).for(month: (month + 1), year: year)
       else
-        self.class.belonging_to(user).for(month: 1, year: (year + 1))
+        self.class.where(user_group: user_group).for(month: 1, year: (year + 1))
       end
     end
     alias next next_month
