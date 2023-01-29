@@ -7,8 +7,8 @@ module Queries
 
       SELECTS = ACCOUNT_WITH_TRANSACTIONS_SELECTS
 
-      def initialize(user_id:, include_archived: false)
-        @user_id = user_id
+      def initialize(user:, include_archived: false)
+        @user_id = user.id
         @include_archived = include_archived
       end
 

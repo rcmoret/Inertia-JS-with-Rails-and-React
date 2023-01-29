@@ -62,11 +62,11 @@ module GraphQueries
           }
           selectedAccount: account(slug: "#{slug}" userId: #{user_id}) {
             id
-            balancePriorTo(userId: #{user_id} month: #{month} year: #{year})
+            balancePriorTo(month: #{month} year: #{year})
             isCashFlow
             name
             slug
-            transactions(month: #{month} year: #{year} userId: #{user_id}) {
+            transactions(month: #{month} year: #{year}) {
               id
               key
               amount

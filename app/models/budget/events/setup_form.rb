@@ -11,7 +11,7 @@ module Budget
 
       def initialize(user:, **options)
         @events_form = Budget::Events::Form.new(user, events: options.delete(:events))
-        @interval = Interval.for(user_id: user.id, **options.slice(:month, :year))
+        @interval = Interval.belongin_to(user).for(**options.slice(:month, :year))
         @options = options
       end
 

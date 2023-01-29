@@ -7,7 +7,7 @@ RSpec.describe Queries::Accounts::AllWithBalance do
     let(:user) { FactoryBot.create(:user) }
 
     it 'returns an empty result set' do
-      subject = described_class.new(user_id: user.id).call
+      subject = described_class.new(user: user).call
 
       expect(subject).to be_empty
     end

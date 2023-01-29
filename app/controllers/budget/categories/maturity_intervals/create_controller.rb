@@ -27,10 +27,9 @@ module Budget
         end
 
         def interval
-          @interval ||= Budget::Interval.for(
+          @interval ||= Budget::Interval.belonging_to(current_user).for(
             month: post_params[:month],
-            year: post_params[:year],
-            user_id: current_user.id
+            year: post_params[:year]
           )
         end
 

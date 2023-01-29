@@ -25,7 +25,6 @@ class Account < ApplicationRecord
   validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_id }
   validates :name, :priority, :slug, presence: true
 
-
   delegate :to_json, to: :to_hash
 
   def to_hash

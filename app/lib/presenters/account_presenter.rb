@@ -2,14 +2,14 @@
 
 module Presenters
   class AccountPresenter < SimpleDelegator
-    def balance_prior_to(month:, year:, user_id:)
-      interval = ::Budget::Interval.for(month: month, year: year, user_id: user_id).as_presenter
+    def balance_prior_to(month:, year:)
+      interval = ::Budget::Interval.belonging_to(user).for(month: month, year: year).as_presenter
 
       super(interval.first_date, include_pending: interval.future?)
     end
 
-    def transactions(month:, year:, user_id:)
-      interval = ::Budget::Interval.for(month: month, year: year, user_id: user_id).as_presenter
+    def transactions(month:, year:)
+      interval = ::Budget::Interval.belonging_to(user).for(month: month, year: year).as_presenter
 
       super()
         .between(interval.date_range, include_pending: interval.current?)

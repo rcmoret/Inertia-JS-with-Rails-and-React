@@ -7,9 +7,9 @@ module Queries
 
       SELECTS = ACCOUNT_WITH_TRANSACTIONS_SELECTS
 
-      def initialize(user_id:, month:, year:)
-        @user_id = user_id
-        @interval = Budget::Interval.for(month: month, year: year, user_id: user_id)
+      def initialize(user:, month:, year:)
+        @user_id = user.id
+        @interval = Budget::Interval.belonging_to(user).for(month: month, year: year)
       end
 
       def call

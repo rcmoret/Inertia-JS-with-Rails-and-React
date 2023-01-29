@@ -22,10 +22,9 @@ module Budget
     private
 
     def interval
-      @interval ||= Budget::Interval.for(
+      @interval ||= Budget::Interval.belonging_to(current).for(
         month: base_interval_month,
-        year: base_interval_year,
-        user_id: current_user.id
+        year: base_interval_year
       )
     end
 

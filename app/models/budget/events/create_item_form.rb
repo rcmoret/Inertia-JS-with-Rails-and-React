@@ -91,7 +91,7 @@ module Budget
       end
 
       def interval
-        @interval ||= Budget::Interval.for(month: month, year: year, user_id: current_user.id)
+        @interval ||= Budget::Interval.belonging_to(current_user).for(month: month, year: year)
       end
 
       def promote_errors(model_errors)

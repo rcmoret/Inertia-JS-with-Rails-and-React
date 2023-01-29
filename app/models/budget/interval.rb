@@ -50,8 +50,8 @@ module Budget
     }
     # rubocop:enable Metrics/BlockLength
 
-    def self.for(month:, year:, user_id:)
-      find_or_create_by(month: month, year: year, user_id: user_id)
+    def self.for(month:, year:)
+      find_or_create_by(month: month, year: year)
     end
 
     def self.current(user:)
@@ -87,17 +87,17 @@ module Budget
 
     def prev
       if month > 1
-        self.class.for(month: (month - 1), year: year, user_id: user_id)
+        self.class.belonging_to(user).for(month: (month - 1), year: year)
       else
-        self.class.for(month: 12, year: (year - 1), user_id: user_id)
+        self.class.belonging_to(user).for(month: 12, year: (year - 1))
       end
     end
 
     def next_month
       if month < 12
-        self.class.for(month: (month + 1), year: year, user_id: user_id)
+        self.class.belonging_to(user).for(month: (month + 1), year: year)
       else
-        self.class.for(month: 1, year: (year + 1), user_id: user_id)
+        self.class.belonging_to(user).for(month: 1, year: (year + 1))
       end
     end
     alias next next_month
