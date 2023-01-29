@@ -10,7 +10,6 @@ module Budget
              dependent: :destroy,
              inverse_of: :interval,
              foreign_key: :budget_interval_id
-    has_many :item_views, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     belongs_to :user
 
     validates :month, presence: true, inclusion: (1..12)

@@ -4,7 +4,6 @@ module Transaction
   class Entry < ApplicationRecord
     include HasKeyIdentifier
     include Presentable
-    include Scopes
 
     belongs_to :account
     belongs_to :transfer, optional: true
@@ -20,18 +19,26 @@ module Transaction
 
     has_one_attached :receipt
 
-    scope :total, -> { joins(:details).sum(:amount) }
     scope :belonging_to, ->(user) { joins(:account).merge(Account.belonging_to(user)) }
+
+    scope :cleared, -> { where.not(clearance_date: nil) }
+    scope :pending, -> { where(clearance_date: nil) }
+    scope :prior_to, ->(date) { cleared.where(arel_table[:clearance_date].lt(date)) }
+    scope :in, ->(range) { where(clearance_date: range) }
+    scope :between, ->(range, include_pending: false) { include_pending ? self.in(range).or(pending) : self.in(range) }
+    scope :budget_inclusions, -> { where(budget_exclusion: false) }
+    scope :non_transfers, -> { where(transfer_id: nil) }
+    scope :cash_flow, -> { joins(:account).merge(Account.cash_flow) }
+    scope :non_cash_flow, -> { joins(:account).merge(Account.non_cash_flow) }
 
     delegate :name, to: :account, prefix: true
 
-    def attributes
-      super
-        .symbolize_keys
-        .merge(account_name: account.name)
-        .merge(
-          details: details.map { |detail| detail.attributes.symbolize_keys }
-        )
+    def self.total
+      joins(:details).sum(:amount)
+    end
+
+    def total
+      details.sum(:amount)
     end
 
     def transfer?

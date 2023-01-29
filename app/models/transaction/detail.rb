@@ -36,10 +36,6 @@ module Transaction
       sum(:amount)
     end
 
-    def self.balances_for(account_ids)
-      for_accounts(account_ids).group('transaction_entries.account_id').sum(:amount)
-    end
-
     private
 
     def amount_static!
