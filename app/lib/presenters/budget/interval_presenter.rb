@@ -14,11 +14,13 @@ module Presenters
       alias is_future future?
 
       def items(include_deleted: false, reviewable_only: false)
-        item_query(include_deleted: include_deleted).map(&:as_presenter).then do |collection|
-          collection.select!(&:reviewable?) if reviewable_only
-
-          collection
-        end
+        Queries::Budget::IntervalItemsQuery.new(
+          items: super(),
+          include_deleted: include_deleted,
+          reviewable_only: reviewable_only,
+          month: month,
+          year: year
+        ).call
       end
 
       def discretionary
@@ -69,15 +71,6 @@ module Presenters
       end
 
       private
-
-      def item_query(include_deleted:)
-        @item_query ||= Queries::Budget::IntervalItems.new(
-          month: month,
-          year: year,
-          user_id: user_id,
-          include_deleted: include_deleted
-        ).call
-      end
 
       def today
         @today ||= Time.zone.today

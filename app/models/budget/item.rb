@@ -21,7 +21,6 @@ module Budget
                class_name: 'Interval',
                foreign_key: :budget_interval_id,
                inverse_of: :items
-    has_many :maturity_intervals, through: :category, inverse_of: :items
 
     validates :category, presence: true
     # rubocop:disable Rails/UniqueValidationWithoutIndex

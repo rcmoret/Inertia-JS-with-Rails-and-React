@@ -3,52 +3,69 @@
 module Presenters
   module Budget
     class BaseItemPresenter < SimpleDelegator
-      def accrual?
-        accrual
-      end
+      delegate :accrual?,
+               :expense?,
+               :is_per_diem_enabled,
+               :maturity_intervals,
+               :monthly?,
+               :slug,
+               to: :category
+      delegate :month, :year, to: :interval
+
       alias is_accrual accrual?
-
-      def monthly?
-        monthly
-      end
-      alias is_monthly monthly?
-
-      def expense?
-        expense
-      end
       alias is_expense expense?
+      alias is_monthly monthly?
+      alias budget_category_slug slug
 
-      def per_diem_enabled?
-        is_per_diem_enabled
+      def events
+        @events ||= super.map(&:as_presenter)
+      end
+
+      def transaction_details
+        @transaction_details ||= super.map(&:as_presenter)
+      end
+
+      def amount
+        @amount ||= events.map(&:amount).sum
       end
 
       def spent
-        transactions_total
+        @spent ||= transaction_details.map(&:amount).sum
       end
 
       def transaction_detail_count
-        transactions_count
+        @transaction_detail_count ||= transaction_details.size
       end
 
       def difference
-        amount - spent
+        @difference ||= amount - spent
       end
 
       def deletable?
-        transactions_count.zero?
+        transaction_detail_count.zero?
       end
       alias is_deletable deletable?
 
       def maturity_month
         return unless accrual?
 
-        upcoming_maturity_interval[:month]
+        upcoming_maturity_interval&.month
       end
 
       def maturity_year
         return unless accrual?
 
-        upcoming_maturity_interval[:year]
+        upcoming_maturity_interval&.year
+      end
+
+      private
+
+      def upcoming_maturity_interval
+        @upcoming_maturity_interval ||= maturity_intervals.on_or_after(month, year).take
+      end
+
+      def item
+        @item ||= __getobj__
       end
     end
   end

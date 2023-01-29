@@ -4,7 +4,7 @@ module Presenters
   module Budget
     class MonthlyItemPresenter < BaseItemPresenter
       def remaining
-        if transactions_count.zero?
+        if transaction_detail_count.zero?
           amount
         else
           0
@@ -16,7 +16,7 @@ module Presenters
       end
 
       def budget_impact
-        return 0 if transactions_count.zero?
+        return 0 if transaction_detail_count.zero?
 
         difference * -1
       end

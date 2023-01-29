@@ -3,6 +3,11 @@
 module Presenters
   module Transactions
     class DetailPresenter < SimpleDelegator
+      delegate :account_name,
+               :clearance_date,
+               :description,
+               to: :entry
+
       def budget_item_key
         budget_item&.key
       end
