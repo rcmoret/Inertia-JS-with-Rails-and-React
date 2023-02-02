@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   delete '/accounts/:id', to: 'accounts/delete#call'
 
   get '/accounts/:identifier/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
-  post '/transactions', to: 'transactions/create#call'
+  post '/accounts/:account_identifier/transactions', to: 'transactions/create#call'
   put '/transactions/:key', to: 'transactions/update#call'
   delete '/transactions/:key', to: 'transactions/delete#call'
   post '/accounts/transfer', to: 'transfers#call'

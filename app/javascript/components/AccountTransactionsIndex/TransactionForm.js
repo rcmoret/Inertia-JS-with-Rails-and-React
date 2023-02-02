@@ -26,8 +26,8 @@ const newDetail = () => ({
   updatedAttributes: {}
 })
 
-export const newTransaction = (accountId, budgetExclusion) => ({
-  accountId,
+export const newTransaction = (accountSlug, budgetExclusion) => ({
+  accountSlug,
   checkNumber: "",
   clearanceDate: null,
   description: "",
@@ -41,7 +41,7 @@ export const newTransaction = (accountId, budgetExclusion) => ({
 
 export const NewForm = ({ account, transaction, ...props }) => {
   const [attributes, updateAttributes] = useState(transaction)
-  const onSuccess = () => updateAttributes(newTransaction(account.id, !account.isCashFlow))
+  const onSuccess = () => updateAttributes(newTransaction(account.slug, !account.isCashFlow))
 
   return (
     <Form
@@ -101,7 +101,7 @@ const Form = props => {
   }
 
   const {
-    accountId,
+    accountSlug,
     budgetExclusion,
     checkNumber,
     clearanceDate,
@@ -123,7 +123,7 @@ const Form = props => {
       }
     })
     makeRequest({
-      accountId,
+      accountSlug,
       key,
       ...updatedTransaction.updatedAttributes,
       detailsAttributes,
@@ -256,7 +256,7 @@ const Form = props => {
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
           <Receipt value={receipt} onChange={handleFileUpload} />
-          {accounts.length > 0 && <AccountSelect accountId={accountId} accounts={accounts} updateEntry={updateEntry} />}
+          {accounts.length > 0 && <AccountSelect accountSlug={accountSlug} accounts={accounts} updateEntry={updateEntry} />}
         </div>
         <div className="w-2/12 flex flex-row-reverse items-start">
           <Button
@@ -515,10 +515,10 @@ const Receipt = ({ receipt, onChange }) => {
   )
 }
 
-const AccountSelect = ({ accounts, accountId, updateEntry }) => {
-  const options = accounts.map(a => ({ value: a.id, label: a.name })).sort(sortByLabel)
-  const value = options.find(option => option.value === accountId)
-  const handleChange = event => updateEntry({ accountId: event.value })
+const AccountSelect = ({ accounts, accountSlug, updateEntry }) => {
+  const options = accounts.map(a => ({ value: a.slug, label: a.name })).sort(sortByLabel)
+  const value = options.find(option => option.value === accountSlug)
+  const handleChange = event => updateEntry({ accountSlug: event.value })
 
   return(
     <div className="w-full mt-2">

@@ -34,7 +34,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
   } = budget.interval
 
   const initialBalance = {
-    id: 0,
+    key: 0,
     amount: "",
     balance: balancePriorTo,
     clearanceDate: firstDate,
@@ -42,11 +42,11 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
     details: []
   }
 
-  const [pageState, updatePageState] = usePageData(`accounts/${id}/${month}/${year}`, {
-    showDetailsForIds: [],
-    showFormForId: null,
+  const [pageState, updatePageState] = usePageData(`accounts/${selectedAccount.slug}/${month}/${year}`, {
+    showDetailsForKeys: [],
+    showFormForKey: null,
   })
-  const { showDetailsForIds, showFormForId } = pageState
+  const { showDetailsForKeys, showFormForKey } = pageState
 
   const prevMonth = month === 1 ? { month: 12, year: (year - 1) } : { month: (month - 1), year }
   const nextMonth = month === 12 ? { month: 1, year: (year + 1) } : { month: (month + 1), year }
@@ -54,13 +54,13 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
   const visitPrevUrl = `/accounts/${selectedAccount.slug}/transactions/${prevMonth.month}/${prevMonth.year}`
 
   const detailFns = {
-    render: id => updatePageState({
+    render: key => updatePageState({
       ...pageState,
-      showDetailsForIds: [...pageState.showDetailsForIds, id],
+      showDetailsForKeys: [...pageState.showDetailsForKeys, key],
     }),
-    hide: id => updatePageState({
+    hide: key => updatePageState({
       ...pageState,
-      showDetailsForIds: pageState.showDetailsForIds.filter(i => i !== id),
+      showDetailsForKeys: pageState.showDetailsForKeys.filter(i => i !== key),
     })
   }
 
@@ -94,14 +94,14 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
       ]
     }, [initialBalance])
 
-  const closeForm = () => updatePageState({ ...pageState, showFormForId: null })
-  const renderForm = id => updatePageState({ ...pageState, showFormForId: id })
+  const closeForm = () => updatePageState({ ...pageState, showFormForKey: null })
+  const renderForm = id => updatePageState({ ...pageState, showFormForKey: id })
 
   const toggleNewForm = () => {
-    if (showFormForId === "new") {
+    if (showFormForKey === "new") {
       closeForm()
     } else {
-      updatePageState({ ...pageState, showFormForId: "new" })
+      updatePageState({ ...pageState, showFormForKey: "new" })
     }
   }
   document.title = `${selectedAccount.name} - ${DateFormatter({ month, year, day: 1, format: "numericMonthShortYear" })}`
@@ -144,7 +144,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
             </Row>
             {transactions.map(transaction => (
               <Transaction
-                key={transaction.id}
+                key={transaction.key}
                 transaction={{...transaction, accountId: selectedAccount.id}}
                 accounts={accounts}
                 closeForm={closeForm}
@@ -153,8 +153,8 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                 isCashFlow={isCashFlow}
                 items={items}
                 renderForm={renderForm}
-                showDetailsForIds={showDetailsForIds}
-                showFormForId={showFormForId}
+                showDetailsForKeys={showDetailsForKeys}
+                showFormForKey={showFormForKey}
               />
             ))}
             <NewTransaction
@@ -162,7 +162,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
               interval={{ isCurrent, firstDate, lastDate, month, year }}
               isCashFlow={isCashFlow}
               items={items}
-              showFormForId={showFormForId}
+              showFormForKey={showFormForKey}
               toggleNewForm={toggleNewForm}
             />
             <TransferRow
@@ -182,20 +182,20 @@ const NewTransaction = props => {
     interval,
     isCashFlow,
     items,
-    showFormForId,
+    showFormForKey,
     toggleNewForm,
   } = props
 
   const { month, year } = interval
   const makeRequest = (body, callbacks) => {
-    Inertia.post(`/transactions?month=${month}&year=${year}`,
+    Inertia.post(`/accounts/${account.slug}/transactions?month=${month}&year=${year}`,
       { transaction: body },
       { ...callbacks, forceFormData: true },
     )
   }
 
-  if (showFormForId === "new") {
-    const model = newTransaction(account.id, !account.isCashFlow)
+  if (showFormForKey === "new") {
+    const model = newTransaction(account.slug, !account.isCashFlow)
 
     return (
       <NewForm

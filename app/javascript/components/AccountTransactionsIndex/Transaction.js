@@ -22,12 +22,10 @@ export const Transaction = props => {
     isCashFlow,
     items,
     renderForm,
-    showDetailsForIds,
-    showFormForId,
+    showDetailsForKeys,
     showFormForKey,
   } = props
   const {
-    id,
     key,
     amount,
     balance,
@@ -43,7 +41,7 @@ export const Transaction = props => {
   } = transaction
   const { month, year } = interval
   const clearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate)
-  const isDetailShown = showDetailsForIds.includes(id)
+  const isDetailShown = showDetailsForKeys.includes(key)
   const notesNeedAttn = (notes || "").startsWith("!!!")
   const noteLines = (notes || "").split("<br>").map(line => line.replace(/^!!!/, ""))
   const modifyFns = {
@@ -53,10 +51,10 @@ export const Transaction = props => {
         Inertia.delete(`/transactions/${key}?month=${month}&year=${year}`)
       }
     },
-    renderForm: () => renderForm(id)
+    renderForm: () => renderForm(key)
   }
 
-  if (showFormForId === id) {
+  if (showFormForKey === key) {
     const makeRequest = body => {
       Inertia.put(`/transactions/${key}?month=${month}&year=${year}`,
         { transaction: body },
@@ -78,10 +76,10 @@ export const Transaction = props => {
   } else {
     return (
       <StripedRow styling={{flexAlign: "justify-start"}}>
-        <div className="hidden">{id}</div>
+        <div className="hidden">{key}</div>
         <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
           <div className="w-1/12">
-            {details.length > 1 && <DetailToggleLink id={id} isDetailShown={isDetailShown} detailFns={detailFns} />}
+            {details.length > 1 && <DetailToggleLink id={key} isDetailShown={isDetailShown} detailFns={detailFns} />}
           </div>
           <div className="w-4/12">
             <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
@@ -97,7 +95,7 @@ export const Transaction = props => {
           <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
             <AmountSpan amount={amount} />
           </EditLink>
-          {isDetailShown && <DetailAmounts key={id} details={details} />}
+          {isDetailShown && <DetailAmounts key={key} details={details} />}
         </div>
         <div className="w-1/12 text-right">
           <AmountSpan amount={balance} negativeColor="text-red-800" />
@@ -149,7 +147,7 @@ const DetailToggleLink = ({ id, isDetailShown, detailFns }) => {
 
 const DetailAmounts = ({ details }) => (
  details.map(detail => (
-   <div key={detail.id} className="w-full text-sm">
+   <div key={detail.key} className="w-full text-sm">
      {MoneyFormatter(detail.amount, { decorate: true })}
    </div>
  ))

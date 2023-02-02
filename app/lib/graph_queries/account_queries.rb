@@ -23,7 +23,6 @@ module GraphQueries
       <<-GQL
         {
           accounts(userId: #{user.id} includeArchived: #{include_archived}) {
-            id
             name
             archivedAt
             isArchived
@@ -61,13 +60,11 @@ module GraphQueries
             }
           }
           selectedAccount: account(slug: "#{slug}" userId: #{user_id}) {
-            id
             balancePriorTo(month: #{month} year: #{year})
             isCashFlow
             name
             slug
             transactions(month: #{month} year: #{year}) {
-              id
               key
               amount
               budgetExclusion
@@ -97,7 +94,6 @@ module GraphQueries
     def base_query(user_id)
       <<-GQL
           accounts(userId: #{user_id}) {
-            id
             name
             balance
             priority

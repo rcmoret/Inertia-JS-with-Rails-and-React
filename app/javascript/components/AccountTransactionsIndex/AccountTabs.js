@@ -16,7 +16,7 @@ const AccountTabs = ({ accounts, ...props}) => {
       <Row>
         {accounts.sort(sortFn).map(account => (
           <AccountLink
-            key={account.id}
+            key={account.slug}
             account={account}
             currentInterval={currentInterval}
             interval={interval}
@@ -29,7 +29,7 @@ const AccountTabs = ({ accounts, ...props}) => {
 }
 
 const AccountLink = ({ account, currentInterval, interval, selectedAccount }) => {
-  const isSelected = account.id === selectedAccount.id
+  const isSelected = account.slug === selectedAccount.slug
   const month = isSelected ? currentInterval.month : interval.month
   const year = isSelected ? currentInterval.year : interval.year
   const href = `/accounts/${account.slug}/transactions/${month}/${year}`

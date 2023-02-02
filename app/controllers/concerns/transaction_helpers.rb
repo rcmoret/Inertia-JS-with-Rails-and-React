@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module TransactionHelpers
-  private
+  TEMPLATE_NAME = 'AccountTransactionsIndexApp'
 
-  def transaction
-    @transaction ||= Transaction::Entry.fetch(user: current_user, identifier: params.fetch(:key))
-  end
+  private
 
   def current_interval
     Budget::Interval.current(user: current_user)
@@ -17,9 +15,5 @@ module TransactionHelpers
 
   def year
     params.fetch(:year, current_interval.year)
-  end
-
-  def account_slug
-    @account_slug ||= transaction.account.slug
   end
 end

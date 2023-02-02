@@ -13,27 +13,27 @@ import { StripedRow } from "../shared/Row";
 
 const newTransfer = {
   amount: "",
-  toAccountId: null,
+  toAccountSlug: null,
 };
 
 export const TransferRow = ({ accounts, selectedAccount }) => {
   const [transfer, updateTransfer] = useState(newTransfer)
   const [isFormShown, toggleForm] = useState(false)
   const toggleFormVisibility = () => toggleForm(!isFormShown)
-  const collection = accounts.filter(account => account.id !== selectedAccount.id)
+  const collection = accounts.filter(account => account.slug !== selectedAccount.slug)
   const handleAmountChange = ev => updateTransfer({
     ...transfer,
     amount: ev.target.value
   })
-  const handleToAccountChange = ev => updateTransfer({ ...transfer, toAccountId: ev.value })
-  const toAccount = collection.find(account => account.id === transfer.toAccountId)
-  const options = collection.map(asOption).sort(sortByValue)
-  const value = options.find(option => option.value === transfer.toAccountId)
+  const handleToAccountChange = ev => updateTransfer({ ...transfer, toAccountSlug: ev.value })
+  const toAccount = collection.find(account => account.id === transfer.toAccountSlug)
+  const options = collection.map(account => asOption(account, { valueFn: a => a.slug })).sort(sortByValue)
+  const value = options.find(option => option.value === transfer.toAccountSlug)
 
   const postTransfer = () => {
     const body = {
-      toAccountId: transfer.toAccountId,
-      fromAccountId: selectedAccount.id,
+      toAccountSlug: transfer.toAccountSlug,
+      fromAccountSlug: selectedAccount.slug,
       amount: decimalToInt(transfer.amount),
     }
     const onSuccess = () => {

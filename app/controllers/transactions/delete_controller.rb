@@ -5,11 +5,15 @@ module Transactions
     include TransactionHelpers
 
     def call
-      if transaction.destroy
-        redirect_to account_transactions_path(account_slug, month: month, year: year)
+      if transaction_entry.destroy
+        redirect_to account_transactions_path(transaction_entry.account.slug, month: month, year: year)
       else
-        render inertia: 'AccountTransactionsIndexApp', props: transaction.errors
+        render inertia: TEMPLATE_NAME, props: transaction_entry.errors
       end
+    end
+
+    def transaction_entry
+      @transaction_entry ||= Transaction::Entry.fetch(user: current_user, identifier: params.fetch(:key))
     end
   end
 end
