@@ -3,6 +3,7 @@
 module Transaction
   class Entry < ApplicationRecord
     include HasKeyIdentifier
+    include Fetchable
     include Presentable
 
     belongs_to :account

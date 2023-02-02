@@ -8,5 +8,12 @@ module Slugable
   included do
     validates :slug, presence: true
     validates :slug, format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
+    validates :slug, uniqueness: { scope: :user_group_id }
+  end
+
+  class_methods do
+    def for(slug)
+      find_by(arel_table[:slug].lower.eq(slug.to_s.strip.downcase))
+    end
   end
 end

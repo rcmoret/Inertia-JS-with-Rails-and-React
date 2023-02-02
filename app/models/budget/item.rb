@@ -3,6 +3,7 @@
 module Budget
   class Item < ApplicationRecord
     include HasKeyIdentifier
+    include Fetchable
     include Presentable
 
     has_many :transaction_details,

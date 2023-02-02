@@ -29,7 +29,7 @@ module Types
 
     def account(slug:, user_id:)
       User.find(user_id).then do |user|
-        Account.belonging_to(user).find_by(slug: slug)&.then do |acct|
+        Account.fetch(user: user, identifier: slug)&.then do |acct|
           Presenters::AccountPresenter.new(acct)
         end
       end

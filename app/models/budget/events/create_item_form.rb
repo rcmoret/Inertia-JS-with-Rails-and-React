@@ -87,11 +87,11 @@ module Budget
       end
 
       def category
-        @category ||= Budget::Category.belonging_to(current_user).find_by(slug: budget_category_slug)
+        @category ||= Budget::Category.fetch(user: current_user, identifier: budget_category_slug)
       end
 
       def interval
-        @interval ||= Budget::Interval.belonging_to(current_user).for(month: month, year: year)
+        @interval ||= Budget::Interval.fetch(user: current_user, identifier: { month: month, year: year })
       end
 
       def promote_errors(model_errors)

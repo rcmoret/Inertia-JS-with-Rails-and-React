@@ -3,9 +3,11 @@
 module Budget
   class Category < ApplicationRecord
     include BelongsToUserGroup
+    include Fetchable
     include Messages
     include Presentable
     include Slugable
+
     has_many :items, foreign_key: :budget_category_id, inverse_of: :category, dependent: :restrict_with_exception
     has_many :transaction_details, through: :items
     has_many :events, through: :items

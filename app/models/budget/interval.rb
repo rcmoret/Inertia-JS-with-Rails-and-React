@@ -3,6 +3,7 @@
 module Budget
   class Interval < ApplicationRecord
     include BelongsToUserGroup
+    include Fetchable
     include Presentable
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     has_many :maturity_intervals,

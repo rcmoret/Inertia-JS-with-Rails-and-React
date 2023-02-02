@@ -22,7 +22,7 @@ module Budget
       end
 
       def category
-        @category ||= current_user.budget_categories.find_by!(slug: params.fetch(:slug))
+        @category ||= Budget::Category.fetch(user: current_user, identifier: params.fetch(:slug))
       end
 
       def include_archived?

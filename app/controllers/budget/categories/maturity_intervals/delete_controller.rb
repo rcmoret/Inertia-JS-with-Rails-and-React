@@ -19,13 +19,13 @@ module Budget
         end
 
         def category
-          @category ||= BudgetCategory.belonging_to(current_user).find_by!(slug: params.fetch(:slug))
+          @category ||= BudgetCategory.fetch(user: current_user, identifier: params.fetch(:slug))
         end
 
         def interval
-          @interval ||= Budget::Interval.belonging_to(current_user).for(
-            month: params.fetch(:month),
-            year: params.fetch(:year)
+          @interval ||= Budget::Interval.fetch(
+            user: current_user,
+            identifier: { month: params.fetch(:month), year: params.fetch(:year) }
           )
         end
 

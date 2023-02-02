@@ -9,7 +9,7 @@ module Queries
 
       def initialize(user:, month:, year:)
         @user_id = user.user_group_id
-        @interval = Budget::Interval.belonging_to(user).for(month: month, year: year)
+        @interval = Budget::Interval.fetch(user: user, identifier: { month: month, year: year })
       end
 
       def call

@@ -4,7 +4,7 @@ module TransactionHelpers
   private
 
   def transaction
-    @transaction ||= Transaction::Entry.belonging_to(current_user).for(params.fetch(:key))
+    @transaction ||= Transaction::Entry.fetch(user: current_user, identifier: params.fetch(:key))
   end
 
   def current_interval

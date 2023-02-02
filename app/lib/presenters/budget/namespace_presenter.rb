@@ -15,7 +15,7 @@ module Presenters
       end
 
       def category(slug:)
-        ::Budget::Category.belonging_to(user).find_by!(slug: slug).as_presenter
+        ::Budget::Category.fetch(user: user, identifier: slug).as_presenter
       end
 
       def icons
@@ -23,14 +23,13 @@ module Presenters
       end
 
       def interval(month: Time.current.month, year: Time.current.year)
-        ::Budget::Interval.belonging_to(user).for(month: month, year: year).as_presenter
+        ::Budget::Interval.fetch(user: user, identifier: { month: month, year: year }).as_presenter
       end
 
       def item(key:)
         ::Budget::Item
-          .belonging_to(user)
           .includes(events: :type, transaction_details: { entry: :account })
-          .for(key)
+          .fetch(user: user, identifier: key)
           .as_presenter
       end
 
