@@ -27,7 +27,6 @@ module Queries
         items.includes(
           category: [{ maturity_intervals: :interval }, :icon],
           events: :type,
-          # maturity_intervals: :interval,
           transaction_details: { entry: :account }
         )
       end
