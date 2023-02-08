@@ -26,12 +26,11 @@ module Budget
 
     # there's some wierdness where I would expect (year: year...)
     # to produce year > $1 in the sql it does not ( >= instead) thus + 1
-    scope :on_or_after, lambda { |month, year|
+    scope :on_or_after, lambda { |month:, year:|
       where(year: (year + 1)..).or(where(year: year, month: month..)).ordered
     }
     scope :unclosed, -> { where(close_out_completed_at: nil) }
 
-    # rubocop:disable Metrics/BlockLength
     scope :in_range, lambda { |beginning_month:, beginning_year:, ending_month:, ending_year:|
       if beginning_year > ending_year || (beginning_year == ending_year && beginning_month > ending_month)
         raise QueryError
@@ -39,16 +38,12 @@ module Budget
 
       if ending_year == beginning_year
         where(year: beginning_year, month: beginning_month..ending_month)
-      elsif ending_year - beginning_year > 1
-        where(year: beginning_year, month: ..beginning_month)
-          .or(where(year: ending_year, month: ..ending_month))
-          .or(where(year: (beginning_year + 1)...ending_year))
       else
-        where(year: beginning_year, month: beginning_month..)
-          .or(where(year: ending_year, month: ..ending_month))
+        on_or_after(month: beginning_month, year: beginning_year)
+          .prior_to(month: ending_month, year: ending_year)
+          .or(where(month: ending_month, year: ending_year))
       end
     }
-    # rubocop:enable Metrics/BlockLength
 
     def self.for(month:, year:)
       find_or_create_by(month: month, year: year)

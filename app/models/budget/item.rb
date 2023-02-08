@@ -29,7 +29,7 @@ module Budget
     # rubocop:enable Rails/UniqueValidationWithoutIndex
 
     scope :prior_to, ->(date_hash) { joins(:interval).merge(Interval.prior_to(date_hash)) }
-    scope :in_range, ->(range) { joins(:interval).merge(Interval.in_range(range)) }
+    scope :in_range, ->(date_args) { joins(:interval).merge(Interval.in_range(date_args)) }
     scope :active, -> { where(deleted_at: nil) }
     scope :deleted, -> { where.not(deleted_at: nil) }
     scope :revenues, -> { joins(:category).merge(Category.revenues) }

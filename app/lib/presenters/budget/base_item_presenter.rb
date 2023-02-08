@@ -61,7 +61,7 @@ module Presenters
       private
 
       def upcoming_maturity_interval
-        @upcoming_maturity_interval ||= maturity_intervals.on_or_after(month, year).take
+        @upcoming_maturity_interval ||= maturity_intervals.on_or_after(month: month, year: year).take
       end
 
       def item
