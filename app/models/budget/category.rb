@@ -48,7 +48,6 @@ module Budget
     scope :revenues, -> { where(expense: false) }
 
     alias_attribute :per_diem_enabled?, :is_per_diem_enabled
-    delegate :to_json, to: :to_hash
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
 
     def revenue?
@@ -57,12 +56,6 @@ module Budget
 
     def weekly?
       !monthly?
-    end
-
-    def to_hash
-      attributes
-        .symbolize_keys
-        .merge(icon_class_name: icon_class_name)
     end
 
     def archived?

@@ -24,14 +24,7 @@ module Budget
       scope event_type.to_sym, -> { where(type: ItemEventType.for(event_type)) }
     end
 
-    delegate :as_json, :to_json, to: :to_hash
     delegate :present?, to: :data, prefix: true
-
-    def to_hash
-      attributes
-        .symbolize_keys
-        .merge(name: type.name)
-    end
 
     def item_create?
       CREATE_EVENTS.include?(type.name)

@@ -40,10 +40,6 @@ module Budget
         false
       end
 
-      def attributes
-        { item: item_attributes }
-      end
-
       def to_s
         'adjust_item_form'
       end
@@ -60,13 +56,6 @@ module Budget
 
       def budget_item_event_type
         ItemEventType.send(event_type)
-      end
-
-      def item_attributes
-        budget_item
-          .reload
-          .attributes
-          .merge(events: [event.attributes])
       end
 
       def promote_errors(model_errors)

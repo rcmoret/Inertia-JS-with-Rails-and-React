@@ -20,10 +20,6 @@ module Budget
         errors.none?
       end
 
-      def attributes
-        forms.map(&:attributes)
-      end
-
       private
 
       def save_all!

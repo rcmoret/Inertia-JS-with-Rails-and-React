@@ -23,10 +23,6 @@ module Budget
         errors.none?
       end
 
-      def attributes
-        { event: event.attributes }
-      end
-
       def to_s
         'delete_item_form'
       end
@@ -76,12 +72,6 @@ module Budget
         return unless Budget::ItemEvent.item_delete.exists?(item_id: budget_item.id)
 
         errors.add(:budget_item, 'cannot record a subsequent delete event')
-      end
-
-      def promote_errors(model_errors)
-        model_errors.each do |error|
-          errors.add(error.attribute, error.message)
-        end
       end
     end
   end

@@ -2,7 +2,6 @@
 
 module Budget
   module Events
-    # rubocop:disable Metrics/ClassLength
     class CreateItemForm < FormBase
       include Messages
 
@@ -47,12 +46,6 @@ module Budget
         errors.none?
       end
 
-      def attributes
-        { item: item_attributes }
-      end
-
-      alias to_hash attributes
-
       def to_s
         'create_item_form'
       end
@@ -67,6 +60,7 @@ module Budget
         return if interval.save
 
         promote_errors(interval.errors)
+        raise ActiveRecord::Rollback
       end
 
       def create_item!
@@ -112,16 +106,6 @@ module Budget
         category.revenue?
       end
 
-      def item_attributes
-        budget_item.to_hash.merge(
-          events: [event.attributes],
-          amount: amount,
-          monthly: category.monthly,
-          transaction_count: 0,
-          spent: 0
-        )
-      end
-
       def budget_item_event_type
         @budget_item_event_type ||=
           if interval.set_up?
@@ -142,6 +126,5 @@ module Budget
         end
       end
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end

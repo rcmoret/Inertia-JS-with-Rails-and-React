@@ -5,6 +5,7 @@ module Budget
     include BelongsToUserGroup
     include Fetchable
     include Presentable
+
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
     has_many :maturity_intervals,
              class_name: 'CategoryMaturityInterval',
@@ -27,7 +28,7 @@ module Budget
     # there's some wierdness where I would expect (year: year...)
     # to produce year > $1 in the sql it does not ( >= instead) thus + 1
     scope :on_or_after, lambda { |month:, year:|
-      where(year: (year + 1)..).or(where(year: year, month: month..)).ordered
+      where(year: (year + 1)..).or(where(year: year, month: month..))
     }
     scope :unclosed, -> { where(close_out_completed_at: nil) }
 
@@ -70,14 +71,6 @@ module Budget
       return end_date if end_date.present?
 
       next_month.first_date - 1.day
-    end
-
-    def date_hash
-      { month: month, year: year }
-    end
-
-    def attributes
-      super.symbolize_keys.except(:created_at, :updated_at)
     end
 
     def prev

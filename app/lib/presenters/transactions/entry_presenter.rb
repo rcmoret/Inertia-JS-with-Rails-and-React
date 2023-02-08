@@ -3,12 +3,8 @@
 module Presenters
   module Transactions
     class EntryPresenter < SimpleDelegator
-      def account_name
-        attributes.fetch(:account_name) { super }
-      end
-
       def details
-        @details ||= super.map(&:as_presenter)
+        super.map(&:as_presenter)
       end
 
       def amount
@@ -21,11 +17,8 @@ module Presenters
         AttachmentBlobPresenter.new(super)
       end
 
-      private
-
-      def attributes
-        @attributes ||= super.deep_symbolize_keys
-      end
+      delegate :name, to: :account, prefix: true
+      delegate :key, to: :transfer, allow_nil: true, prefix: true
     end
   end
 end

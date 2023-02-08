@@ -14,15 +14,6 @@ module Budget
 
     delegate :month, :year, to: :interval
 
-    def to_hash
-      {
-        id: id,
-        category_id: category.id,
-        month: month,
-        year: year,
-      }
-    end
-
     private
 
     def category_accrual?

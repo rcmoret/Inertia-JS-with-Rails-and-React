@@ -26,14 +26,6 @@ class Account < ApplicationRecord
   validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_group_id }
   validates :name, :priority, :slug, presence: true
 
-  delegate :to_json, to: :to_hash
-
-  def to_hash
-    attributes
-      .symbolize_keys
-      .merge(balance: balance)
-  end
-
   def balance_prior_to(date, include_pending:)
     self
       .class
