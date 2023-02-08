@@ -13,8 +13,12 @@ module Presenters
 
       super()
         .between(interval.date_range, include_pending: interval.current?)
-        .includes(receipt_attachment: :blob, details: { budget_item: { category: :icon } })
-        .map(&:as_presenter)
+        .includes(
+          :credit_transfer,
+          :debit_transfer,
+          receipt_attachment: :blob,
+          details: { budget_item: { category: :icon } }
+        ).map(&:as_presenter)
     end
 
     def cash_flow

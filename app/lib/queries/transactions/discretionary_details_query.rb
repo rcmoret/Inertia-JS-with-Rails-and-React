@@ -32,6 +32,7 @@ module Queries
         TRANSACTION_DETAILS
           .project(*SELECTS.values)
           .join(TRANSACTIONS).on(TRANSACTION_DETAILS_JOIN)
+          .join(TRANSFERS, Arel::Nodes::OuterJoin).on(TRANSFER_JOIN)
           .join(ACCOUNTS).on(ACCOUNT_TRANSACTIONS_JOIN)
           .where(where_clause)
       end
@@ -39,7 +40,7 @@ module Queries
       def where_clause
         base_clause = TRANSACTION_DETAILS[:budget_item_id].eq(nil)
         base_clause = base_clause.and(TRANSACTIONS[:budget_exclusion].eq(false))
-        base_clause = base_clause.and(TRANSACTIONS[:transfer_id].eq(nil))
+        base_clause = base_clause.and(TRANSFERS[:id].eq(nil))
 
         date_clause = TRANSACTIONS[:clearance_date].between(date_range)
         date_clause = date_clause.or(TRANSACTIONS[:clearance_date].eq(nil)) if current?

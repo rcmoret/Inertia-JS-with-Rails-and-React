@@ -72,7 +72,7 @@ RSpec.describe Transaction::Detail, type: :model do
     describe 'amount changed raises an error if transfer' do
       let(:transfer) { FactoryBot.create(:transfer) }
       let(:entry) { transfer.to_transaction }
-      let(:detail) { entry.details.first }
+      let(:detail) { entry.reload.details.first }
 
       before { detail.update(amount: (detail.amount * 2)) }
 
@@ -82,6 +82,8 @@ RSpec.describe Transaction::Detail, type: :model do
 
       it 'has an error message' do
         detail.valid?
+
+        expect(detail.errors[:amount]).to include('Cannot be changed for a transfer')
       end
     end
   end

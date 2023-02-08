@@ -19,7 +19,6 @@ module Types
       field :description, String, 'Description from the entry', null: true
       field :icon_class_name, String, 'Icon class name from the budget category', null: true
       field :notes, String, 'Additional information', null: true
-      field :transfer_id, ID, 'Transaction entry id associated with this txn as a transfer', null: true
       field :updated_at, GraphQL::Types::ISO8601DateTime, 'When the detail was last updated', null: false
     end
   end

@@ -7,7 +7,16 @@ module Transaction
     include Presentable
 
     belongs_to :account
-    belongs_to :transfer, optional: true
+    has_one :debit_transfer,
+            class_name: 'Transfer',
+            foreign_key: :from_transaction_id,
+            dependent: :destroy,
+            inverse_of: :from_transaction
+    has_one :credit_transfer,
+            class_name: 'Transfer',
+            foreign_key: :to_transaction_id,
+            dependent: :destroy,
+            inverse_of: :to_transaction
     has_many :details,
              foreign_key: :transaction_entry_id,
              dependent: :destroy,
@@ -28,7 +37,6 @@ module Transaction
     scope :in, ->(range) { where(clearance_date: range) }
     scope :between, ->(range, include_pending: false) { include_pending ? self.in(range).or(pending) : self.in(range) }
     scope :budget_inclusions, -> { where(budget_exclusion: false) }
-    scope :non_transfers, -> { where(transfer_id: nil) }
     scope :cash_flow, -> { joins(:account).merge(Account.cash_flow) }
     scope :non_cash_flow, -> { joins(:account).merge(Account.non_cash_flow) }
 
@@ -42,8 +50,12 @@ module Transaction
       details.sum(:amount)
     end
 
+    def transfer
+      credit_transfer || debit_transfer
+    end
+
     def transfer?
-      transfer.present?
+      [credit_transfer, debit_transfer].any?
     end
 
     private

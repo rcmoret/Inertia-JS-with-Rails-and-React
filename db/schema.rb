@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_30_200824) do
+ActiveRecord::Schema.define(version: 2023_02_08_185325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,12 +153,10 @@ ActiveRecord::Schema.define(version: 2023_01_30_200824) do
     t.bigint "account_id", null: false
     t.text "notes"
     t.boolean "budget_exclusion", default: false, null: false
-    t.bigint "transfer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "key", limit: 12
     t.index ["account_id"], name: "index_transaction_entries_on_account_id"
-    t.index ["transfer_id"], name: "index_transaction_entries_on_transfer_id"
   end
 
   create_table "transfers", force: :cascade do |t|
@@ -166,6 +164,8 @@ ActiveRecord::Schema.define(version: 2023_01_30_200824) do
     t.integer "from_transaction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "key", limit: 12
+    t.index ["key"], name: "index_transfers_on_key", unique: true
   end
 
   create_table "user_groups", force: :cascade do |t|
@@ -203,6 +203,5 @@ ActiveRecord::Schema.define(version: 2023_01_30_200824) do
   add_foreign_key "transaction_details", "budget_items"
   add_foreign_key "transaction_details", "transaction_entries"
   add_foreign_key "transaction_entries", "accounts"
-  add_foreign_key "transaction_entries", "transfers"
   add_foreign_key "users", "user_groups"
 end

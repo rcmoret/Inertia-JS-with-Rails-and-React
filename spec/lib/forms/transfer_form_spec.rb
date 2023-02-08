@@ -76,7 +76,7 @@ RSpec.describe Forms::TransferForm do
         expect { subject.call }.to change { Transaction::Entry.where(account_id: to_account.id).count }.by(+1)
       end
 
-      it 'creates a new transaction entry for the to account' do
+      it 'creates a new transaction entry for the from account' do
         expect { subject.call }.to change { Transaction::Entry.where(account_id: from_account.id).count }.by(+1)
       end
 

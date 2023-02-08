@@ -1,34 +1,23 @@
 # frozen_string_literal: true
 
 class Transfer < ApplicationRecord
+  include HasKeyIdentifier
+
   belongs_to :from_transaction, class_name: 'Transaction::Entry'
   belongs_to :to_transaction, class_name: 'Transaction::Entry'
 
-  after_create :update_transactions!
-  around_destroy :handle_destroy
+  after_destroy :destroy_transactions!
 
   scope :recent_first, -> { order(created_at: :desc) }
 
-  def to_hash
-    attributes.symbolize_keys.merge(
-      to_transaction: to_transaction.attributes,
-      from_transaction: from_transaction.attributes
-    )
+  def self.belonging_to(transaction)
+    where(from_transaction: transaction).or(where(to_transaction: transaction)).first
   end
 
   private
 
-  def handle_destroy
-    update_transactions!(destroy: true)
-    yield
+  def destroy_transactions!
     transactions.each(&:destroy)
-  end
-
-  def update_transactions!(destroy: false)
-    transfer_id = destroy ? nil : id
-    ApplicationRecord.transaction do
-      transactions.each { |txn| txn.update(transfer_id: transfer_id) }
-    end
   end
 
   def transactions

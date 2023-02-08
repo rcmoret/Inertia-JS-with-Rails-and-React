@@ -72,7 +72,7 @@ module GraphQueries
               clearanceDate
               description
               notes
-              transferId
+              transferKey
               updatedAt
               details {
                 key

@@ -8,10 +8,12 @@ module Forms
     validate :separate_accounts
     validates :amount, numericality: { greater_than: 0 }
 
-    def initialize(to_account_id:, from_account_id:, amount:)
-      @to_account_id = to_account_id
-      @from_account_id = from_account_id
-      @amount = amount.to_i.abs
+    def initialize(user:, params:)
+      @user = user
+      @to_account_slug = params.fetch(:to_account_slug)
+      @from_account_slug = params.fetch(:from_account_slug)
+      @amount = params.fetch(:amount).to_i.abs
+      @key = params.fetch(:key) { generate_key_indentifier }
     end
 
     def call
@@ -39,7 +41,7 @@ module Forms
     end
 
     def transfer
-      @transfer ||= Transfer.new
+      @transfer ||= Transfer.new(key: key)
     end
 
     def from_transaction
@@ -60,14 +62,14 @@ module Forms
       )
     end
 
-    attr_reader :to_account_id, :from_account_id, :amount
+    attr_reader :user, :to_account_slug, :from_account_slug, :amount, :key
 
     def to_account
-      @to_account ||= Account.find_by(id: to_account_id)
+      @to_account ||= Account.fetch(user: user, identifier: to_account_slug)
     end
 
     def from_account
-      @from_account ||= Account.find_by(id: from_account_id)
+      @from_account ||= Account.fetch(user: user, identifier: from_account_slug)
     end
 
     def promote_errors(model_name, model_errors)
@@ -77,7 +79,7 @@ module Forms
     end
 
     def separate_accounts
-      return unless to_account_id == from_account_id
+      return unless to_account&.id == from_account&.id
 
       errors.add(:from_account, "cannot be the same account as 'to' account")
     end

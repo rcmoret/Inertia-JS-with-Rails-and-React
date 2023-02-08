@@ -37,7 +37,7 @@ export const Transaction = props => {
     isPending,
     notes,
     receiptBlob,
-    transferId,
+    transferKey,
   } = transaction
   const { month, year } = interval
   const clearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate)
@@ -107,7 +107,7 @@ export const Transaction = props => {
             </div>}
           {budgetExclusion && <div className="ml-4 max-w-2/12 italic">budget exclusion</div>}
           {checkNumber && <div className="ml-4 max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
-          {transferId && <div className="ml-4 max-w-2/12 italic"><span className="hidden">{transferId}</span>transfer</div>}
+          {transferKey && <div className="ml-4 max-w-2/12 italic"><span className="hidden">{transferKey}</span>transfer</div>}
           {notes && <Notes noteLines={noteLines} notesNeedAttn={notesNeedAttn} />}
           {receiptBlob && <Receipt attachment={receiptBlob} />}
         </div>

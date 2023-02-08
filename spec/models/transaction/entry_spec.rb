@@ -142,7 +142,6 @@ RSpec.describe Transaction::Entry, type: :model do
       let(:transaction) do
         FactoryBot.build(
           :transaction_entry,
-          transfer_id: 1,
           details_attributes: []
         )
       end
@@ -165,7 +164,7 @@ RSpec.describe Transaction::Entry, type: :model do
           total + (amount * 2)
         end
       end
-      let(:transaction) { transfer.from_transaction }
+      let(:transaction) { transfer.from_transaction.reload }
 
       before { subject.save }
 
