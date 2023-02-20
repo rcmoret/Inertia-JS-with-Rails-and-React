@@ -5,112 +5,132 @@ require 'rails_helper'
 RSpec.describe Budget::Events::CreateItemForm do
   describe 'event type validation' do
     let(:user) { FactoryBot.create(:user) }
-    let(:user_group) { user.user_group }
+    let(:category) { FactoryBot.create(:category, :expense, user_group: user.user_group) }
+    let(:interval) { FactoryBot.create(:budget_interval, user_group: user.user_group) }
 
     context 'when a valid event' do
       it 'is a valid form object' do
-        event_type = Budget::EventTypes::CREATE_EVENTS.sample
-        form = new_object(user, event_type: event_type)
+        params = params_for(category: category, interval: interval)
+        form = described_class.new(user, params)
         expect(form).to be_valid
       end
     end
 
     context 'when an invalid event' do
       it 'is an invalid form object' do
-        event_type = 'nonsense_event'
-        form = new_object(user, event_type: event_type)
+        params = params_for(category: category, interval: interval, event_type: 'nonsense_event')
+        form = described_class.new(user, params)
         expect(form).not_to be_valid
-      end
-
-      it 'has a meaningful error' do
-        event_type = 'nonsense_event'
-        form = new_object(user, event_type: event_type)
-        form.valid?
-        expect(form.errors['event_type'])
-          .to include 'is not included in the list'
+        expect(form.errors[:event_type]).to include 'is not included in the list'
       end
     end
   end
 
   describe 'amount validation' do
     let(:user) { FactoryBot.create(:user) }
+    let(:category) { FactoryBot.create(:category, :expense, user_group: user.user_group) }
+    let(:interval) { FactoryBot.create(:budget_interval, user_group: user.user_group) }
 
     context 'when a integer' do
       it 'is a valid form object' do
-        form = new_object(user, amount: 0)
+        params = params_for(category: category, interval: interval, amount: 0)
+        form = described_class.new(user, params)
         expect(form).to be_valid
       end
     end
 
     context 'when a float' do
       it 'is an invalid form object' do
-        form = new_object(user, amount: 0.4)
+        params = params_for(category: category, interval: interval, amount: -0.4)
+        form = described_class.new(user, params)
         expect(form).not_to be_valid
-      end
-
-      it 'has a meaningful error message' do
-        form = new_object(user, amount: 0.4)
-        form.valid?
         expect(form.errors['amount']).to include 'must be an integer'
+      end
+    end
+
+    context 'when passing a postive amount for an expense' do
+      it 'is an invalid for object' do
+        params = params_for(category: category, interval: interval, amount: 40)
+        form = described_class.new(user, params)
+        expect(form).not_to be_valid
+        expect(form.errors['amount']).to include 'expense items must be less than or equal to 0'
+      end
+    end
+
+    context 'when passing a negative amount for a revenue item' do
+      let(:category) { FactoryBot.create(:category, :revenue, user_group: user.user_group) }
+
+      it 'returns false' do
+        params = params_for(amount: -22_50, category: category, interval: interval)
+        form = described_class.new(user, params)
+        expect(form.save).to be false
+        expect(form.errors['amount']).to include 'revenue items must be greater than or equal to 0'
       end
     end
   end
 
   describe '#save' do
     let(:user) { FactoryBot.create(:user) }
+    let(:category) { FactoryBot.create(:category, :expense, user_group: user.user_group) }
+    let(:interval) { FactoryBot.create(:budget_interval, month: 2, year: 2023, user_group: user.user_group) }
 
     context 'when the happy path' do
       it 'returns true' do
-        form = new_object(user)
-        expect(form.save).to be true
+        params = params_for(interval: interval, category: category)
+        expect(described_class.new(user, params).save).to be true
       end
 
-      context 'when the interval does not exist' do
-        it 'creates an interval if needed' do
-          form = new_object(user, month: 1, year: 2017)
-          expect { form.save }
-            .to change { Budget::Interval.count }
-            .by(+1)
-        end
+      it 'creates an interval if needed' do
+        params = params_for(interval: interval, category: category, month: 1, year: 2019)
+        expect { described_class.new(user, params).save }
+          .to change { Budget::Interval.count }
+          .by(+1)
       end
 
-      context 'when the interval does exist' do
-        it 'does not create an interval - not needed' do
-          interval = FactoryBot.create(:budget_interval)
-          form = new_object(interval.user, month: interval.month, year: interval.year)
-          expect { form.save }.not_to(change { Budget::Interval.count })
-        end
+      it 'does not create an interval - not needed' do
+        params = params_for(interval: interval, category: category)
+        expect { described_class.new(user, params).save }.not_to(change { Budget::Interval.count })
       end
 
       it 'creates an event' do
-        form = new_object(user, event_type: described_class::ITEM_CREATE)
-        expect { form.save }
-          .to change(Budget::ItemEvent.create_events, :count)
+        params = params_for(category: category, interval: interval)
+        expect { described_class.new(user, params).save }
+          .to change { Budget::ItemEvent.create_events.count }
           .by(+1)
       end
 
       it 'creates an item' do
-        form = new_object(user)
-        expect { form.save }
-          .to change(Budget::Item, :count)
+        params = params_for(category: category, interval: interval)
+        expect { described_class.new(user, params).save }
+          .to change { Budget::Item.count }
           .by(+1)
       end
 
       context 'when the event type is specified as setup item create' do
         it 'creates an event' do
-          form = new_object(user, event_type: described_class::SETUP_ITEM_CREATE)
-          expect { form.save }
+          params = params_for(category: category, interval: interval, event_type: described_class::SETUP_ITEM_CREATE)
+          expect { described_class.new(user, params).save }
             .to change { Budget::ItemEvent.setup_item_create.count }
             .by(+1)
         end
       end
 
-      context 'when the event type is specified as pre setup item create' do
-        it 'creates an event' do
-          budget_interval(traits: [])
-          form = new_object(user, event_type: described_class::ITEM_CREATE)
-          expect { form.save }
+      context 'when the event is created before the interval is set up' do
+        it 'creates a pre-set-up item create event' do
+          params = params_for(interval: interval, category: category, event_type: described_class::ITEM_CREATE)
+          expect { described_class.new(user, params).save }
             .to change { Budget::ItemEvent.pre_setup_item_create.count }
+            .by(+1)
+        end
+      end
+
+      context 'when the event is created after the interval is set up' do
+        let(:interval) { FactoryBot.create(:budget_interval, :set_up, user_group: user.user_group) }
+
+        it 'creates a regular item create event' do
+          params = params_for(interval: interval, category: category, event_type: described_class::ITEM_CREATE)
+          expect { described_class.new(user, params).save }
+            .to change { Budget::ItemEvent.item_create.count }
             .by(+1)
         end
       end
@@ -118,94 +138,37 @@ RSpec.describe Budget::Events::CreateItemForm do
 
     context 'when budget category lookup returns nothing' do
       it 'returns false' do
-        form = new_object(user, budget_category_id: nil)
+        params = params_for(category: category, interval: interval, budget_category_slug: 'nil')
+        form = described_class.new(user, params)
         expect(form.save).to be false
-      end
-
-      it 'includes a meaningful error message' do
-        form = new_object(user, budget_category_id: nil)
-        form.valid?
         expect(form.errors['category']).to include 'can\'t be blank'
       end
     end
 
     context 'when creating an invalid weekly item' do
-      let(:category) { budget_category(:expense, :weekly) }
+      let(:category) { FactoryBot.create(:category, :expense, :weekly, user_group: user.user_group) }
+      let(:interval) { FactoryBot.create(:budget_interval, user_group: user.user_group) }
 
       it 'returns false' do
-        item = FactoryBot.create(:budget_item, category: category)
-        interval = item.interval
-        form = new_object(
-          interval.user,
-          amount: -22_50,
-          budget_category_id: category.id,
-          month: interval.month,
-          year: interval.year
-        )
-
+        FactoryBot.create(:budget_item, category: category, interval: interval, user_group: user.user_group)
+        params = params_for(category: category, interval: interval)
+        form = described_class.new(user, params)
         expect(form.save).to be false
-      end
-
-      it 'contains an error message' do
-        item = FactoryBot.create(:budget_item, category: category)
-        interval = item.interval
-        form = new_object(
-          interval.user,
-          amount: -22_50,
-          budget_category_id: category.id,
-          month: interval.month,
-          year: interval.year
-        )
-        form.save
         expect(form.errors['budget_category_id']).to include 'has already been taken'
-      end
-    end
-
-    context 'when creating an invalid revenue item' do
-      it 'returns false' do
-        category = budget_category(:revenue)
-        form = new_object(user, amount: -22_50, budget_category_id: category.id)
-        expect(form.save).to be false
-      end
-
-      it 'contains an error message' do
-        category = budget_category(:revenue)
-        form = new_object(user, amount: -22_50, budget_category_id: category.id)
-        form.valid?
-        expect(form.errors['amount']).to include 'revenue items must be greater than or equal to $0.00'
-      end
-    end
-
-    context 'when creating an invalid expense item' do
-      it 'returns false' do
-        category = budget_category(:expense)
-        form = new_object(user, amount: 22_50, budget_category_id: category.id)
-        expect(form.save).to be false
-      end
-
-      it 'contains an error message' do
-        category = budget_category(:expense)
-        form = new_object(user, amount: 22_50, budget_category_id: category.id)
-        form.valid?
-        expect(form.errors['amount']).to include 'expense items must be less than or equal to $0.00'
       end
     end
 
     context 'when errors on the interval' do
       it 'returns false' do
-        form = new_object(user, month: 0)
+        params = params_for(interval: interval, category: category, month: 0)
+        form = described_class.new(user, params)
         expect(form.save).to be false
+        expect(form.errors['month']).to include 'is not included in the list'
       end
 
       it 'does not create an interval object' do
-        form = new_object(user, month: 0)
-        expect { form.save }.not_to(change { Budget::Interval.count })
-      end
-
-      it 'has a meaningful error message' do
-        form = new_object(user, month: 0)
-        form.save
-        expect(form.errors['month']).to include 'is not included in the list'
+        params = params_for(interval: interval, category: category, month: 0)
+        expect { described_class.new(user, params).save }.not_to(change { Budget::Interval.count })
       end
     end
   end
@@ -226,40 +189,16 @@ RSpec.describe Budget::Events::CreateItemForm do
     end
   end
 
-  def today
-    @today ||= Time.current
-  end
-
-  def new_params(user)
+  def params_for(category:, interval:, **overrides)
+    amount = category.expense? ? -100_00 : 100_00
     {
-      amount: amount,
-      budget_category_slug: budget_category(user_group: user.user_group).slug,
       event_type: Budget::EventTypes::CREATE_EVENTS.sample,
-      month: budget_interval.month,
-      year: budget_interval.year,
+      amount: amount,
+      month: interval.month,
+      year: interval.year,
+      budget_category_slug: category.slug,
       budget_item_key: SecureRandom.hex(6),
-    }
-  end
-
-  def new_object(user, **overrides)
-    described_class.new(user, new_params(user).merge(overrides))
-  end
-
-  def budget_category(*traits, **overrides)
-    FactoryBot.create(:category, *traits, **overrides)
-  end
-
-  def budget_interval(**params)
-    @budget_interval ||= begin
-      month = params.fetch(:month) { rand(1..12) }
-      year = params.fetch(:year) { rand(2019..2025) }
-      traits = params.fetch(:traits, [:set_up])
-      FactoryBot.create(:budget_interval, *traits, month: month, year: year)
-    end
-  end
-
-  def amount
-    r = rand(100_00)
-    budget_category.expense? ? (r * -1) : r
+      data: {},
+    }.merge(overrides)
   end
 end

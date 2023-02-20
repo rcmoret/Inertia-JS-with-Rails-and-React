@@ -6,15 +6,16 @@ RSpec.describe Forms::TransactionForm do
   describe '.save' do
     context 'when creating a new transaction' do
       context 'when passing valid params' do
-        let(:account) { FactoryBot.create(:account) }
-        let(:budget_item) { FactoryBot.create(:budget_item) }
+        let(:user) { FactoryBot.create(:user) }
+        let(:account) { FactoryBot.create(:account, user_group: user.user_group) }
+        let(:budget_item) { FactoryBot.create(:budget_item, user_group: user.user_group) }
         let(:params) do
           ActionController::Parameters.new(
             transaction: {
-              accountId: account.id,
               budgetExclusion: false,
               checkNumber: nil,
               clearanceDate: Time.current.to_date,
+              key: SecureRandom.hex(6),
               notes: nil,
               receipt: nil,
               detailsAttributes: {
@@ -27,22 +28,22 @@ RSpec.describe Forms::TransactionForm do
             }
           )
         end
-        let(:transaction_entry) { Transaction::Entry.new }
+        let(:transaction_entry) { Transaction::Entry.new(account: account) }
 
         it 'creates a transaction entry' do
-          expect { described_class.new(transaction_entry, params).save }
+          expect { described_class.new(user, transaction_entry, params).save }
             .to change(Transaction::Entry, :count)
             .by(+1)
         end
 
         it 'creates the correct number of transaction details' do
-          expect { described_class.new(transaction_entry, params).save }
+          expect { described_class.new(user, transaction_entry, params).save }
             .to change { Transaction::Detail.where(budget_item: budget_item).count }
             .by(+1)
         end
 
         it 'returns true' do
-          subject = described_class.new(transaction_entry, params)
+          subject = described_class.new(user, transaction_entry, params)
 
           expect(subject.save).to be true
         end
