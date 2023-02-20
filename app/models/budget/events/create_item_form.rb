@@ -88,12 +88,6 @@ module Budget
         @interval ||= Budget::Interval.fetch(user: current_user, identifier: { month: month, year: year })
       end
 
-      def promote_errors(model_errors)
-        model_errors.each do |error|
-          errors.add(error.attribute, error.message)
-        end
-      end
-
       def expense?
         return false if category.nil?
 

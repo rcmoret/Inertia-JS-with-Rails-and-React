@@ -106,7 +106,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
             form = build_form(user, amount: -129_50)
             form.valid?
             expect(form.errors['amount'])
-              .to include 'revenue items must be greater than or equal to $0.00'
+              .to include 'revenue items must be greater than or equal to 0'
           end
         end
       end
@@ -131,7 +131,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
             budget_item(:expense, user_group: user.user_group)
             form = build_form(user, amount: 32_09)
             form.valid?
-            expect(form.errors['amount']).to include 'expense items must be less than or equal to $0.00'
+            expect(form.errors['amount']).to include 'expense items must be less than or equal to 0'
           end
         end
       end

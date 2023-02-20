@@ -58,12 +58,6 @@ module Budget
         ItemEventType.send(event_type)
       end
 
-      def promote_errors(model_errors)
-        model_errors.each do |error|
-          errors.add(error.attribute, error.message)
-        end
-      end
-
       attr_reader :amount
     end
   end

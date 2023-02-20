@@ -19,6 +19,7 @@ module Budget
              foreign_key: :budget_category_id
     belongs_to :icon, optional: true
 
+    validates :default_amount, numericality: { only_integer: true }
     validates :default_amount,
               numericality: {
                 less_than_or_equal_to: 0,

@@ -35,6 +35,12 @@ module Budget
         raise NotImplementedError
       end
 
+      def promote_errors(model_errors)
+        model_errors.each do |error|
+          errors.add(error.attribute, error.message)
+        end
+      end
+
       attr_reader :current_user, :event_type, :budget_item_key, :data
 
       class << self
