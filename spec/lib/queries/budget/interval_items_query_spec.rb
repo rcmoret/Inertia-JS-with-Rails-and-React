@@ -7,6 +7,7 @@ RSpec.describe Queries::Budget::IntervalItemsQuery do
   let!(:budget_item) { FactoryBot.create(:budget_item, interval: interval) }
   let(:category) { budget_item.category }
 
+  # rubocop:disable RSpec/ExampleLength
   it 'returns some attributes from the item itself' do
     subject = described_class.new(
       items: interval.items,
@@ -50,4 +51,5 @@ RSpec.describe Queries::Budget::IntervalItemsQuery do
 
     expect(subject.icon_class_name).to be category.icon_class_name
   end
+  # rubocop:enable RSpec/ExampleLength
 end

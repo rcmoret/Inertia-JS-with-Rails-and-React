@@ -86,7 +86,7 @@ RSpec.describe Forms::TransferForm do
       end
 
       it 'creates a new transfer' do
-        expect { subject.call }.to change(Transfer, :count).by(+1)
+        expect { subject.call }.to change { Transfer.count }.by(+1)
       end
     end
   end

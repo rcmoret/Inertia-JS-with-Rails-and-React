@@ -3,6 +3,14 @@
 module Presenters
   module Budget
     class CategoryPresenter < SimpleDelegator
+      def statistics(beginning_interval:, ending_interval:)
+        Queries::Budget::CategoryStatistics.new(
+          budget_category: self,
+          beginning_interval: beginning_interval,
+          ending_interval: ending_interval
+        ).call
+      end
+
       def accrual?
         super
       end

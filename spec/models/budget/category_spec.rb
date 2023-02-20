@@ -20,7 +20,7 @@ RSpec.describe Budget::Category, type: :model do
     describe 'accrual on expense' do
       subject { FactoryBot.build(:category, :revenue, :accrual) }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to_not be_valid }
 
       it "populates the object's errors" do
         subject.valid?
@@ -125,7 +125,7 @@ RSpec.describe Budget::Category, type: :model do
 
     context 'when there are no associated items' do
       it 'deletes the record' do
-        expect { subject }.to change(described_class, :count).by(-1)
+        expect { subject }.to change { described_class.count }.by(-1)
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Budget::Category, type: :model do
 
       it 'soft deletes the record' do
         expect(category).to receive(:update).with(archived_at: Time.current)
-        expect { subject }.not_to(change(described_class, :count))
+        expect { subject }.to_not(change { described_class.count })
       end
     end
   end

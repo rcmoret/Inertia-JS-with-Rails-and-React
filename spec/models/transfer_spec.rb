@@ -20,7 +20,7 @@ RSpec.describe Transfer, type: :model do
     let!(:transfer) { FactoryBot.create(:transfer) }
 
     it 'destroys the related transactions' do
-      expect { subject }.to change(Transaction::Entry, :count).by(-2)
+      expect { subject }.to change { Transaction::Entry.count }.by(-2)
     end
 
     it 'destroys itself' do

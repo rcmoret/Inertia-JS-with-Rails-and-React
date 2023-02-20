@@ -20,7 +20,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       it 'is an invalid form object' do
         params = params_for(category: category, interval: interval, event_type: 'nonsense_event')
         form = described_class.new(user, params)
-        expect(form).not_to be_valid
+        expect(form).to_not be_valid
         expect(form.errors[:event_type]).to include 'is not included in the list'
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       it 'is an invalid form object' do
         params = params_for(category: category, interval: interval, amount: -0.4)
         form = described_class.new(user, params)
-        expect(form).not_to be_valid
+        expect(form).to_not be_valid
         expect(form.errors['amount']).to include 'must be an integer'
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe Budget::Events::CreateItemForm do
       it 'is an invalid for object' do
         params = params_for(category: category, interval: interval, amount: 40)
         form = described_class.new(user, params)
-        expect(form).not_to be_valid
+        expect(form).to_not be_valid
         expect(form.errors['amount']).to include 'expense items must be less than or equal to 0'
       end
     end
@@ -89,7 +89,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       it 'does not create an interval - not needed' do
         params = params_for(interval: interval, category: category)
-        expect { described_class.new(user, params).save }.not_to(change { Budget::Interval.count })
+        expect { described_class.new(user, params).save }.to_not(change { Budget::Interval.count })
       end
 
       it 'creates an event' do
@@ -168,7 +168,7 @@ RSpec.describe Budget::Events::CreateItemForm do
 
       it 'does not create an interval object' do
         params = params_for(interval: interval, category: category, month: 0)
-        expect { described_class.new(user, params).save }.not_to(change { Budget::Interval.count })
+        expect { described_class.new(user, params).save }.to_not(change { Budget::Interval.count })
       end
     end
   end

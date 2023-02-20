@@ -27,7 +27,7 @@ RSpec.describe Transaction::Detail, type: :model do
     describe 'entry validation' do
       it 'returns false for valid?' do
         expect(described_class.new(transaction_entry_id: nil, amount: 0))
-          .not_to be_valid
+          .to_not be_valid
       end
 
       it 'has an error if not present' do
@@ -40,7 +40,7 @@ RSpec.describe Transaction::Detail, type: :model do
     describe 'amount validation' do
       it 'validates the presence' do
         detail = described_class.new transaction_entry_id: entry.id, amount: nil
-        expect(detail).not_to be_valid
+        expect(detail).to_not be_valid
       end
 
       it 'validates the presence of amount' do
@@ -60,7 +60,7 @@ RSpec.describe Transaction::Detail, type: :model do
       let(:entry) { FactoryBot.create(:transaction_entry) }
       let(:item) { FactoryBot.create(:monthly_expense) }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to_not be_valid }
 
       it 'has an error' do
         subject.valid?

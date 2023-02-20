@@ -35,7 +35,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
         it 'is an invalid form object' do
           event_type = 'nonsense_event'
           form = build_form(user, event_type: event_type)
-          expect(form).not_to be_valid
+          expect(form).to_not be_valid
         end
 
         it 'has a meaningful error' do
@@ -59,7 +59,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       context 'when the budget item exists for the id passed' do
         it 'is an invalid form object' do
           form = build_form(user, budget_item_key: '0')
-          expect(form).not_to be_valid
+          expect(form).to_not be_valid
         end
 
         it 'returns a meaniful error message' do
@@ -74,7 +74,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       context 'when a float' do
         it 'is an invalid form object' do
           form = build_form(user, amount: 0.4)
-          expect(form).not_to be_valid
+          expect(form).to_not be_valid
         end
 
         it 'has a meaningful error message' do
@@ -98,7 +98,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
           it 'is not valid' do
             budget_item(:revenue, user_group: user.user_group)
             form = build_form(user, amount: -129_50)
-            expect(form).not_to be_valid
+            expect(form).to_not be_valid
           end
 
           it 'provides an error message' do
@@ -124,7 +124,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
           it 'is not valid' do
             budget_item(:expense, user_group: user.user_group)
             form = build_form(user, amount: 32_09)
-            expect(form).not_to be_valid
+            expect(form).to_not be_valid
           end
 
           it 'provides an error message' do

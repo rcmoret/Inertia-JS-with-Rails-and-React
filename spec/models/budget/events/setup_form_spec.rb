@@ -181,11 +181,11 @@ RSpec.describe Budget::Events::SetupForm do
       end
 
       it 'does not change the interval\'s start date' do
-        expect { subject.save }.not_to(change { interval.reload.start_date })
+        expect { subject.save }.to_not(change { interval.reload.start_date })
       end
 
       it 'does not change the interval\'s end date' do
-        expect { subject.save }.not_to(change { interval.reload.end_date })
+        expect { subject.save }.to_not(change { interval.reload.end_date })
       end
     end
 

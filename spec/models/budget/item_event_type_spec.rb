@@ -16,7 +16,7 @@ RSpec.describe Budget::ItemEventType, type: :model do
       it 'is invalid' do
         name = 'item create'
         object = described_class.new(name: name)
-        expect(object).not_to be_valid
+        expect(object).to_not be_valid
       end
     end
   end

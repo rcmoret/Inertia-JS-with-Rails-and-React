@@ -49,7 +49,7 @@ RSpec.describe Account, type: :model do
       end
 
       it 'does not change the number of accounts' do
-        expect { subject }.not_to change(described_class, :count)
+        expect { subject }.to_not(change { described_class.count })
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Account, type: :model do
       before { account }
 
       it 'hard deletes the account' do
-        expect { subject }.to change(described_class, :count).by(-1)
+        expect { subject }.to change { described_class.count }.by(-1)
       end
     end
   end

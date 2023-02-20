@@ -25,7 +25,7 @@ RSpec.describe Transaction::Entry, type: :model do
 
       it { expect(subject).to include_these(*old_transactions) }
       it { expect(subject).to include_these(*this_months) }
-      it { expect(subject).not_to include_these(*pending) }
+      it { expect(subject).to_not include_these(*pending) }
     end
 
     context 'when pending true' do
@@ -126,7 +126,7 @@ RSpec.describe Transaction::Entry, type: :model do
       end
 
       it 'does not allow a second detail' do
-        expect { subject }.not_to(change { transaction.details.reload })
+        expect { subject }.to_not(change { transaction.details.reload })
       end
 
       it 'contains an error message' do
@@ -169,7 +169,7 @@ RSpec.describe Transaction::Entry, type: :model do
       before { subject.save }
 
       it 'does not allow a second detail' do
-        expect { subject }.not_to(change { transaction.details.reload })
+        expect { subject }.to_not(change { transaction.details.reload })
       end
 
       it 'includes an error message' do

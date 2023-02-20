@@ -81,11 +81,28 @@ Rails/UnknownEnv:
     - production
     - test
 
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/ExpectChange:
+  EnforcedStyle: block
+
 RSpec/NamedSubject:
   Enabled: false
 
+RSpec/NestedGroups:
+  Max: 4
+  Exclude:
+    - spec/models/budget/events/*_spec.rb
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
 RSpec/MultipleExpectations:
-  Max: 2
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 7
 
 RSpec/MessageSpies:
   EnforcedStyle: receive

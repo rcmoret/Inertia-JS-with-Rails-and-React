@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable RSpec/NestedGroups
 RSpec.describe Queries::Accounts::AvailableCash do
   describe '#call' do
     context 'when there are no accounts associated with the user' do
@@ -180,3 +181,4 @@ RSpec.describe Queries::Accounts::AvailableCash do
     Array(transactions).reduce(0) { |sum, txn| sum + txn.details.sum(:amount) }
   end
 end
+# rubocop:enable RSpec/NestedGroups
