@@ -7,4 +7,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   belongs_to :user_group
+  alias_attribute :group, :user_group
+  has_many :user_roles, dependent: :destroy
+
+  def admin?
+    user_roles.any?(&:admin?)
+  end
 end
