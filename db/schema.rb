@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_21_161708) do
+ActiveRecord::Schema.define(version: 2023_02_21_220803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,6 +173,16 @@ ActiveRecord::Schema.define(version: 2023_02_21_161708) do
     t.datetime "updated_at", null: false
     t.string "key", limit: 12
     t.index ["key"], name: "index_transfers_on_key", unique: true
+  end
+
+  create_table "user_event_types", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.boolean "is_client_recordable", default: false, null: false
+    t.boolean "is_interal_recordable", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_user_event_types_on_name", unique: true
+    t.check_constraint "is_client_recordable OR is_interal_recordable", name: "is_recordable"
   end
 
   create_table "user_groups", force: :cascade do |t|
