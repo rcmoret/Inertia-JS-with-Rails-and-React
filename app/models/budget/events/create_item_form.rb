@@ -85,7 +85,7 @@ module Budget
       end
 
       def interval
-        @interval ||= Budget::Interval.fetch(user: current_user, identifier: { month: month, year: year })
+        @interval ||= Budget::Interval.fetch(user: current_user, month: month, year: year)
       end
 
       def expense?
