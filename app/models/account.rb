@@ -26,6 +26,8 @@ class Account < ApplicationRecord
   validates :name, :priority, :slug, if: :active?, uniqueness: { scope: :user_group_id }
   validates :name, :priority, :slug, presence: true
 
+  alias_attribute :is_cash_flow, :cash_flow
+
   def balance_prior_to(date, include_pending:)
     self
       .class
