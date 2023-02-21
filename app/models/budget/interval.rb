@@ -3,6 +3,7 @@
 module Budget
   class Interval < ApplicationRecord
     include BelongsToUserGroup
+    include Fetchable
     include Presentable
 
     has_many :items, foreign_key: :budget_interval_id, inverse_of: :interval, dependent: :restrict_with_exception
@@ -45,13 +46,10 @@ module Budget
       end
     }
 
-    def self.for(month:, year:)
-      find_or_create_by(month: month, year: year)
+    def self.for(date_hash)
+      find_or_create_by(date_hash)
     end
 
-    def self.fetch(user:, month:, year:)
-      belonging_to(user).for(month: month, year: year)
-    end
 
     def self.current(user:)
       belonging_to(user).unclosed.ordered.take
