@@ -12,12 +12,12 @@
     "@rails/actioncable": "^6.0.5",
     "@rails/activestorage": "^6.0.5",
     "@rails/ujs": "^6.0.5",
-    "@rails/webpacker": "5.4.3",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "date-fns": "^2.28.0",
     "esbuild": "^0.17.10",
     "font-awesome": "^4.7.0",
     "fontawesome-free": "^1.0.4",
+    "openssl": "^2.0.0",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
     "react-datepicker": "^4.8.0",
@@ -28,7 +28,6 @@
     "redux": "^4.2.0",
     "turbolinks": "^5.2.0",
     "uglify-js": "^3.17.4",
-    "uglifyjs-webpack-plugin": "^2.2.0",
     "uuid": "^8.3.2"
   },
   "version": "0.1.0",
@@ -38,18 +37,14 @@
     "eslint-plugin-react": "^7.26.0",
     "jest": "^27.2.4",
     "postcss": "^8",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.10",
-    "webpack-dev-server": "^3.11.0"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.10"
   },
   "scripts": {
     "test": "jest",
-    "webpack:deploy": "webpack --config=webpack.config.js -p",
-    "heroku-postbuild": "npm run webpack:deploy",
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "config/webpack/test.js"
     ]
   },
   "engines": {
