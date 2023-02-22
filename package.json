@@ -15,6 +15,7 @@
     "@rails/webpacker": "5.4.3",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "date-fns": "^2.28.0",
+    "esbuild": "^0.17.10",
     "font-awesome": "^4.7.0",
     "fontawesome-free": "^1.0.4",
     "prop-types": "^15.8.1",
@@ -43,7 +44,8 @@
   "scripts": {
     "test": "jest",
     "webpack:deploy": "webpack --config=webpack.config.js -p",
-    "heroku-postbuild": "npm run webpack:deploy"
+    "heroku-postbuild": "npm run webpack:deploy",
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
   },
   "jest": {
     "testPathIgnorePatterns": [
