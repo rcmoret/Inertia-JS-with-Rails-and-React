@@ -97,7 +97,6 @@ export const reducer = (event, form, payload) => {
 
   switch(event) {
     case "addItem":
-      debugger
       return {
         ...form,
         selectedCategory: { budgetCategorySlug: null, displayAmount: "" },

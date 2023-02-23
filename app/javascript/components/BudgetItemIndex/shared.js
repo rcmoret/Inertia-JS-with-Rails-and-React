@@ -11,7 +11,7 @@ import Row from "../shared/Row";
 import { isMatureAccrual } from "../../lib/Functions";
 import { postItemDeleteEvent } from "./Functions"
 import { fromDateString } from "../../lib/DateFormatter";
-import { index as copy } from " ../../lib/copy/budget"
+import { index as copy } from "../../lib/copy/budget";
 
 export const TransactionDetail = ({ model, ...suppliedProps }) => {
   const props = {

@@ -1,5 +1,5 @@
 import Form from "./Form"
-import { isSubmittable, reducer, formReducer } from "./Functions"
+import { isSubmittable, formReducer } from "./Functions"
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
 import { baseCategory, baseBaseInterval, baseBaseItem, baseTargetInterval } from "./Form.test"

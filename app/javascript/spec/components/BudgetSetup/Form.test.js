@@ -232,7 +232,6 @@ const baseNewItem = ({ category, ...overrides }) => ({
   id: uuid(),
   name: category.name,
   budgeted: -1280,
-  iconClassName: "fa-fa-fa",
   spent: -2299,
   amount: 0,
   ...overrides,

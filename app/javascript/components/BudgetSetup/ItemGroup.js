@@ -116,7 +116,7 @@ const ItemWrapper = props => {
       </Cell>
     </div>
   )
-}
+};
 
 export const ExistingItem = props => {
   const { item, dispatch, hasBorder } = props

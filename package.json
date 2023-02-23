@@ -15,6 +15,7 @@
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "date-fns": "^2.28.0",
     "esbuild": "^0.17.10",
+    "esbuild-rails": "^1.0.3",
     "font-awesome": "^4.7.0",
     "fontawesome-free": "^1.0.4",
     "openssl": "^2.0.0",
@@ -41,11 +42,10 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
+    "build": "node esbuild.config.js"
   },
   "jest": {
-    "testPathIgnorePatterns": [
-    ]
+    "testPathIgnorePatterns": []
   },
   "engines": {
     "node": "18.14.0"
