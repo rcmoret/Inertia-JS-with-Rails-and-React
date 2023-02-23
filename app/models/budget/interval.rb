@@ -52,7 +52,14 @@ module Budget
 
 
     def self.current(user:)
-      belonging_to(user).unclosed.ordered.take
+      belonging_to(user).unclosed.ordered.take.then do |potential_interval|
+        if potential_interval.present?
+          potential_interval
+        else
+          today = Date.current
+          belonging_to(user).for(month: today.month, year: today.year)
+        end
+      end
     end
 
     def set_up?
