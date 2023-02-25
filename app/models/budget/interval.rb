@@ -50,7 +50,6 @@ module Budget
       find_or_create_by(date_hash)
     end
 
-
     def self.current(user:)
       belonging_to(user).unclosed.ordered.take.then do |potential_interval|
         if potential_interval.present?
