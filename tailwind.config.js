@@ -1,8 +1,13 @@
 module.exports = {
+  variants: {
+  },
   content: [
-    './app/views/**/*.html.erb',
-    './app/helpers/**/*.rb',
-    './app/assets/stylesheets/**/*.css',
     './app/javascript/**/*.js'
+  ],
+  safelist: [
+    'bg-blue-400',
+    'bg-gray-400',
+    'odd:bg-gray-200',
+    'even:bg-white'
   ]
 }
