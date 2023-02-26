@@ -36,9 +36,9 @@ const TextInput = suppliedProps => {
     value: "",
   }
 
-  const combinedProps = { ...defaultProps, ...suppliedProps, className }
-  const className = [combinedProps.border, ...combinedProps.classes].filter(klass => klass !== null && klass !== "").join(" ")
-  const props = { ...combinedProps, className }
+  const combinedProps = { ...defaultProps, ...suppliedProps }
+  const classList = [combinedProps.border, ...combinedProps.classes].filter(klass => klass !== null && klass !== "")
+  const props = { ...combinedProps, classList }
 
   if (props.errors.length > 0) {
     return (
@@ -69,7 +69,7 @@ const ErrorInput = props => (
 const Input = props => (
   <input
     type="text"
-    className={props.className}
+    className={props.classList.join(" ")}
     name={props.name}
     onChange={props.onChange}
     onKeyDown={props.onKeyDown}
