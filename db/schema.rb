@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_08_185325) do
+ActiveRecord::Schema.define(version: 2023_02_26_185654) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,8 +101,8 @@ ActiveRecord::Schema.define(version: 2023_02_08_185325) do
   end
 
   create_table "budget_item_events", force: :cascade do |t|
-    t.integer "budget_item_id"
-    t.integer "budget_item_event_type_id"
+    t.integer "budget_item_id", null: false
+    t.integer "budget_item_event_type_id", null: false
     t.integer "amount", null: false
     t.json "data"
     t.datetime "created_at", precision: 6, null: false
@@ -168,6 +168,30 @@ ActiveRecord::Schema.define(version: 2023_02_08_185325) do
     t.index ["key"], name: "index_transfers_on_key", unique: true
   end
 
+  create_table "user_event_types", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.boolean "is_client_recordable", default: false, null: false
+    t.boolean "is_interal_recordable", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_user_event_types_on_name", unique: true
+    t.check_constraint "is_client_recordable OR is_interal_recordable", name: "is_recordable"
+  end
+
+  create_table "user_events", force: :cascade do |t|
+    t.bigint "actor_id", null: false
+    t.bigint "target_user_id"
+    t.bigint "user_event_type_id", null: false
+    t.string "key", limit: 12, null: false
+    t.json "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["actor_id"], name: "index_user_events_on_actor_id"
+    t.index ["key"], name: "index_user_events_on_key", unique: true
+    t.index ["target_user_id"], name: "index_user_events_on_target_user_id"
+    t.index ["user_event_type_id"], name: "index_user_events_on_user_event_type_id"
+  end
+
   create_table "user_groups", force: :cascade do |t|
     t.string "name", limit: 200, null: false
     t.string "primary_email", limit: 200, null: false
@@ -198,10 +222,17 @@ ActiveRecord::Schema.define(version: 2023_02_08_185325) do
   add_foreign_key "budget_category_maturity_intervals", "budget_categories"
   add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
   add_foreign_key "budget_intervals", "user_groups"
+  add_foreign_key "budget_item_events", "budget_item_event_types"
+  add_foreign_key "budget_item_events", "budget_items"
   add_foreign_key "budget_items", "budget_categories"
   add_foreign_key "budget_items", "budget_intervals"
   add_foreign_key "transaction_details", "budget_items"
   add_foreign_key "transaction_details", "transaction_entries"
   add_foreign_key "transaction_entries", "accounts"
+  add_foreign_key "user_events", "user_event_types"
+  add_foreign_key "user_events", "users", column: "actor_id"
+  add_foreign_key "user_events", "users", column: "target_user_id"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
   add_foreign_key "users", "user_groups"
 end
