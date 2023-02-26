@@ -43,9 +43,8 @@
   },
   "scripts": {
     "test": "jest",
-    "css": "yarn tailwindcss -i app/javascript/stylesheets/application.css -o public/assets",
-    "build": "node esbuild.config.js",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/tailwind.css --minify",
+    "build": "node esbuild.config.js"
   },
   "jest": {
     "testPathIgnorePatterns": []
