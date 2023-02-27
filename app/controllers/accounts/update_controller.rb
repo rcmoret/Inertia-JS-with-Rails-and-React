@@ -31,7 +31,7 @@ module Accounts
     end
 
     def account
-      @account ||= current_user.accounts.find(params.fetch(:id))
+      @account ||= Account.fetch(user: current_user, identifier: params.fetch(:slug))
     end
 
     def include_archived?
