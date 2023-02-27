@@ -1,8 +1,6 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
-import Select from "react-select";
-
+import { AccountCell, AccountRow } from "./shared";
 import Button, { DisabledButton } from "../shared/Button";
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
@@ -15,14 +13,13 @@ const isTrue = val => val === true || val == "true"
 
 const Form = ({ account, update, onSubmit, ...props }) => {
   const {
-    id,
+    slug,
     name,
     archivedAt,
     isArchived,
     isCashFlow,
     isNew,
     priority,
-    slug,
   } = { ...account, ...account.updatedAttributes }
   const { updatedAttributes } = account
 
@@ -31,40 +28,34 @@ const Form = ({ account, update, onSubmit, ...props }) => {
 
   return (
     <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible", wrap: "flex-wrap"}}>
-      <div className="hidden">{id}</div>
-      <div className="w-full">
-        <Cell styling={{width: "w-3/12"}}>
-          <div className="w-6/12 underline text-xl">Name</div>
-          <div className="w-6/12">
-            <TextInput classes={["w-full"]} type="text" value={name} onChange={handleChange} name="name" />
-          </div>
-        </Cell>
-      </div>
-      <div className="w-full">
-        <Cell styling={{width: "w-3/12"}}>
-          <div className="w-6/12">Slug:</div>
-          <div className="w-6/12">
-            <TextInput classes={["w-full"]} type="text" value={slug} onChange={handleChange} name="slug" />
-          </div>
-        </Cell>
-      </div>
-      <div className="w-full">
-        <Cell styling={{width: "w-3/12"}}>
-          <div className="w-6/12">Priority:</div>
-          <div className="w-6/12">
-            <TextInput classes={["w-full text-right"]} type="text" value={priority} onChange={handleChange} name="priority" />
-          </div>
-        </Cell>
-      </div>
-      <div className="w-full">
-        <Cell styling={{width: "w-3/12"}}>
-          <div className="w-6/12">Cash Flow:</div>
+      <div className="hidden">{slug}</div>
+      <AccountRow>
+        <AccountCell>Name</AccountCell>
+        <AccountCell>
+          <TextInput classes={["w-full"]} type="text" value={name} onChange={handleChange} name="name" />
+        </AccountCell>
+      </AccountRow>
+      <AccountRow>
+        <AccountCell>Slug:</AccountCell>
+        <AccountCell>
+          <TextInput classes={["w-full"]} type="text" value={slug} onChange={handleChange} name="slug" />
+        </AccountCell>
+      </AccountRow>
+      <AccountRow>
+        <AccountCell>Priority</AccountCell>
+        <AccountCell>
+          <TextInput classes={["w-full text-right"]} type="text" value={priority} onChange={handleChange} name="priority" />
+        </AccountCell>
+      </AccountRow>
+      <AccountRow>
+        <AccountCell>Cash Flow:</AccountCell>
+        <AccountCell>
           <CashFlowCheckBox onChange={handleCashFlowChange} isCashFlow={isTrue(isCashFlow)} />
-        </Cell>
-        <Cell styling={{width: "w-3/12"}}>
-          <FormLinks closeForm={props.closeForm} onSubmit={onSubmit} updatedAttributes={updatedAttributes} />
-        </Cell>
-      </div>
+        </AccountCell>
+      </AccountRow>
+      <AccountRow>
+        <FormLinks closeForm={props.closeForm} onSubmit={onSubmit} updatedAttributes={updatedAttributes} />
+      </AccountRow>
     </StripedRow>
   )
 }
