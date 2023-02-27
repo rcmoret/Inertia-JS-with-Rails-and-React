@@ -3,8 +3,12 @@
 module GraphQuery
   private
 
+  def data
+    @data ||= graph_data.fetch('data')
+  end
+
   def props
-    graph_data.fetch('data').merge(metadata).merge(additional_props)
+    data.merge(metadata).merge(additional_props)
   end
 
   def query

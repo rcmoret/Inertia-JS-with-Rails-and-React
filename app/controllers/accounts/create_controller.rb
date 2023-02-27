@@ -2,11 +2,15 @@
 
 module Accounts
   class CreateController < ApplicationController
+    include GraphQuery
+    include AccountAdminHelpers
+    include InertiaHelpers
+
     def call
       if account.save
-        redirect_to redirect_url
+        render inertia_response component: COMPONENT, data: success_props, status: :created
       else
-        render inertia: 'AccountsIndexApp', props: account.errors
+        render inertia_response component: COMPONENT, data: error_props, status: :unprocessable_entity
       end
     end
 
@@ -15,26 +19,33 @@ module Accounts
     def create_params
       params.require(:account).permit(
         :name,
+        :is_cash_flow,
         :cash_flow,
         :priority,
         :slug
       )
     end
 
-    def redirect_url
-      if include_archived?
-        accounts_path(include_archived: true)
-      else
-        accounts_path
-      end
-    end
-
     def account
-      @account ||= current_user.accounts.build(create_params)
+      @account ||= Account.belonging_to(current_user).build(create_params)
     end
 
-    def include_archived?
-      params.fetch(:include_archived, false) == 'true'
+    def success_props
+      props.merge(accounts: data.fetch('accounts').map do |acct|
+        next acct unless acct.fetch('slug') == account.slug
+
+        acct.merge(notice: { level: 'info', message: 'Account Created Successfully' })
+      end)
+    end
+
+    def error_props
+      props.merge(
+        new_account: {
+          updated_attributes: create_params.to_hash,
+          notice: { level: 'error', message: 'An error caused your account to not be saved' },
+          attribute_errors: account.errors.to_hash,
+        }
+      )
     end
   end
 end

@@ -11,9 +11,9 @@ Rails.application.routes.draw do
 
   get '/accounts', to: 'accounts/home#index', as: :accounts_home
   get '/accounts/admin', to: 'accounts/list#index', as: :accounts
-  post '/accounts', to: 'accounts/create#call'
-  put '/accounts/:id', to: 'accounts/update#call'
-  delete '/accounts/:id', to: 'accounts/delete#call'
+  post '/accounts/admin', to: 'accounts/create#call'
+  put '/accounts/admin', to: 'accounts/update#call'
+  delete '/accounts/admin', to: 'accounts/delete#call'
 
   get '/accounts/:identifier/transactions(/:month/:year)', to: 'accounts/transactions#index', as: :account_transactions
   post '/accounts/:account_identifier/transactions', to: 'transactions/create#call'

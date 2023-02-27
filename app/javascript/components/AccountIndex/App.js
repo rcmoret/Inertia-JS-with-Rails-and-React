@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { router } from "@inertiajs/react";
 
 import { v4 as uuid } from "uuid";
 
@@ -13,39 +15,55 @@ import PageHeader from "../shared/Header";
 import { Point } from "../shared/symbol";
 import Row, { StripedRow } from "../shared/Row";
 
+const buildNewAccount = () => ({
+  key: uuid(),
+  attributeErrors: {},
+  notice: { level: "info", message: "" },
+  updatedAttributes: {
+    name: "",
+    isCashFlow: true,
+    priority: "",
+    slug: "",
+  },
+})
+
 export const App = props => {
-  const newAccount = {
-      name: "",
-      isCashFlow: null,
-      priority: "",
-      isNew: true,
-      slug: "",
-      updatedAttributes: {},
-    }
   const [pageData, updatePageData] = usePageData(`accounts/admin`, {
     showFormForSlug: null,
-    newAccount,
   })
   const { showFormForSlug } = pageData
   const { accounts, includesArchived } = props
-  const updateNewAccount = payload => updatePageData({
-    ...pageData,
-    newAccount: {
-      ...pageData.newAccount,
-      updatedAttributes: {
-        ...pageData.newAccount.updatedAttributes,
-        ...payload
-      },
-    },
+  const [newAccount, setNewAccount] = useState({ ...buildNewAccount(), ...props.newAccount })
+
+  const updateNewAccount = payload => setNewAccount({
+    ...newAccount,
+    updatedAttributes: {
+      ...newAccount.updatedAttributes,
+      ...payload.updatedAttributes
+    }
   })
-  const queryParams = includesArchived ? "?include_archived=true" : ""
-  const submitNewAccount = () => Inertia.post(`/accounts${queryParams}`,
-    { account: pageData.newAccount.updatedAttributes },
-    { onSuccess: updatePageData({ ...pageData, newAccount }) },
-  )
+  const queryParams = (optionalParams = {}) => {
+    const archivedParam = includesArchived ? { include_archived: true } : {}
+    const allParams = { ...archivedParam, ...optionalParams }
+    if (Object.keys(allParams).length) {
+      return "?" + Object.entries(allParams).map((param) => param.join("=")).join("&")
+    } else {
+      return ""
+    }
+  }
+  const url = (optionalParams = {}) => `/accounts/admin${queryParams(optionalParams)}`
+
   const closeForm = () => updatePageData({ ...pageData, showFormForSlug: null })
+  const closeNewForm = () => {
+    closeForm()
+    setNewAccount({ ...buildNewAccount() })
+  }
   const openForm = slug => updatePageData({ ...pageData, showFormForSlug: slug })
-  const renderForm = () => updatePageData({ ...pageData, showFormForSlug: "new" })
+  const renderForm = () => updatePageData({ ...pageData, showFormForSlug: newAccount.key })
+  const submitNewAccount = () => router.post(url(),
+    { account: newAccount.updatedAttributes },
+    { onSuccess: closeNewForm }
+  )
 
   const sortFn = (a, b) => {
     if ((a.isArchived && b.isArchived) || (!a.isArchived && !b.isArchived)) {
@@ -57,23 +75,9 @@ export const App = props => {
     }
   }
 
-  const makePutRequest = (slug) => {
-    // look up account by slug and pass the updated attrs
-    Inertia.put(
-      `/accounts/${slug}${queryParams}`,
-      { account: updatedAttributes },
-      { onSuccess: closeForm }
-    )
-  }
-
-  const makePostRequest = () => Inertia.post(
-    `/accounts${queryParams}`,
-    { account: pageData.newAccount.updatedAttributes },
-    { onSuccess: updatePageData({ ...pageData, newAccount }) },
-  )
-
   const archiveLinkHref = `/accounts/admin${includesArchived ? "" : "?include_archived=true"}`
   const archiveLinkCopy = `${includesArchived ? "Exclude" : "Include"} Archived Accounts`
+  const isFormShown = (account) => showFormForSlug === account.key || (account.notice && account.notice.level == "error")
 
   return (
     <div>
@@ -82,9 +86,9 @@ export const App = props => {
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white", padding: "pt-1 px-1 pb-24", overflow: "overflow-visible"}}>
             <NewAccount
-              account={pageData.newAccount}
-              isFormShown={showFormForSlug === "new"}
-              closeForm={closeForm}
+              account={newAccount}
+              closeForm={closeNewForm}
+              isFormShown={isFormShown}
               onSubmit={submitNewAccount}
               renderForm={renderForm}
               update={updateNewAccount}
@@ -92,11 +96,11 @@ export const App = props => {
             {accounts.sort(sortFn).map(account => (
               <Account
                 key={account.slug}
-                isFormShown={showFormForSlug === account.slug}
+                isFormShown={isFormShown}
                 account={account}
                 closeForm={closeForm}
                 openForm={openForm}
-                queryParams={queryParams}
+                url={url}
               />
             ))}
             <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible", wrap: "flex-wrap"}}>
@@ -112,9 +116,9 @@ export const App = props => {
 };
 
 const NewAccount = ({ account, closeForm, icons, isFormShown, renderForm, update, onSubmit }) => {
-  if (isFormShown) {
+  if (isFormShown(account, "key")) {
     return (
-      <Form account={account} closeForm={closeForm} icons={icons} update={update} onSubmit={onSubmit} />
+      <Form account={account} closeForm={closeForm} icons={icons} updateAccount={update} onSubmit={onSubmit} />
     )
   } else {
     return (

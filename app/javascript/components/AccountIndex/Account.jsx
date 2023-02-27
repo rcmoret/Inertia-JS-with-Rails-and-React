@@ -6,7 +6,7 @@ import Form from "./Form"
 import Show from "./Show"
 
 export const Account = ({ fns, ...props }) => {
-  const { closeForm, isFormShown, openForm, queryParams } = props
+  const { isFormShown, openForm, url } = props
   const { slug, archivedAt, name } = props.account
 
   const [account, update] = useState({
@@ -14,6 +14,7 @@ export const Account = ({ fns, ...props }) => {
     notice: { level: "info", message: "" },
     updatedAttributes: {},
     ...props.account,
+    key: props.account.slug
   })
 
   const updateAccount = payload => update({
@@ -32,15 +33,10 @@ export const Account = ({ fns, ...props }) => {
   }
 
   const onSubmit = () => {
-    router.put(`/accounts/admin${queryParams}`,
-      { account: account.updatedAttributes, slug: props.account.slug },
-      { onSuccess: closeForm }
+    router.put(url(),
+       { account: account.updatedAttributes, slug: props.account.slug },
+       { onSuccess: closeForm }
     )
-    // router.put(
-    //   `/accounts/admin${queryParams}`,
-    //   { account: account.updatedAttributes, slug: props.account.slug },
-    //   { onSuccess: closeForm }
-    // )
   }
 
   if (isFormShown(account)) {
@@ -49,23 +45,13 @@ export const Account = ({ fns, ...props }) => {
         account={account}
         closeForm={closeForm}
         onSubmit={onSubmit}
-        update={update}
+        updateAccount={updateAccount}
+        resetErrorMessage={resetErrorMessage}
       />
     )
   } else {
-    const deleteAccount = () => {
-      const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`)
-      if (isConfirmed) {
-        router.delete(`/accounts/${slug}${props.queryParams}`)
-      }
-    }
-    const restoreAccount = () => {
-      const body = { archivedAt: null }
-      router.put(`/accounts/${slug}${props.queryParams}`, { account: body })
-    }
-    const deleteOrRestoreAccount = () => archivedAt ? restoreAccount() : deleteAccount()
     return (
-      <Show account={props.account} openForm={openForm} deleteOrRestoreAccount={deleteOrRestoreAccount} />
+      <Show account={props.account} openForm={openForm} url={url} />
     )
   }
 };

@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 
 import { fromDateString } from "../../lib/DateFormatter";
-import { AccountCell, AccountRow } from "./shared";
+import { AccountLabel, AccountValue, AccountRow } from "./shared";
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Link from "../shared/Link";
+import { Point } from "../shared/symbol";
 import Row, { StripedRow } from "../shared/Row";
 
-const Show = ({ account, deleteOrRestoreCategory, ...props }) => {
+const Show = ({ account, url, ...props }) => {
   const {
     slug,
     name,
@@ -20,20 +21,33 @@ const Show = ({ account, deleteOrRestoreCategory, ...props }) => {
   } = account
   const openForm = () => props.openForm(slug)
 
+  const deleteAccount = () => {
+    router.delete(url({ slug }),
+      { },
+      { onBefore: window.confirm(`Are you sure you want to delete ${name}?`) }
+    )
+  }
+  const restoreAccount = () => {
+    router.put(url(), { account: { archivedAt: null }, slug })
+  }
+  const deleteOrRestoreAccount = () => archivedAt ? restoreAccount() : deleteAccount()
+  const notice = account.notice || { level: "info", message: "" }
+
   return (
     <StripedRow styling={{wrap: "flex-wrap", flexAlign: "justify-start", overflow: "overflow-visible"}}>
+      <Messages notice={notice} />
       <div className="w-full underline text-xl">{name}</div>
       <AccountRow>
-        <AccountCell>Slug</AccountCell>
-        <AccountCell>{slug}</AccountCell>
+        <AccountLabel>Slug</AccountLabel>
+        <AccountValue>{slug}</AccountValue>
       </AccountRow>
       <AccountRow>
-        <AccountCell>Priority</AccountCell>
-        <AccountCell>{priority}</AccountCell>
+        <AccountLabel>Priority</AccountLabel>
+        <AccountValue>{priority}</AccountValue>
       </AccountRow>
       <AccountRow>
-        <AccountCell>Cash Flow</AccountCell>
-        <AccountCell>{isCashFlow ? "cash-flow" : "non-cash-flow"}</AccountCell>
+        <AccountLabel>Cash Flow</AccountLabel>
+        <AccountValue>{isCashFlow ? "cash-flow" : "non-cash-flow"}</AccountValue>
       </AccountRow>
       <AccountRow>
         <Cell styling={{width: "w-3/12"}}>
@@ -42,27 +56,53 @@ const Show = ({ account, deleteOrRestoreCategory, ...props }) => {
           </span>
         </Cell>
       </AccountRow>
-      <Links isArchived={isArchived} deleteOrRestoreCategory={deleteOrRestoreCategory} openForm={openForm} />
+      <AccountRow>
+        <Cell styling={{width: "w-full"}}>
+          <Links isArchived={isArchived} deleteOrRestoreAccount={deleteOrRestoreAccount} openForm={openForm} />
+        </Cell>
+      </AccountRow>
     </StripedRow>
   )
 }
 
-const Links = ({ isArchived, deleteOrRestoreCategory, openForm }) => {
+const Links = ({ isArchived, deleteOrRestoreAccount, openForm }) => {
   const iconClassName = `fas fa-trash${isArchived ? "-restore" : ""}`
   return (
     <AccountRow>
-      <AccountCell>
+      <div className="w-6/12">
         <Link onClick={openForm} color="text-blue-700">
           <Icon className="fas fa-edit" />
         </Link>
-      </AccountCell>
-      <AccountCell>
-        <Link onClick={deleteOrRestoreCategory} color="text-blue-700">
+      </div>
+      <div className="w-6/12">
+        <Link onClick={deleteOrRestoreAccount} color="text-blue-700">
           <Icon className={iconClassName} />
         </Link>
-      </AccountCell>
+      </div>
     </AccountRow>
   )
+}
+
+const Messages = ({ notice }) => {
+  if (notice.level === "info" && notice.message.length) {
+    return (
+      <Row styling={{ wrap: "flex-wrap" }}>
+        <div className="w-full text-blue-700">
+          <Point>{notice.message}</Point>
+        </div>
+      </Row>
+    )
+  } else if (notice.level === "info") {
+    return null
+  } else if (notice.level === "error") {
+    return (
+      <Row styling={{ wrap: "flex-wrap" }}>
+        <div className="w-full text-red-700">
+          <Point>{notice.message}</Point>
+        </div>
+      </Row>
+    )
+  }
 }
 
 export default Show;

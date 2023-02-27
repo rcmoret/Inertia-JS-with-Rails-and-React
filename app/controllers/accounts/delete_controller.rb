@@ -2,30 +2,38 @@
 
 module Accounts
   class DeleteController < ApplicationController
+    include GraphQuery
+    include AccountAdminHelpers
+    include InertiaHelpers
+
     def call
       if account.destroy
-        redirect_to redirect_url
+        render inertia_response component: COMPONENT, data: props, status: :accepted
       else
-        render inertia: 'AccountsIndexApp', props: account.errors
+        render inertia_response component: COMPONENT, data: error_props, status: :unprocessable_entity
       end
     end
 
     private
 
-    def redirect_url
-      if include_archived?
-        accounts_path(include_archived: true)
-      else
-        accounts_path
+    def error_props
+      props.merge accounts: data.fetch('accounts').map do |acct|
+        next acct unless acct.fetch('slug') == slug
+
+        acct.merge(
+          attribute_errors: account.errors.to_hash,
+          notice: { level: 'error', message: 'An error caused your account not to be deleted' },
+          updated_attributes: update_params.to_hash
+        )
       end
     end
 
     def account
-      @account ||= current_user.accounts.find(params.fetch(:id))
+      @account ||= Account.fetch(user: current_user, identifier: slug)
     end
 
-    def include_archived?
-      params.fetch(:include_archived, false) == 'true'
+    def slug
+      params.require(:slug)
     end
   end
 end
