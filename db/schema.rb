@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_26_185654) do
+ActiveRecord::Schema.define(version: 2023_03_01_143612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,7 +69,8 @@ ActiveRecord::Schema.define(version: 2023_02_26_185654) do
     t.boolean "is_per_diem_enabled", default: false, null: false
     t.bigint "user_group_id", null: false
     t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
-    t.index ["slug"], name: "index_budget_categories_on_slug", unique: true
+    t.index ["name", "user_group_id"], name: "index_budget_categories_on_name_and_user_group_id", unique: true, where: "(archived_at IS NULL)"
+    t.index ["slug", "user_group_id"], name: "index_budget_categories_on_slug_and_user_group_id", unique: true, where: "(archived_at IS NULL)"
     t.index ["user_group_id"], name: "index_budget_categories_on_user_group_id"
   end
 

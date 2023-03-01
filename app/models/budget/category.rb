@@ -33,9 +33,7 @@ module Budget
               },
               if: :revenue?
 
-    # rubocop:disable Rails/UniqueValidationWithoutIndex
-    validates :name, :slug, uniqueness: { conditions: -> { active } }
-    # rubocop:enable Rails/UniqueValidationWithoutIndex
+    validates :name, uniqueness: { scope: :user_group_id }
     validates :default_amount, :name, presence: true
     validate :accrual_on_expense
     validate :per_diem_disabled, if: :monthly?
