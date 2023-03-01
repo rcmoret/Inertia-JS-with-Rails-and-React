@@ -26,7 +26,6 @@ gem 'image_processing', '~> 1.2'
 gem 'cssbundling-rails'
 gem 'devise'
 gem 'graphql'
-gem 'importmap-rails'
 gem 'inertia_rails'
 gem 'jsbundling-rails'
 gem 'rubocop', require: false
