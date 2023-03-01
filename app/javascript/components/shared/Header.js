@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
-
 import Cell from "./Cell"
 import { InertiaLink } from "./Link"
 import Row from "./Row"

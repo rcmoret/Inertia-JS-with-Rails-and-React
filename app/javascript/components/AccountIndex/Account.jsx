@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 import Form from "./Form"
 import Show from "./Show"
@@ -8,23 +8,42 @@ import Show from "./Show"
 export const Account = ({ fns, ...props }) => {
   const { closeForm, isFormShown, openForm, queryParams } = props
   const { slug, archivedAt, name } = props.account
-  if (isFormShown) {
-    const [account, updateAccount] = useState({
-      ...props.account,
-      isNew: false,
-      updatedAttributes: {},
-    })
-    const onSubmit = () => Inertia.put(`/accounts/${slug}${queryParams}`,
-      { account: account.updatedAttributes },
+
+  const [account, update] = useState({
+    attributeErrors: {},
+    notice: { level: "info", message: "" },
+    updatedAttributes: {},
+    ...props.account,
+  })
+
+  const updateAccount = payload => update({
+    ...account,
+    ...payload,
+    updatedAttributes: {
+      ...account.updatedAttributes,
+      ...payload.updatedAttributes,
+    }
+  })
+
+  const resetErrorMessage = () => updateAccount({ notice: { level: "info", message: "" } })
+  const closeForm = () => {
+    props.closeForm()
+    resetErrorMessage()
+  }
+
+  const onSubmit = () => {
+    router.put(`/accounts/admin${queryParams}`,
+      { account: account.updatedAttributes, slug: props.account.slug },
       { onSuccess: closeForm }
     )
-    const update = payload => updateAccount({
-      ...account,
-      updatedAttributes: {
-        ...account.updatedAttributes,
-        ...payload
-      },
-    })
+    // router.put(
+    //   `/accounts/admin${queryParams}`,
+    //   { account: account.updatedAttributes, slug: props.account.slug },
+    //   { onSuccess: closeForm }
+    // )
+  }
+
+  if (isFormShown(account)) {
     return (
       <Form
         account={account}
@@ -37,12 +56,12 @@ export const Account = ({ fns, ...props }) => {
     const deleteAccount = () => {
       const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`)
       if (isConfirmed) {
-        Inertia.delete(`/accounts/${slug}${props.queryParams}`)
+        router.delete(`/accounts/${slug}${props.queryParams}`)
       }
     }
     const restoreAccount = () => {
       const body = { archivedAt: null }
-      Inertia.put(`/accounts/${slug}${props.queryParams}`, { account: body })
+      router.put(`/accounts/${slug}${props.queryParams}`, { account: body })
     }
     const deleteOrRestoreAccount = () => archivedAt ? restoreAccount() : deleteAccount()
     return (

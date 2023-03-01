@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 const Link = suppliedProps => {
   const defaultProps = {
@@ -62,7 +62,7 @@ export const InertiaLink = ({ href, ...suppliedProps }) => {
   const onClick = event => {
     event.preventDefault()
     props.onClick(event)
-    Inertia.get(href)
+    router.get(href)
   }
   return (
     <Link onClick={onClick} href={href} {...suppliedProps} />

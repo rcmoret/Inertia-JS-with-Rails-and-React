@@ -1,4 +1,4 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 import { fromDateString } from "../../lib/DateFormatter";
 import MoneyFormatter from "../../lib/MoneyFormatter";
@@ -120,7 +120,7 @@ export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => 
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
   const onSuccess = page => callbacks.onSuccess(page)
 
-  Inertia.post(
+  router.post(
     `/budget/items/events?month=${month}&year=${year}`,
     { events },
     { preserveScroll: true , onSuccess: onSuccess }

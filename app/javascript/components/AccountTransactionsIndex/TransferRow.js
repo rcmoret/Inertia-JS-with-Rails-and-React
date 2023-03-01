@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
+
+import { router } from "@inertiajs/react";
 
 import { AmountInput } from "../shared/TextInput";
 import { asOption, sortByValue } from "../../lib/Functions";
@@ -40,7 +41,7 @@ export const TransferRow = ({ accounts, selectedAccount }) => {
       updateTransfer(newTransfer)
       toggleFormVisibility()
     }
-    Inertia.post("/accounts/transfer", { transfer: body }, { onSuccess })
+    router.post("/accounts/transfer", { transfer: body }, { onSuccess })
   }
 
   if (isFormShown) {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
+
+import { router } from "@inertiajs/react";
 
 import CategorySelect from "./CategorySelect"
 import Form, { reducer, eventsReducer } from "./Form";
@@ -42,7 +43,7 @@ const BudgetSetupApp = ({ budget, ...props }) => {
   const onSubmit = ev => {
     ev.preventDefault();
     const events = eventsReducer(form)
-    Inertia.post(`/budget/set-up/${month}/${year}`, { events })
+    router.post(`/budget/set-up/${month}/${year}`, { events })
   }
   const dateString = DateFormatter({ month, year, day: 1, format: "shortMonthYear" })
   document.title = titleize(copy.docTitle(dateString))

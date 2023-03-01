@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 import { fromDateString } from "../../lib/DateFormatter"
 import MoneyFormatter from "../../lib/MoneyFormatter";
@@ -48,7 +48,7 @@ export const Transaction = props => {
     deleteTransaction: () => {
       const isConfirmed = window.confirm("Are you sure you want to delete this transaction?")
       if (isConfirmed) {
-        Inertia.delete(`/transactions/${key}?month=${month}&year=${year}`)
+        router.delete(`/transactions/${key}?month=${month}&year=${year}`)
       }
     },
     renderForm: () => renderForm(key)
@@ -56,7 +56,7 @@ export const Transaction = props => {
 
   if (showFormForKey === key) {
     const makeRequest = body => {
-      Inertia.put(`/transactions/${key}?month=${month}&year=${year}`,
+      router.put(`/transactions/${key}?month=${month}&year=${year}`,
         { transaction: body },
         { onSuccess: closeForm, forceFormData: true },
       )

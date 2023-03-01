@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import Select from "react-select";
 
 import Button, { DisabledButton } from "../shared/Button";

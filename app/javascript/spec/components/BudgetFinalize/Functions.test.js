@@ -4,8 +4,6 @@ import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter"
 
 import { baseCategory, baseBaseInterval, baseBaseItem, baseTargetInterval } from "./Form.test"
 
-import { Inertia } from "@inertiajs/inertia";
-
 jest.mock("@inertiajs/inertia")
 
 describe("isSubmittable", () => {

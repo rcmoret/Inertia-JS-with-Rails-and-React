@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { v4 as uuid } from "uuid";
 
 import DateFormatter, { fromDateString } from "../../lib/DateFormatter"
@@ -188,7 +188,7 @@ const NewTransaction = props => {
 
   const { month, year } = interval
   const makeRequest = (body, callbacks) => {
-    Inertia.post(`/accounts/${account.slug}/transactions?month=${month}&year=${year}`,
+    router.post(`/accounts/${account.slug}/transactions?month=${month}&year=${year}`,
       { transaction: body },
       { ...callbacks, forceFormData: true },
     )

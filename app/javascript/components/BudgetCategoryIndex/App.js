@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 import Form from "./Form"
 import Icon from "../shared/Icons";
@@ -74,7 +74,7 @@ export const App = props => {
     },
   })
   const queryParams = props.includesArchived ? "?include_archived=true" : ""
-  const submitNewCategory = () => Inertia.post(`/budget/categories${queryParams}`,
+  const submitNewCategory = () => router.post(`/budget/categories${queryParams}`,
     { category: requestBody(pageData.newCategory.updatedAttributes) },
     { onSuccess: updatePageData({ ...pageData, newCategory }) },
   )
@@ -211,7 +211,7 @@ const Category = ({ icons, fns, ...props }) => {
       isNew: false,
       updatedAttributes: {},
     })
-    const onSubmit = () => Inertia.put(`/budget/categories/${slug}${props.queryParams}`,
+    const onSubmit = () => router.put(`/budget/categories/${slug}${props.queryParams}`,
         { category: requestBody(category.updatedAttributes) },
         { onSuccess: closeForm }
     )
@@ -229,12 +229,12 @@ const Category = ({ icons, fns, ...props }) => {
     const deleteCategory = () => {
       const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`)
       if (isConfirmed) {
-        Inertia.delete(`/budget/categories/${slug}${props.queryParams}`)
+        router.delete(`/budget/categories/${slug}${props.queryParams}`)
       }
     }
     const restoreCategory = () => {
       const body = { archivedAt: null }
-      Inertia.put(`/budget/categories/${slug}`, { category: body })
+      router.put(`/budget/categories/${slug}`, { category: body })
     }
     const deleteOrRestoreCategory = () => archivedAt ? restoreCategory() : deleteCategory()
     const openForm = () => fns.openForm(slug)

@@ -1,5 +1,6 @@
 import React from "react";
-import { Inertia } from "@inertiajs/inertia";
+
+import { router } from "@inertiajs/react";
 
 import { AmountInput } from "../shared/TextInput";
 import AmountSpan from "../shared/AmountSpan";
@@ -161,7 +162,7 @@ export  const AccrualMaturityInfo = ({ model, fns, month, year }) => {
     const { budgetCategorySlug, maturityMonth, maturityYear } = model
     const copy = maturityMonth ? `Maturing ${maturityMonth}/${maturityYear}` : "No upcoming maturity date"
     const returnUrl = `/budget/${month}/${year}`
-    const post = () => Inertia.post(`/budget/categories/${budgetCategorySlug}/maturity_intervals?redirect_to=${returnUrl}`,
+    const post = () => router.post(`/budget/categories/${budgetCategorySlug}/maturity_intervals?redirect_to=${returnUrl}`,
       { interval: { month, year } },
       { onSuccess: fns.onPostSuccess }
     )

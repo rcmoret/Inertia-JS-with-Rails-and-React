@@ -1,4 +1,4 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import MoneyFormatter, { decimalToInt } from "../../lib/MoneyFormatter";
 import { generateIdentifier, eventForm } from "../../lib/Functions";
 
@@ -72,7 +72,7 @@ export const formReducer = ({ models, month, rolloverItem, year }) => {
 }
 
 export const postEvents = ({ month, year, body }) => {
-  Inertia.post(`/budget/finalize/${month}/${year}`, body)
+  router.post(`/budget/finalize/${month}/${year}`, body)
 }
 
 export const extraFrom = model => (

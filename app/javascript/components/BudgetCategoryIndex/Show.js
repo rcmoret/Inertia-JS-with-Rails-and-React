@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import Select from "react-select";
 
 import DateFormatter, { fromDateString, monthOptions } from "../../lib/DateFormatter";
@@ -117,7 +117,7 @@ const MaturityInterval = ({ slug, month, year }) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this?")
     if (isConfirmed) {
       const url = `/budget/categories/${slug}/maturity_intervals/${month}/${year}?redirect_to=/budget/categories`
-      Inertia.delete(url)
+      router.delete(url)
     }
   }
 
@@ -141,7 +141,7 @@ const MaturityIntervalForm = ({ slug, hideForm, form, updateForm }) => {
   const options = monthOptions()
   const { month, year } = form
   const value = options.find(option => option.value === month)
-  const submit = () => Inertia.post(`/budget/categories/${slug}/maturity_intervals?redirect_to=/budget/categories`,
+  const submit = () => router.post(`/budget/categories/${slug}/maturity_intervals?redirect_to=/budget/categories`,
     { interval: { month, year } },
     { onSuccess: hideForm }
   )

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AccountCell, AccountRow } from "./shared";
+import { AccountLabel, AccountRow } from "./shared";
 import Button, { DisabledButton } from "../shared/Button";
 import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
