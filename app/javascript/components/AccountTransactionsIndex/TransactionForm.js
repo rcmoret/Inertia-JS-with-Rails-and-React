@@ -213,25 +213,27 @@ const Form = props => {
   }
 
   return (
-    <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible" }}>
-      <form className="flex justify-between w-full" onSubmit={handleSubmit}>
-        <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
-          <div className="w-1/12">
+    <StripedRow styling={{flexAlign: "justify-start", wrap: "flex-wrap", overflow: "overflow-visible" }}>
+      <form className="w-full flex flex-wrap" onSubmit={handleSubmit}>
+        <Cell styling={{ width: "w-full md:w-2/12", wrap: "flex-wrap", flexAlign: "justify-between" }}>
+          <div className="w-2/12 md:w-1/20">
             <Link onClick={toggleForm} color="text-red-800">
               <Icon className="fas fa-times" />
             </Link>
           </div>
-          <div className="w-4/12">
+          <div className="w-10/12 md:w-10/12">
             <DatePicker
               onChange={handleDatePickChange}
               placeholderText="clearance date"
               selected={selected}
               openToDate={openToDate()}
               todayButton="Today"
-              className="p-1 w-8/12 border border-gray-600 border-solid"
+              className="p-1 w-full text-right border border-gray-600 border-solid"
             />
           </div>
-          <div className="w-7/12">
+        </Cell>
+        <Cell styling={{ width: "w-full md:w-3/12", wrap: "flex-wrap", flexAlign: "space-between" }}>
+          <div className="w-full">
             <TextInput
               name="description"
               value={description || ""}
@@ -241,7 +243,7 @@ const Form = props => {
             />
           </div>
         </Cell>
-        <div className="w-4/12">
+        <div className="w-full md:w-4/12">
           <Details
             isBudgetExclusion={budgetExclusion}
             details={attributes.details}
@@ -251,18 +253,18 @@ const Form = props => {
             total={total}
           />
         </div>
-        <div className="w-2/12 ml-8">
+        <div className="w-full md:w-2/12">
           {!isCashFlow && <BudgetExclusion value={budgetExclusion} toggleBudgetExclusion={toggleBudgetExclusion} />}
           <CheckNumber value={checkNumber} onChange={handleInputChange} />
           <Notes value={notes} onChange={handleInputChange} />
           <Receipt value={receipt} onChange={handleFileUpload} />
           {accounts.length > 0 && <AccountSelect accountSlug={accountSlug} accounts={accounts} updateEntry={updateEntry} />}
         </div>
-        <div className="w-2/12 flex flex-row-reverse items-start">
+        <div className="w-full mt-1 flex flex-row-reverse items-start">
           <Button
             bgColor="bg-green-700"
             hoverBgColor="bg-green-800"
-            classes={["w-7/12"]}
+            classes={["w-7/12, md:w-3/12"]}
             type="submit"
             onSubmit={handleSubmit}
             onClick={handleSubmit}
@@ -350,23 +352,6 @@ const Details = props => {
   if (details.length > 1) {
     return (
       <>
-        <Row>
-          <div className="w-4/12">
-            <div className="w-10/12 flex justify-between border-b border-gray-600 border-solid">
-              <div>
-                Total:
-              </div>
-              <div>
-                {MoneyFormatter(total, { decorate: true })}
-              </div>
-            </div>
-          </div>
-          <div>
-            <Link color="text-blue-400" onClick={addNew}>
-              <Icon className="fa fa-plus-circle" />
-            </Link>
-          </div>
-        </Row>
         {details.map(detail => (
           <DetailForm
             key={detail.key}
@@ -379,6 +364,16 @@ const Details = props => {
             update={update}
           />
         ))}
+        <Row>
+          <div className="w-3/10 text-right border-b border-gray-600 border-solid">
+            {MoneyFormatter(total, { decorate: true })}
+          </div>
+          <div>
+            <Link color="text-blue-400" onClick={addNew}>
+              <Icon className="fa fa-plus-circle" />
+            </Link>
+          </div>
+        </Row>
       </>
     )
   } else {

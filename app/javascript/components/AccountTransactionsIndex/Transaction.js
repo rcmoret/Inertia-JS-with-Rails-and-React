@@ -41,15 +41,15 @@ export const Transaction = props => {
   } = transaction
   const { month, year } = interval
   const clearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate)
+  const shortClearanceDate = isPending ? "Pending" : fromDateString(transaction.clearanceDate, { format: "m/d/yy" })
   const isDetailShown = showDetailsForKeys.includes(key)
   const notesNeedAttn = (notes || "").startsWith("!!!")
   const noteLines = (notes || "").split("<br>").map(line => line.replace(/^!!!/, ""))
   const modifyFns = {
     deleteTransaction: () => {
-      const isConfirmed = window.confirm("Are you sure you want to delete this transaction?")
-      if (isConfirmed) {
-        router.delete(`/transactions/${key}?month=${month}&year=${year}`)
-      }
+      router.delete(`/transactions/${key}?month=${month}&year=${year}`, {
+        onBefore: window.confirm("Are you sure you want to delete this transaction?")
+      })
     },
     renderForm: () => renderForm(key)
   }
@@ -75,45 +75,56 @@ export const Transaction = props => {
     )
   } else {
     return (
-      <StripedRow styling={{flexAlign: "justify-start"}}>
+      <StripedRow styling={{flexAlign: "justify-start", wrap: "flex-wrap"}}>
         <div className="hidden">{key}</div>
-        <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
-          <div className="w-1/12">
-            {details.length > 1 && <DetailToggleLink id={key} isDetailShown={isDetailShown} detailFns={detailFns} />}
-          </div>
-          <div className="w-4/12">
-            <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
-              {clearanceDate}
-            </EditLink>
-          </div>
-          <div className="w-7/12">
-            {description || <BudgetItems details={details} />}
-            {isDetailShown && <BudgetItemList details={details} />}
-          </div>
-        </Cell>
-        <div className="w-1/12 text-right">
-          <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
-            <AmountSpan amount={amount} />
-          </EditLink>
-          {isDetailShown && <DetailAmounts key={key} details={details} />}
+        <div className="flex w-full sm:w-6/12">
+          <Cell styling={{ width: "w-full", flexAlign: "space-between" }}>
+            <div className="w-1/20">
+              {details.length > 1 && <DetailToggleLink id={key} isDetailShown={isDetailShown} detailFns={detailFns} />}
+            </div>
+            <div className="w-2/12">
+              <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
+                <span className="max-sm:hidden">
+                  {clearanceDate}
+                </span>
+                <span className="sm:hidden">
+                  {shortClearanceDate}
+                </span>
+              </EditLink>
+            </div>
+            <div className="w-3/12">
+              <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
+                {description || <BudgetItemsDescription details={details} />}
+              </EditLink>
+              {isDetailShown && <BudgetItemList details={details} />}
+            </div>
+            <div className="w-3/12 text-right">
+              <EditLink isEditable={isEditable} onClick={modifyFns.renderForm}>
+                <AmountSpan amount={amount} />
+              </EditLink>
+              {isDetailShown && <DetailAmounts key={key} details={details} />}
+            </div>
+            <div className="w-3/12 text-right">
+              <AmountSpan amount={balance} negativeColor="text-red-800" />
+            </div>
+          </Cell>
         </div>
-        <div className="w-1/12 text-right">
-          <AmountSpan amount={balance} negativeColor="text-red-800" />
-        </div>
-        <div className="w-5/12 flex">
+        <Cell styling={{ width: "w-full md:w-4/12", flexAlign: "justify-start", flexWrap: "flex-wrap" }}>
           {description && !isDetailShown && details.filter(detail => detail.budgetCategoryName).length > 0 &&
             <div className="ml-4 max-w-4/12">
               <BudgetItems details={details} />
             </div>}
-          {budgetExclusion && <div className="ml-4 max-w-2/12 italic">budget exclusion</div>}
-          {checkNumber && <div className="ml-4 max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
-          {transferKey && <div className="ml-4 max-w-2/12 italic"><span className="hidden">{transferKey}</span>transfer</div>}
+          {budgetExclusion && <div className="ml-4 md:max-w-2/12 max-md:w-full italic">budget exclusion</div>}
+          {checkNumber && <div className="ml-4 max-md:w-full md:max-w-2/12"><Icon className="fas fa-money-check" /> {checkNumber}</div>}
+          {transferKey && <div className="ml-4 max-md:w-full md:max-w-2/12 italic"><span className="hidden">{transferKey}</span>transfer</div>}
           {notes && <Notes noteLines={noteLines} notesNeedAttn={notesNeedAttn} />}
           {receiptBlob && <Receipt attachment={receiptBlob} />}
-        </div>
-        <div className="w-1/12 ml-4 flex flex-row-reverse">
-          {isEditable && <ModifyLinks modifyFns={modifyFns} />}
-        </div>
+        </Cell>
+        <Cell styling={{ width: "w-full md:w-1/7", flexAlign: "justify-start" }}>
+          <div className="w-full max-sm:justify-between ml-4 flex flex-row-reverse">
+            {isEditable && <ModifyLinks modifyFns={modifyFns} />}
+          </div>
+        </Cell>
       </StripedRow>
     )
   }
@@ -153,7 +164,7 @@ const DetailAmounts = ({ details }) => (
  ))
 )
 
-const BudgetItems = ({ details }) => {
+const BudgetItemsDescription = ({ details }) => {
   const sortFn = (a, b) => a.budgetCategoryName < b.budgetCategoryName ? -1 : 1
 
   return details.filter(detail => detail.budgetCategoryName).sort(sortFn).map((detail, n) => (
@@ -166,11 +177,26 @@ const BudgetItems = ({ details }) => {
   ))
 }
 
+const BudgetItems = ({ details }) => {
+  const sortFn = (a, b) => a.budgetCategoryName < b.budgetCategoryName ? -1 : 1
+
+  return details.filter(detail => detail.budgetCategoryName).sort(sortFn).map((detail, n) => (
+    <span key={detail.key}>
+      { n > 0 && "; "}
+      <span className="max-sm:hidden">
+        {detail.budgetCategoryName}
+      </span>
+      {" "}
+      <Icon className={detail.iconClassName} />
+    </span>
+  ))
+}
+
 const BudgetItemList = ({ details }) => {
   const sortFn = (a, b) => Math.abs(parseFloat(b.amount)) - Math.abs(parseFloat(a.amount))
 
   return details.sort(sortFn).map(detail => (
-    <div key={detail.id} className="w-full text-sm">
+    <div key={detail.key} className="w-full text-sm">
       {detail.budgetCategoryName || "Petty Cash"}
       {" "}
       <Icon className={detail.iconClassName} />
@@ -181,13 +207,13 @@ const BudgetItemList = ({ details }) => {
 const NotesWrapper = ({ children, notesNeedAttn }) => {
   if (notesNeedAttn) {
     return (
-      <div className="ml-4 max-w-4/12 bg-blue-900 text-white pl-2 pr-2">
+      <div className="ml-4 max-md:w-full md:max-w-4/12 bg-blue-900 text-white pl-2 pr-2">
         {children}
       </div>
     )
   } else {
     return (
-      <div className="ml-4 max-w-4/12">
+      <div className="ml-4 max-md:w-full md:max-w-4/12 pl-2 pr-2">
         {children}
       </div>
     )
@@ -197,7 +223,7 @@ const NotesWrapper = ({ children, notesNeedAttn }) => {
 const Notes = ({ noteLines, notesNeedAttn  }) => (
   <NotesWrapper notesNeedAttn={notesNeedAttn}>
     {noteLines.map((note, index) => (
-      <div key={index} className="w=full">
+      <div key={index} className="w-full">
         {index === 0 && <Icon className="fas fa-sticky-note" />}
         {" "}
         {note}

@@ -119,7 +119,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                 selectedAccount={selectedAccount}
                 year={year}
               />
-              <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2"}}>
+              <Cell styling={{width: "w-full md:w-3/12", wrap: "flex-wrap", margin: "mb-2"}}>
                 <div className="w-full text-lg underline">
                   <h3>{DateFormatter({ month, year, format: "monthYear" })}</h3>
                 </div>
@@ -138,7 +138,7 @@ export const App = ({ accounts, budget, selectedAccount, ...props }) => {
                   <Icon className="fas fa-angle-double-right" />
                 </ButtonStyleInertiaLink>
               </Cell>
-              <Cell styling={{width: "w-3/12", wrap: "flex-wrap", margin: "mb-2 ml-2", overflow: "overflow-visible"}}>
+              <Cell styling={{width: "w-full md:w-3/12", wrap: "flex-wrap", margin: "mb-2 ml-2", overflow: "overflow-visible"}}>
                 <MonthYearSelect baseUrl={`/accounts/${selectedAccount.slug}/transactions`} month={month} year={year} />
               </Cell>
             </Row>
@@ -211,13 +211,13 @@ const NewTransaction = props => {
   } else {
     return (
       <StripedRow styling={{flexAlign: "justify-start"}}>
-        <Cell styling={{ width: "w-4/12", flexAlign: "justify-start" }}>
-          <div className="w-1/12">
+        <Cell styling={{ width: "w-full", flexAlign: "justify-start" }}>
+          <div className="mr-2">
             <Link color="text-blue-700" onClick={toggleNewForm}>
               <Icon className="fas fa-plus" />
             </Link>
           </div>
-          <div className="w-4/12">
+          <div>
             <Link color="text-blue-700" onClick={toggleNewForm}>
               Add new transaction
             </Link>

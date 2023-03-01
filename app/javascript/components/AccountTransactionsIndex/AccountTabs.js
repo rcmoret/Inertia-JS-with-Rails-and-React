@@ -13,7 +13,7 @@ const AccountTabs = ({ accounts, ...props}) => {
 
   return (
     <>
-      <Row>
+      <Row styling={{ wrap: "flex-wrap", flexAlign: "start" }}>
         {accounts.sort(sortFn).map(account => (
           <AccountLink
             key={account.slug}
@@ -37,7 +37,8 @@ const AccountLink = ({ account, currentInterval, interval, selectedAccount }) =>
   const styling = {
     bgColor: `bg-${isSelected ? "blue" : "gray"}-400`,
     padding: "pt-4 pb-4 pr-2 pl-2",
-    width: "w-1/10"
+    width: "w-46p sm:w-3/10 md:w-2/20 lg:w-1/8",
+    margin: "mb-2 mr-2"
   }
 
   return (
