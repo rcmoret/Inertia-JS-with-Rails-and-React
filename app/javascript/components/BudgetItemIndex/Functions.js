@@ -116,14 +116,13 @@ export const eventTransactionReducer = (array, model) => {
 
 const defaultCallbacks = { onSuccess: () => null }
 
-export const postEvents = ({ events, month,  year }, suppliedCallbacks = {}) => {
+export const postEvents = ({ events, month, year }, suppliedCallbacks = {}) => {
   const callbacks = { ...defaultCallbacks, ...suppliedCallbacks }
-  const onSuccess = page => callbacks.onSuccess(page)
 
   router.post(
     `/budget/items/events?month=${month}&year=${year}`,
     { events },
-    { preserveScroll: true , onSuccess: onSuccess }
+    { preserveScroll: true }
   )
 };
 

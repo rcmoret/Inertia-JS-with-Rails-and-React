@@ -78,20 +78,17 @@ export const NameRow = ({ model, fns, month, year }) => {
       <div className="w-4/12 text-right">
         <AmountSpan amount={amount} absolute={true} />
       </div>
-      <Links model={model} fns={fns} month={month} year={year} />
     </Cell>
   )
 }
 
 export const FormRow = ({ handleChange, hideForm, inputAmount, postEvent }) => (
-  <Cell styling={{width: "w-full", padding: "pl-1 pr-1"}}>
-    <div className="w-6/12">
-      Updated Amount
+  <Cell styling={{width: "w-full", wrap: "flex-wrap", padding: "pl-1 pr-1"}}>
+    <div className="w-full md:w-6/12"> <strong>Amount:</strong> </div>
+    <div className="w-8/12 md:w-4/12">
+      <AmountInput value={inputAmount} onChange={handleChange} classes={["max-md:w-full"]} />
     </div>
-    <div className="w-4/12 text-right">
-      <AmountInput value={inputAmount} onChange={handleChange} />
-    </div>
-    <Cell styling={{width: "w-1/12"}}>
+    <Cell styling={{width: "w-2/12 md:w-1/12"}}>
       <Link onClick={postEvent} color="text-green-700" hoverColor="text-green-900">
         <Icon className="fas fa-check-circle" />
       </Link>
@@ -106,9 +103,11 @@ export const Links = ({ model, fns, month, year }) => {
   const { key, name, showForm, isDeletable } = model
 
   return (
-    <Cell styling={{width: "w-1/12", fontSize: "text-xs"}}>
+    <Cell styling={{width: "w-full", justify: "justify-between md:justify-end", fontSize: "text-sm md:text-xs"}}>
       <EditLink itemKey={key} fns={fns} showForm={showForm} />
-      <DeleteLink itemKey={key} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
+      <span className="md:ml-4">
+        <DeleteLink itemKey={key} name={name} isDeletable={isDeletable} fns={fns} month={month} year={year}/>
+      </span>
     </Cell>
   )
 }
@@ -118,7 +117,7 @@ const EditLink = ({ itemKey, fns, showForm }) => {
 
   if (showForm) {
     return (
-      <span className="text-gray-500">
+      <span className="text-gray-500 ">
         <Icon className="far fa-edit" />
       </span>
     )
@@ -134,7 +133,7 @@ const EditLink = ({ itemKey, fns, showForm }) => {
 const DeleteLink = ({ itemKey, isDeletable, fns, name, month, year }) => {
   const onClick = () => {
     if(window.confirm(copy.deleteConfirmation(name))) {
-      postItemDeleteEvent({ itemKey, month, year }, { onSuccess: fns.onPostSuccess })
+      postItemDeleteEvent({ itemKey, month, year })
     } else {
       return null
     }
@@ -164,7 +163,6 @@ export  const AccrualMaturityInfo = ({ model, fns, month, year }) => {
     const returnUrl = `/budget/${month}/${year}`
     const post = () => router.post(`/budget/categories/${budgetCategorySlug}/maturity_intervals?redirect_to=${returnUrl}`,
       { interval: { month, year } },
-      { onSuccess: fns.onPostSuccess }
     )
 
     return (

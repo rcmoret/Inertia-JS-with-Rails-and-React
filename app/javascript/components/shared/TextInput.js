@@ -15,13 +15,13 @@ export const AmountInput = suppliedProps => {
     ...suppliedProps,
   }
   const styleFromProps = ({ border, rounded, textAlign }) => [border, rounded, textAlign].filter(style => style !== null)
-  const className = [...props.classes, ...styleFromProps(props)].join(" ")
+  const classes = [...props.classes, ...styleFromProps(props)]
 
   return (
     <TextInput
-      className={className}
-      errors={[]}
       {...props}
+      classes={classes}
+      errors={[]}
     />
   )
 }
@@ -39,8 +39,8 @@ const TextInput = suppliedProps => {
   }
 
   const combinedProps = { ...defaultProps, ...suppliedProps }
-  const classList = [combinedProps.border, ...combinedProps.classes].filter(klass => klass !== null && klass !== "")
-  const props = { ...combinedProps, classList }
+  const className = [combinedProps.border, ...combinedProps.classes].filter(klass => klass !== null && klass !== "").join(" ")
+  const props = { ...combinedProps, className }
 
   if (props.errors.length > 0) {
     return (
@@ -56,7 +56,7 @@ const TextInput = suppliedProps => {
 
 const ErrorInput = props => (
   <div className="rounded border-solid border-red-700 border-2 bg-gray-200 p-2">
-    <Input onChange={props.onChange} value={props.value} name={props.name} />
+    <Input className={props.className} onChange={props.onChange} value={props.value} name={props.name} />
     <div className="mt-2 flex flex-wrap">
       {props.errors.map((err, index) => (
         <div key={index} className="text-red-700 w-full" >
@@ -72,7 +72,7 @@ const ErrorInput = props => (
 const Input = props => (
   <input
     type="text"
-    className={props.classList.join(" ")}
+    className={props.className}
     name={props.name}
     onChange={props.onChange}
     onKeyDown={props.onKeyDown}

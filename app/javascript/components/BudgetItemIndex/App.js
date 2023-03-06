@@ -127,9 +127,9 @@ const App = ({ budget, ...props }) => {
     },
   })
   const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
-  const [discretionary, updateDiscretionary] = useState(discretionaryModel(budget.interval.discretionary))
+  const discretionary = discretionaryModel(budget.interval.discretionary)
 
-  const [items, updateItemsState] = useState(budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays)))
+  const items = budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays))
 
   const existingItemCategoryNames = items.map(item => item.name)
   const availableDayToDayCategories = budget
@@ -149,16 +149,9 @@ const App = ({ budget, ...props }) => {
     })
   )
 
-  const onPostSuccess = page => {
-    const { interval } = page.props.budget
-    updateItemsState(interval.items.map(itemModel))
-    updateDiscretionary(discretionaryModel(interval.discretionary))
-  }
-
   const fns = {
     closeForm,
     collapseDetails,
-    onPostSuccess,
     renderForm,
     showDetails,
     toggleDayToDayForm,
@@ -196,17 +189,43 @@ const App = ({ budget, ...props }) => {
         <div className="pt-2 pb-2 pr-3 pl-3 bg-blue-900 w-full rounded h-v90 overflow-scroll">
           <Row styling={{align: "items-start", wrap: "flex-wrap", backgroundColor: "bg-white"}}>
             <div className="w-full p-2 border-b-2 border-blue-900 border-solid">
-              <Row styling={{alignItem: "items-start"}}>
-                <Cell styling={{width: "w-4/12", wrap: "flex-wrap"}}>
-                  <div className="text-2xl w-full">
-                    <strong>{copy.title(longDateString)} </strong>
-                  </div>
-                  <div className="w-full">{copy.dateRange(firstDate, lastDate)}</div>
-                  <div className="w-full">
-                    {isCurrent && `${titleize(copy.daysRemaining(daysRemaining))}; `}
-                    {titleize(copy.totalDays(totalDays))}
-                  </div>
-                  <Row>
+              <Row styling={{alignItem: "items-start", wrap: "flex-wrap"}}>
+                <Row styling={{wrap: "flex-wrap"}}>
+                  <Cell styling={{width: "w-full md:w-4/12", wrap: "flex-wrap"}}>
+                    <div className="text-2xl w-full">
+                      <strong>{copy.title(longDateString)} </strong>
+                    </div>
+                    <div className="w-full">{copy.dateRange(firstDate, lastDate)}</div>
+                    <div className="w-full">
+                      {isCurrent && `${titleize(copy.daysRemaining(daysRemaining))}; `}
+                      {titleize(copy.totalDays(totalDays))}
+                    </div>
+                  </Cell>
+                  <Cell styling={{width: "w-full md:w-6/12", wrap: "flex-wrap"}}>
+                    <div className="w-6/12">
+                      <MenuItem copy={accrualLinkText} onClick={toggleAccruals} />
+                      <MenuItem onClick={toggleClearedMonthly} copy={clearedMonthlyLinkText} />
+                      <MenuItem
+                        href={`/budget/${month}/${year}${props.includesDeleted ? "" : "?include_deleted=true"}`}
+                        copy={`${props.includesDeleted ? "Hide" : "Show"} Deleted Items`}
+                      />
+                    </div>
+                    <div className="w-6/12">
+                      <MenuItem onClick={toggleAdjustItemsForm} copy={adjustItemsFormLinkText} />
+                      <MenuItem href="/budget/categories" copy={"Manage Categories"} />
+                      {!isSetUp && <MenuItem
+                        href={`/budget/set-up/${month}/${year}`}
+                        copy={`Set Up ${DateFormatter({ month, year, day: 1, format: 'shortMonthYear' })}`}
+                      />}
+                      {isLastDay && <MenuItem
+                        href={`href=/budget/finalize/${month}/${year}`}
+                        copy={`Finalize ${DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}`}
+                      />}
+                    </div>
+                  </Cell>
+                </Row>
+                <Row styling={{ wrap: "flex-wrap"}}>
+                  <Cell styling={{ width: "w-full md:w-4/12" }}>
                     <ButtonStyleInertiaLink href={visitPrevUrl}>
                       <Icon className="fas fa-angle-double-left" />
                       {" "}
@@ -217,42 +236,12 @@ const App = ({ budget, ...props }) => {
                       {" "}
                       <Icon className="fas fa-angle-double-right" />
                     </ButtonStyleInertiaLink>
-                  </Row>
-                </Cell>
-                <div className="w-6/12 flex justify-between flex-wrap">
-                  <div className="w-6/12">
-                    <div>
-                      <Link onClick={toggleAccruals} color="text-blue-800">
-                        <Point>{titleize(accrualLinkText)}</Point>
-                      </Link>
-                    </div>
-                    <div>
-                      <Link onClick={toggleClearedMonthly} color="text-blue-800">
-                        <Point>{titleize(clearedMonthlyLinkText)}</Point>
-                      </Link>
-                    </div>
-                    <div>
-                      <ToggleDeletedLink includesDeleted={props.includesDeleted} month={month} year={year} />
-                    </div>
-                  </div>
-                  <div className="w-6/12">
-                    <div>
-                      <Link onClick={toggleAdjustItemsForm} color="text-blue-800">
-                        <Point>{titleize(adjustItemsFormLinkText)}</Point>
-                      </Link>
-                    </div>
-                    <div>
-                      <InertiaLink href="/budget/categories" color="text-blue-800">
-                        <Point>Manage Categories</Point>
-                      </InertiaLink>
-                    </div>
-                    {!isSetUp && <SetUpLink month={month} year={year} />}
-                    {isLastDay && <FinalizeLink month={month} year={year} />}
-                  </div>
+                  </Cell>
                   <Row>
                     <MonthYearSelect baseUrl="/budget" month={month} year={year} />
                   </Row>
-                </div>
+                </Row>
+
               </Row>
             </div>
             {adjustItemsForm.isRendered &&
@@ -266,7 +255,7 @@ const App = ({ budget, ...props }) => {
                   updateAdjustItemsForm={updateAdjustItemsForm}
                 />
             }
-            <Section styling={{width: "w-1/2", rounded: null, border: null, padding: "pt-2"}}>
+            <Section styling={{width: "w-full md:w-1/2", rounded: null, border: null, padding: "pt-2"}}>
               <GroupTitle
                 title={titleize(titles.dayToDay)}
                 isFormShown={isDayToDayFormShown}
@@ -298,7 +287,7 @@ const App = ({ budget, ...props }) => {
                 year={year}
               />
             </Section>
-            <Section styling={{width: "w-1/2", rounded: null, border: null, padding: "pt-2"}}>
+            <Section styling={{width: "w-full md:w-1/2", rounded: null, border: null, padding: "pt-2"}}>
               <GroupTitle
                 title={titleize(titles.monthly)}
                 isFormShown={isMonthlyFormShown}
@@ -367,31 +356,12 @@ const ClearedMonthlySection = ({ collection, pageState }) => {
   )
 }
 
-const SetUpLink = ({ month, year }) => (
-  <InertiaLink href={`/budget/set-up/${month}/${year}`} color="text-blue-800">
-    <Point>
-      Set Up {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
-    </Point>
-  </InertiaLink>
-)
-
-const FinalizeLink = ({ month, year }) => (
-  <InertiaLink href={`/budget/finalize/${month}/${year}`} color="text-blue-800">
-    <Point>
-      Finalize {DateFormatter({ month, year, day: 1, format: "shortMonthYear" })}
-    </Point>
-  </InertiaLink>
-)
-
-const ToggleDeletedLink = ({ includesDeleted, month, year }) => {
-  const href = `/budget/${month}/${year}${includesDeleted ? "" : "?include_deleted=true"}`
-  return (
-    <InertiaLink href={href} color="text-blue-800">
-      <Point>
-        {includesDeleted ? "Hide" : "Show"} Deleted Items
-      </Point>
+const MenuItem = ({ copy, ...props }) => (
+  <div>
+    <InertiaLink {...props} color="text-blue-800">
+      <Point>{titleize(copy)}</Point>
     </InertiaLink>
-  )
-}
+  </div>
+)
 
 export default App;

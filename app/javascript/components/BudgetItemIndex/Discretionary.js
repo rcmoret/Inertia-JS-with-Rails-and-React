@@ -50,7 +50,6 @@ const Discretionary = ({ data, dispatch }) => {
           </span>
         </div>
         <div className="w-4/12 text-right"><AmountSpan amount={total} /></div>
-        <div className="w-1/12"></div>
       </Row>
       <Row styling={{padding: "pl-1 pr-1"}}>
         <div className="w-6/12">
@@ -65,7 +64,6 @@ const Discretionary = ({ data, dispatch }) => {
             zeroColor="text-black"
           />
         </div>
-        <div className="w-1/12"></div>
       </Row>
       <Row styling={{padding: "pl-1 pr-1"}}>
         <div className="w-6/12">
@@ -80,7 +78,6 @@ const Discretionary = ({ data, dispatch }) => {
             zeroColor="text-black"
           />
         </div>
-        <div className="w-1/12"></div>
       </Row>
       <Row styling={{padding: "pl-1 pr-1"}}>
         <div className="w-6/12">
@@ -89,7 +86,6 @@ const Discretionary = ({ data, dispatch }) => {
           </span>
         </div>
         <div className="w-4/12 text-right"><AmountSpan amount={amount} negativeColor="text-red-700" /></div>
-        <div className="w-1/12"></div>
       </Row>
       <Transactions
         toggleTransactions={toggleTransactions}

@@ -54,7 +54,6 @@ const Form = ({ model, fns, details, month, year }) => {
   const postEvent = () => {
     const onSuccess = page => {
       fns.closeForm()
-      fns.onPostSuccess(page)
     }
     postItemAdjustEvent(
       { id: key, amount: updateAmount, month, year },
@@ -80,11 +79,12 @@ const Form = ({ model, fns, details, month, year }) => {
         <div className="w-4/12 text-right italic">
           <AmountSpan amount={updatedRemaining} absolute={true} color="text-gray-700" negativeColor="text-red-400" />
         </div>
-        <div className="w-1/12">
-        </div>
       </Cell>
       <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
       {showDetails && <BudgetItemDetails item={model} details={details} />}
+      <div className="md:hidden w-full">
+        <Links model={model} fns={fns} month={month} year={year} />
+      </div>
      </StripedRow>
   )
 }
@@ -103,6 +103,9 @@ const Show = ({ model, fns, details, month, year }) => {
       <SpentOrDeposited isExpense={isExpense} spent={spent} />
       <DifferenceOrRemaining {...model} />
       <AccrualMaturityInfo model={model} fns={fns} month={month} year={year} />
+      <div className="w-full px-1">
+        <Links model={model} fns={fns} month={month} year={year} />
+      </div>
       {showDetails && <BudgetItemDetails item={model} details={details} />}
      </StripedRow>
   )
@@ -118,8 +121,6 @@ const SpentOrDeposited = ({ isExpense, spent }) => {
       </div>
       <div className="w-4/12 text-right">
         <AmountSpan amount={spent} absolute={true} prefix="-" />
-      </div>
-      <div className="w-1/12">
       </div>
     </Cell>
   )
@@ -138,8 +139,6 @@ const DifferenceOrRemaining = (model) => {
       </div>
       <div className="w-4/12 text-right">
         <AmountSpan amount={difference} absolute={true} color={`text-${amountColor}`} negativeColor={`text-${negativeColor}`} />
-      </div>
-      <div className="w-1/12">
       </div>
     </Cell>
   )

@@ -142,7 +142,6 @@ const MultiItemAdjustForm = props => {
   const onSubmit = () => {
     const events = eventsFrom(adjustmentItems, month, notes, year)
     const onSuccess = page => {
-      fns.onPostSuccess(page)
       clearAdjustItemsForm()
     }
     postEvents({ events, month, year }, { onSuccess })
@@ -162,7 +161,7 @@ const MultiItemAdjustForm = props => {
       <div className="w-full text-xl">
         {copy.multiItemAdjustForm.title}
       </div>
-      <Row styling={{overflow: null, border: "border-b border-gray-700 border-solid", rounded: null}}>
+      <Row styling={{wrap: "flex-wrap", overflow: null, border: "border-b border-gray-700 border-solid", rounded: null}}>
         <ItemSelect
           addItem={addCategoryItem}
           onChange={handleCategorySelectChange}
@@ -176,25 +175,16 @@ const MultiItemAdjustForm = props => {
           selectedOption={selectedItem}
         />
       </Row>
-      <Row>
-        <div className="w-2/12">
-          {titleize(shared.name)}
+      <Row styling={{ wrap: "flex-wrap"}}>
+
+        <div className="w-6/12">
+          {titleize("categories")}
         </div>
-        <div className="w-2/12 text-right">
-          {titleize(shared.budgeted)}
-        </div>
-        <div className="w-2/12 text-right">
-          {titleize(shared.difference)}
-        </div>
-        <div className="w-2/12 text-right">
+
+        <div className="w-6/12 text-right">
           {titleize(shared.adjustment)}
         </div>
-        <div className="w-2/12 text-right">
-          {titleize(copy.multiItemAdjustForm.updatedBudgeted)}
-        </div>
-        <div className="w-2/12 text-right">
-          {titleize(copy.multiItemAdjustForm.updatedDifference)}
-        </div>
+
       </Row>
       {adjustmentItems.map(item => (
         <FormRow
@@ -216,7 +206,7 @@ const ItemSelect = ({ addItem, onChange, options, selectedOption }) => {
   const linkColor = `text-${selectedOption.value ? "blue" : "gray"}-800`
   if (options.length) {
     return (
-      <Cell styling={{width: "w-6/12", overflow: null}}>
+      <Cell styling={{width: "w-full md:w-6/12", overflow: null}}>
         <div className="w-10/12">
           <Select
             onChange={onChange}
@@ -260,24 +250,24 @@ const BottomLine = ({ amount, notes, handleChange, onSubmit }) => {
   }
   const styling = [
     "rounded",
-    "w-2/12",
+    "w-4/12 md:w-2/12",
     "pr-2",
     "text-right",
     ...colorStyles(),
   ]
   const className = styling.join(" ")
   return (
-    <Row styling={{border: borderTop, rounded: null}}>
-      <Cell styling={{width: "w-4/12"}}>
+    <Row styling={{border: borderTop, wrap: "flex-wrap", rounded: null}}>
+      <Cell styling={{width: "w-9/12 md:w-4/12"}}>
         <textarea
-          className="w-6/12"
+          className="w-full md:w-6/12"
           onChange={handleChange}
           placeholder="notes"
           style={{minHeight: "100px"}}
           value={notes}
         />
       </Cell>
-      <Cell styling={{width: "w-4/12", alignItems: "items-start"}}>
+      <Cell styling={{width: "w-full md:w-4/12", alignItems: "items-start"}}>
         <div>{titleize(copy.multiItemAdjustForm.bottomLineChange)}</div>
         <div className={className}>{MoneyFormatter(amount, { decorate: true, absolute: true })}</div>
       </Cell>
@@ -344,32 +334,46 @@ const FormRow = ({ model, removeItem, toggleDeletion, updateAdjustmentItem }) =>
   const updatedDifference = difference - adjustmentAmount
 
   return (
-    <Row>
-      <FormCell align="left">
-        <Link onClick={onClick} color="text-black" classes={["text-sm"]}>
-          <Icon className="fas fa-times" />
-        </Link>
-        {" "}
-        {model.name}
-      </FormCell>
-      <FormCell align="right">
-        {isNewItem ? shared.new : MoneyFormatter(amount, { decorate: true })}
-      </FormCell>
-      <FormCell align="right">
-        {isNewItem ? shared.new : MoneyFormatter(difference, { decorate: true })}
-      </FormCell>
-      <FormCell align="right">
-        <AmountInput onChange={onChange} value={inputAmount} classes={["w-8/12", "text-right"]} />
-      </FormCell>
-      <FormCell align="right">
-        {MoneyFormatter(updatedBudgeted, { decorate: true })}
-      </FormCell>
-      <FormCell align="right">
-        <Row styling={{flexAlign: "justify-end"}}>
-          <div className="w-4/12">{MoneyFormatter(updatedDifference, { decorate: true })}</div>
-          {isDeletable && updatedDifference === 0 && <DeleteOption model={model} toggleDeletion={toggleDeletion} />}
-        </Row>
-      </FormCell>
+    <Row styling={{ wrap: "flex-wrap"}}>
+
+      <Row>
+        <div className="w-6/12">
+          <Link onClick={onClick} color="text-black" classes={["text-sm"]}>
+            <Icon className="fas fa-times" />
+          </Link>
+          {" "}
+          {model.name}
+        </div>
+
+        <div className="w-6/12 flex justify-end">
+          <AmountInput onChange={onChange} value={inputAmount} classes={["w-8/12", "text-right"]} />
+        </div>
+      </Row>
+
+      {isDeletable && updatedDifference === 0 && <DeleteOption model={model} toggleDeletion={toggleDeletion} />}
+
+      <Row styling={{ fontSize: "text-xs", wrap: "flex-wrap" }}>
+        <div className="w-5/12 md:w-2/12 flex flex-wrap justify-between">
+          <div className="w-8/12">previous budgeted:</div>
+          <div className="w-4/12 text-right">{isNewItem ? shared.new : MoneyFormatter(amount, { decorate: true })}</div>
+        </div>
+
+        <div className="w-6/12 md:w-2/12 flex flex-wrap justify-between">
+          <div className="w-8/12">previous difference:</div>
+          <div className="w-4/12 text-right"> {isNewItem ? shared.new : MoneyFormatter(difference, { decorate: true })} </div>
+        </div>
+
+        <div className="w-5/12 md:w-2/12 flex flex-wrap justify-between">
+          <div className="w-8/12">updated budgeted:</div>
+          <div className="w-4/12 text-right">{MoneyFormatter(updatedBudgeted, { decorate: true })}</div>
+        </div>
+
+        <div className="w-6/12 md:w-2/12 flex flex-wrap justify-between">
+          <div className="w-8/12">updated difference:</div>
+          <div className="w-4/12 text-right">{MoneyFormatter(updatedDifference, { decorate: true })}</div>
+        </div>
+      </Row>
+
     </Row>
   )
 }
@@ -380,14 +384,16 @@ const DeleteOption = ({ model, toggleDeletion }) => {
 
   const onChange = () => toggleDeletion(id)
   return (
-    <>
-      <div className="w-2/12">
-        <input type="checkbox" onChange={onChange} checked={isMarkedForDelete} name={id} />
-      </div>
-      <div className={`${iconColor} w-2/12`}>
-        <Icon className="fa fa-trash" />
-      </div>
-    </>
+    <Row styling={{ flexAlign: "justify-end" }}>
+      <Cell styling={{ width: "w-full md:w-4/12", flexAlign: "justify-end" }}>
+        <div className="w-1/12">
+          <input type="checkbox" onChange={onChange} checked={isMarkedForDelete} name={id} />
+        </div>
+        <div className={`${iconColor} w-1/12 text-right`}>
+          <Icon className="fa fa-trash" />
+        </div>
+      </Cell>
+    </Row>
   )
 }
 

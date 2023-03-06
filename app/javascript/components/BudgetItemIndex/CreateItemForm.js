@@ -69,9 +69,8 @@ const CreateItemForm = (props) => {
     { label: titleize(titles.revenues), options: revenueOptions },
   ]
   const value = availableCategories.find(c => c.value === form.categorySlug)
-  const onSuccess = page => {
+  const onSuccess = () => {
     toggleForm()
-    fns.onPostSuccess(page)
   }
   const onSubmit = () => {
     postItemCreateEvent(
@@ -82,8 +81,15 @@ const CreateItemForm = (props) => {
 
   if (isFormShown) {
     return (
-      <Row styling={{overflow: null, padding: "pl-2 pr-2", margin: "mt-2 mb-2"}}>
-        <div className="w-5/12">
+      <Row styling={{wrap: "flex-wrap", overflow: null, direction: "max-md:flex-row-reverse", padding: "pl-2 pr-2", margin: "mt-2 mb-2"}}>
+        <div className="w-4/12 md:w-3/12">
+          <AmountInput
+            classes={["text-right", "h-full", "w-full"]}
+            onChange={handleInputChange}
+            value={form.amount}
+          />
+        </div>
+        <div className="w-7/12 md:w-6/12 pl-1">
           <Select
             placeholder={titleize(shared.selectCategory)}
             onChange={handleSelectChange}
@@ -91,14 +97,7 @@ const CreateItemForm = (props) => {
             value={value}
           />
         </div>
-        <div className="ml-2 w-3/12">
-          <AmountInput
-            classes={["text-right", "h-full", "w-full"]}
-            onChange={handleInputChange}
-            value={form.amount}
-          />
-        </div>
-        <div className="text-right w-4/12">
+        <div className="flex flex-row-reverse text-right w-full md:w-3/12 max-md:mt-2">
           <FormButton form={form} onSubmit={onSubmit} />
         </div>
       </Row>
