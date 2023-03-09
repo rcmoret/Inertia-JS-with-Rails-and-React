@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { router } from "@inertiajs/react";
 
+import { generateIdentifier } from "../../lib/Functions";
 import Form from "./Form"
 import Icon from "../shared/Icons";
 import Link, { InertiaLink } from "../shared/Link";
@@ -43,8 +44,10 @@ export const App = props => {
       isPerDiemEnabled: false,
       monthly: null,
       slug: "",
-      updatedAttributes: {},
-    }
+      updatedAttributes: {
+        key: generateIdentifier(),
+      }
+  }
   const [pageData, updatePageData] = usePageData(`budget/category`, {
     areFiltersShown: false,
     showFormForSlug: null,
