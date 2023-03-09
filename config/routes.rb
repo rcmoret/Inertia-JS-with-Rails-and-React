@@ -6,6 +6,9 @@ Rails.application.routes.draw do
 
   get '/', to: redirect('/budget')
   get '/sign_in', to: redirect('/users/sign_in')
+  devise_scope :user do
+    get '/users/sign_out', to: 'devise/sessions#destroy'
+  end
 
   post '/graphql', to: 'graphql#execute'
 
