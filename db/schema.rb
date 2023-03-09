@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_09_142700) do
+ActiveRecord::Schema.define(version: 2023_03_09_143306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,8 @@ ActiveRecord::Schema.define(version: 2023_03_09_142700) do
     t.datetime "updated_at", null: false
     t.string "slug", limit: 30
     t.bigint "user_group_id", null: false
-    t.string "key", limit: 12
+    t.string "key", limit: 12, null: false
+    t.index ["key"], name: "index_accounts_on_key", unique: true
     t.index ["user_group_id"], name: "index_accounts_on_user_group_id"
   end
 
@@ -69,8 +70,9 @@ ActiveRecord::Schema.define(version: 2023_03_09_142700) do
     t.string "slug"
     t.boolean "is_per_diem_enabled", default: false, null: false
     t.bigint "user_group_id", null: false
-    t.string "key", limit: 12
+    t.string "key", limit: 12, null: false
     t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
+    t.index ["key"], name: "index_budget_categories_on_key", unique: true
     t.index ["name", "user_group_id"], name: "index_budget_categories_on_name_and_user_group_id", unique: true, where: "(archived_at IS NULL)"
     t.index ["slug", "user_group_id"], name: "index_budget_categories_on_slug_and_user_group_id", unique: true, where: "(archived_at IS NULL)"
     t.index ["user_group_id"], name: "index_budget_categories_on_user_group_id"
@@ -133,8 +135,9 @@ ActiveRecord::Schema.define(version: 2023_03_09_142700) do
     t.string "class_name", limit: 100, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "key", limit: 12
+    t.string "key", limit: 12, null: false
     t.index ["class_name"], name: "index_icons_on_class_name", unique: true
+    t.index ["key"], name: "index_icons_on_key", unique: true
     t.index ["name"], name: "index_icons_on_name", unique: true
   end
 
@@ -213,8 +216,9 @@ ActiveRecord::Schema.define(version: 2023_03_09_142700) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_group_id", null: false
-    t.string "key", limit: 12
+    t.string "key", limit: 12, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["key"], name: "index_users_on_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["user_group_id"], name: "index_users_on_user_group_id"
   end
