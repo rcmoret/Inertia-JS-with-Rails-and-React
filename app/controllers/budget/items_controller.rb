@@ -29,7 +29,7 @@ module Budget
         user: current_user,
         month: month,
         year: year,
-        include_deleted: include_deleted?
+        include_deleted: true
       )
     end
 

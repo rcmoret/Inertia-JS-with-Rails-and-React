@@ -122,7 +122,7 @@ export const postEvents = ({ events, month, year }, suppliedCallbacks = {}) => {
   router.post(
     `/budget/items/events?month=${month}&year=${year}`,
     { events },
-    { preserveScroll: true }
+    { ...callbacks, preserveScroll: true }
   )
 };
 

@@ -9,6 +9,7 @@ module Types
       field :budget_category_id, ID, 'The primary key of the category', null: false
       field :budget_category_slug, String, 'Slug identifier of the parent category', null: false
       field :budget_impact, Integer, 'Amount over/under budget', null: false
+      field :is_deleted, Boolean, 'Has the item been soft deleted', null: false
       field :difference, Integer, 'The difference between the amount spend and budgeted', null: false
       field :events, [ItemEventType], 'Events associated with the budget item', null: false
       field :icon_class_name, String, 'The icon class name for the item', null: true

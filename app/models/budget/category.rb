@@ -7,6 +7,18 @@ module Budget
     include Messages
     include Presentable
     include Slugable
+    PERMITTED_PARAMS = %i[
+      archived_at
+      default_amount
+      accrual
+      expense
+      icon_id
+      is_per_diem_enabled
+      key
+      monthly
+      name
+      slug
+    ].freeze
 
     has_many :items, foreign_key: :budget_category_id, inverse_of: :category, dependent: :restrict_with_exception
     has_many :transaction_details, through: :items

@@ -2,7 +2,13 @@
 
 module Presenters
   module Budget
-    class BaseItemPresenter < SimpleDelegator
+    class BaseItemPresenter < ApplicationSerializer
+      attribute :is_accrual, alias_of: :accrual?
+      attribute :is_expense, alias_of: :expense?
+      attribute :is_deleted, alias_of: :deleted?
+      attribute :is_monthly, alias_of: :monthly?
+      attribute :budget_category_slug, alias_of: :slug
+
       delegate :accrual?,
                :expense?,
                :is_per_diem_enabled,
@@ -11,11 +17,6 @@ module Presenters
                :slug,
                to: :category
       delegate :month, :year, to: :interval
-
-      alias is_accrual accrual?
-      alias is_expense expense?
-      alias is_monthly monthly?
-      alias budget_category_slug slug
 
       def events
         @events ||= super.map(&:as_presenter)
@@ -62,6 +63,10 @@ module Presenters
 
       def upcoming_maturity_interval
         @upcoming_maturity_interval ||= maturity_intervals.on_or_after(month: month, year: year).take
+      end
+
+      def deleted?
+        deleted_at.present?
       end
 
       def item

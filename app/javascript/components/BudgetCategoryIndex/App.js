@@ -142,7 +142,7 @@ export const App = props => {
   }
   const categoryFilter = category => searchFilter(category) && adjectiveFilter(category) && adverbFilter(category)
   const icons = props.budget.icons.map(asOption).sort(sortByLabel)
-  const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForId: null })
+  const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForSlug: null })
   const categoryFns = {
     isFormShown: slug => showFormForSlug === slug,
     openForm: slug => updatePageData({ ...pageData, showFormForSlug: slug }),

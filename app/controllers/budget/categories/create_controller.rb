@@ -22,11 +22,11 @@ module Budget
       end
 
       def create_params
-        params.require(:category).permit(*BudgetCategories::PERMITTED_PARAMS)
+        params.require(:category).permit(Budget::Category::PERMITTED_PARAMS)
       end
 
       def category
-        @category ||= current_user.budget_categories.build(create_params)
+        @category ||= Budget::Category.belonging_to(current_user).build(create_params)
       end
 
       def include_archived?

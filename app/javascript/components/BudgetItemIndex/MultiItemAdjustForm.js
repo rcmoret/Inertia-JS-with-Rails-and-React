@@ -141,10 +141,7 @@ const MultiItemAdjustForm = props => {
 
   const onSubmit = () => {
     const events = eventsFrom(adjustmentItems, month, notes, year)
-    const onSuccess = page => {
-      clearAdjustItemsForm()
-    }
-    postEvents({ events, month, year }, { onSuccess })
+    postEvents({ events, month, year }, { onSuccess: clearAdjustItemsForm })
   }
 
   const containerStyling = {

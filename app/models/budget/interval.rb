@@ -19,6 +19,7 @@ module Budget
     validate :close_out_completed_at_end_of_month
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
+    scope :desc_ordered, -> { order(year: :desc).order(month: :desc) }
 
     scope :prior_to, lambda { |date_hash|
       month, year = date_hash.symbolize_keys.values_at(:month, :year)
@@ -51,14 +52,9 @@ module Budget
     end
 
     def self.current(user:)
-      belonging_to(user).unclosed.ordered.take.then do |potential_interval|
-        if potential_interval.present?
-          potential_interval
-        else
-          today = Date.current
-          belonging_to(user).for(month: today.month, year: today.year)
-        end
-      end
+      today = Date.current
+      belonging_to(user).where(end_date: today..).desc_ordered.take.presence ||
+        belonging_to(user).for(month: today.month, year: today.year)
     end
 
     def set_up?
