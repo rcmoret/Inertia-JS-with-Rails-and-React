@@ -41,7 +41,7 @@ module Queries
         base_clause = TRANSACTION_DETAILS[:budget_item_id].eq(nil)
         base_clause = base_clause.and(TRANSACTIONS[:budget_exclusion].eq(false))
         base_clause = base_clause.and(TRANSFERS[:id].eq(nil))
-        base_clause = base_clause.and(ACCOUNTS[:user_group_id]).eq(user_group.id)
+        base_clause = base_clause.and(ACCOUNTS[:user_group_id]).eq(interval.user_group_id)
 
         date_clause = TRANSACTIONS[:clearance_date].between(date_range)
         date_clause = date_clause.or(TRANSACTIONS[:clearance_date].eq(nil)) if current?
