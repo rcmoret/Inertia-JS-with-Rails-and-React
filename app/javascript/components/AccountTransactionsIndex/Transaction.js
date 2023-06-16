@@ -46,9 +46,9 @@ export const Transaction = props => {
   const notesNeedAttn = (notes || "").startsWith("!!!")
   const noteLines = (notes || "").split("<br>").map(line => line.replace(/^!!!/, ""))
   const modifyFns = {
-    const confirmation = window.confirm("Are you sure you want to delete this transaction?")
-    if (confirmation) { return }
     deleteTransaction: () => {
+      const confirmation = window.confirm("Are you sure you want to delete this transaction?")
+      if (confirmation) { return }
       router.delete(`/transactions/${key}?month=${month}&year=${year}`, {
       })
     },
