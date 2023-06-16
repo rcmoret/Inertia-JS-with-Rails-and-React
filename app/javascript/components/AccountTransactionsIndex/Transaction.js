@@ -48,7 +48,7 @@ export const Transaction = props => {
   const modifyFns = {
     deleteTransaction: () => {
       const confirmation = window.confirm("Are you sure you want to delete this transaction?")
-      if (confirmation) { return }
+      if (!confirmation) { return }
       router.delete(`/transactions/${key}?month=${month}&year=${year}`, {
       })
     },
