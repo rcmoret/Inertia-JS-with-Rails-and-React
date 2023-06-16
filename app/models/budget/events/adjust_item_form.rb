@@ -33,6 +33,7 @@ module Budget
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
 
       def save
+        require 'pry'; ::Kernel.binding.pry
         return false unless valid?
         return true if event.save
 

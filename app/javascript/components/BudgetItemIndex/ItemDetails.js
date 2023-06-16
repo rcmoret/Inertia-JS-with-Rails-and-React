@@ -118,7 +118,7 @@ const BudgetItemEvent = ({ event }) => {
     typeDescription,
   } = event
 
-  if (typeDescription.includes("create")) {
+  if (false) { // typeDescription.includes("create")) {
     return (
       <>
         <Row styling={{wrap: "flex-wrap", rounded: null, fontSize: "text-sm", border: "border-b border-gray-500 border-solid"}}>

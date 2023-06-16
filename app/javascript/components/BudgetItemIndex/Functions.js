@@ -71,11 +71,12 @@ export const transactionDetailModel = detail => {
 
 export const eventAndTransactionDetailSort = (obj1, obj2) => {
   const today = new Date()
-  if (obj1.isBudgetItemEvent && obj1.typeDescription.includes("create")) {
-    return -1
-  } else if (obj2.isBudgetItemEvent && obj2.typeDescription.includes("create")) {
-    return 1
-  } else if (!obj1.isPending && !obj2.isPending) {
+  // if (obj1.isBudgetItemEvent && obj1.typeDescription.includes("create")) {
+  //   return -1
+  // } else if (obj2.isBudgetItemEvent && obj2.typeDescription.includes("create")) {
+  //   return 1
+  // } else if (!obj1.isPending && !obj2.isPending) {
+  if (!obj1.isPending && !obj2.isPending) {
     return obj1.comparisonDate > obj2.comparisonDate ? 1 : -1
   } else if (obj1.isPending  && obj2.isPending) {
     return 0

@@ -39,17 +39,16 @@ const DayToDayItem = ({ model, fns, month, year }) => {
 const Form = ({ model, fns, details, month, year }) => {
   const {
     key,
-    id,
     amount,
     inputAmount,
     isExpense,
     showDetails,
+    updateAmount,
     spent,
   } = model
   const handleChange = event => {
-    fns.updateItem(id, { inputAmount: event.target.value, updateAmount: decimalToInt(event.target.value) })
+    fns.updateItem(key, { inputAmount: event.target.value, updateAmount: decimalToInt(event.target.value) })
   }
-  const updateAmount = model.updateAmount === null ? amount : model.updateAmount
   const updatedRemaining = (updateAmount - spent) * -1
   const postEvent = () => {
     const onSuccess = page => {

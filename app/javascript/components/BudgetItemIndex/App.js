@@ -53,6 +53,10 @@ const App = ({ budget, ...props }) => {
       selectedItemId: null,
       selectedCategorySlug: null,
     },
+    adjustItemForm: {
+      displayAmount,
+      updateAmount,
+    },
     includesDeleted: false,
     isDayToDayFormShown: false,
     isMonthlyFormShown: false,
@@ -66,11 +70,13 @@ const App = ({ budget, ...props }) => {
     includesDeleted,
     isDayToDayFormShown,
     isMonthlyFormShown,
+    // items,
     renderAccruals,
     renderClearedMonthly,
     showDetailsIds,
     showFormId,
   } = pageState
+  console.log({ pageState })
 
   const accrualLinkText = renderAccruals ? copy.hideAccruals : copy.showAccruals
   const toggleAccruals = () => updatePageState({
@@ -132,10 +138,10 @@ const App = ({ budget, ...props }) => {
   const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
   const discretionary = discretionaryModel(budget.interval.discretionary)
 
-  const activeFilter = (item) => !item.isDeleted
-  const items = budget.interval.items.filter(activeFilter).map(item => itemModel(item, daysRemaining, totalDays))
+    // items: budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays)),
+  const displayableItems = items.filter((item) => !item.isDeleted)
 
-  const existingItemCategoryNames = items.map(item => item.name)
+  const existingItemCategoryNames = displayableItems.map(item => item.name)
   const availableDayToDayCategories = budget
     .categories
     .filter(isDayToDay)
@@ -143,15 +149,16 @@ const App = ({ budget, ...props }) => {
 
   const availableMonthlyCategories = budget.categories.filter(isMonthly)
 
-  const updateItem = (id, payload) => updateItemsState(
-    items.map(item => {
-      if (item.id === id) {
+  const updateItem = (key, payload) => updatePageState({
+    ...pageState,
+    items: pageState.items.map(item => {
+      if (item.key === key) {
         return { ...item, ...payload }
       } else {
         return item
       }
     })
-  )
+  })
 
   const fns = {
     closeForm,
@@ -169,11 +176,11 @@ const App = ({ budget, ...props }) => {
       return isMatureAccrual(item, month, year)
     }
   }
-  const dayToDayExpenses = items.filter(activeFilter).filter(dayToDayExpense).filter(accrualFilter).sort(sortByName)
-  const dayToDayRevenues = items.filter(activeFilter).filter(dayToDayRevenue).filter(accrualFilter).sort(sortByName)
-  const monthlyExpenses = items.filter(activeFilter).filter(pendingMonthly).filter(isExpense).filter(accrualFilter).sort(sortByName)
-  const monthlyRevenues = items.filter(activeFilter).filter(pendingMonthly).filter(isRevenue).filter(accrualFilter).sort(sortByName)
-  const clearedMonthlyItems = items.filter(activeFilter).filter(clearedMonthly).sort(sortByName)
+  const dayToDayExpenses = displayableItems.filter(dayToDayExpense).filter(accrualFilter).sort(sortByName)
+  const dayToDayRevenues = displayableItems.filter(dayToDayRevenue).filter(accrualFilter).sort(sortByName)
+  const monthlyExpenses = displayableItems.filter(pendingMonthly).filter(isExpense).filter(accrualFilter).sort(sortByName)
+  const monthlyRevenues = displayableItems.filter(pendingMonthly).filter(isRevenue).filter(accrualFilter).sort(sortByName)
+  const clearedMonthlyItems = displayableItems.filter(clearedMonthly).sort(sortByName)
   const prevMonth = month === 1 ? { month: 12, year: (year - 1) } : { month: (month - 1), year }
   const nextMonth = month === 12 ? { month: 1, year: (year + 1) } : { month: (month + 1), year }
 
@@ -253,7 +260,7 @@ const App = ({ budget, ...props }) => {
                 <MultiItemAdjustForm
                   availableCategories={[...availableDayToDayCategories, ...availableMonthlyCategories]}
                   clearAdjustItemsForm={clearAdjustItemsForm}
-                  items={items}
+                  items={displayableItems}
                   interval={{ month, year }}
                   formData={adjustItemsForm}
                   fns={fns}
