@@ -57,6 +57,7 @@ module GraphQueries
                 iconClassName
                 isAccrual
                 isDeletable
+                isDeleted
                 isExpense
                 isMonthly
                 isPerDiemEnabled

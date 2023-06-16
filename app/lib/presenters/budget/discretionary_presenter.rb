@@ -9,7 +9,7 @@ module Presenters
 
       attr_reader :budget_interval_presenter
 
-      delegate :available_cash, :current?, :date_range, :items, :user, to: :budget_interval_presenter
+      delegate :available_cash, :current?, :date_range, :items, :user, :user_group_id, to: :budget_interval_presenter
 
       def amount
         items.reduce(available_cash) { |sum, item| sum + item.remaining }

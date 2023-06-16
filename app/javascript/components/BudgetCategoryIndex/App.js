@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { router } from "@inertiajs/react";
 
+import { generateIdentifier } from "../../lib/Functions";
 import Form from "./Form"
 import Icon from "../shared/Icons";
 import Link, { InertiaLink } from "../shared/Link";
@@ -43,8 +44,10 @@ export const App = props => {
       isPerDiemEnabled: false,
       monthly: null,
       slug: "",
-      updatedAttributes: {},
-    }
+      updatedAttributes: {
+        key: generateIdentifier(),
+      }
+  }
   const [pageData, updatePageData] = usePageData(`budget/category`, {
     areFiltersShown: false,
     showFormForSlug: null,
@@ -139,7 +142,7 @@ export const App = props => {
   }
   const categoryFilter = category => searchFilter(category) && adjectiveFilter(category) && adverbFilter(category)
   const icons = props.budget.icons.map(asOption).sort(sortByLabel)
-  const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForId: null })
+  const closeForm = () => updatePageData({ ...pageData, newCategory, showFormForSlug: null })
   const categoryFns = {
     isFormShown: slug => showFormForSlug === slug,
     openForm: slug => updatePageData({ ...pageData, showFormForSlug: slug }),

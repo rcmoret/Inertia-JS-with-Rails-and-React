@@ -22,7 +22,7 @@ module Budget
       end
 
       def update_params
-        params.require(:category).permit(*BudgetCategories::PERMITTED_PARAMS)
+        params.require(:category).permit(Budget::Category::PERMITTED_PARAMS)
       end
 
       def category

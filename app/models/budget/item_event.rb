@@ -4,6 +4,7 @@ module Budget
   class ItemEvent < ApplicationRecord
     include EventTypes
     include Presentable
+    belongs_to :user
     belongs_to :item, class_name: 'Item', foreign_key: :budget_item_id, inverse_of: :events
     belongs_to :type, class_name: 'ItemEventType', foreign_key: :budget_item_event_type_id, inverse_of: :events
 

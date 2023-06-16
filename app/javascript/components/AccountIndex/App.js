@@ -9,6 +9,7 @@ import usePageData from "../../lib/usePageData";
 
 import { Account } from "./Account"
 import Form from "./Form"
+import { generateIdentifier } from "../../lib/Functions";
 import Icon from "../shared/Icons";
 import Link, { InertiaLink } from "../shared/Link";
 import PageHeader from "../shared/Header";
@@ -20,6 +21,7 @@ const buildNewAccount = () => ({
   attributeErrors: {},
   notice: { level: "info", message: "" },
   updatedAttributes: {
+    key: generateIdentifier(),
     name: "",
     isCashFlow: true,
     priority: "",

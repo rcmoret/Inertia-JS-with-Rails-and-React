@@ -53,6 +53,7 @@ const App = ({ budget, ...props }) => {
       selectedItemId: null,
       selectedCategorySlug: null,
     },
+    includesDeleted: false,
     isDayToDayFormShown: false,
     isMonthlyFormShown: false,
     renderAccruals: (!isClosedOut && !isCurrent),
@@ -62,6 +63,7 @@ const App = ({ budget, ...props }) => {
   })
   const {
     adjustItemsForm,
+    includesDeleted,
     isDayToDayFormShown,
     isMonthlyFormShown,
     renderAccruals,
@@ -74,6 +76,10 @@ const App = ({ budget, ...props }) => {
   const toggleAccruals = () => updatePageState({
     ...pageState,
     renderAccruals: !renderAccruals,
+  })
+  const toggleDeleted = () => updatePageState({
+    ...pageState,
+    includesDeleted: !includesDeleted,
   })
   const clearedMonthlyLinkText = renderClearedMonthly ? copy.hideClearedMonthly : copy.showClearedMonthly
   const adjustItemsFormLinkText = adjustItemsForm.isRendered ? copy.hideAdjustItemsForm : copy.showAdjustItemsForm
@@ -117,19 +123,17 @@ const App = ({ budget, ...props }) => {
       ...payload,
     },
   })
-  const clearAdjustItemsForm = () => updatePageState({
-    ...pageState,
-    adjustItemsForm: {
-      adjustmentItems: [],
-      isRendered: false,
-      selectedItemId: null,
-      selectedCategorySlug: null,
-    },
+  const clearAdjustItemsForm = () => updateAdjustItemsForm({
+    adjustmentItems: [],
+    isRendered: false,
+    selectedItemId: null,
+    selectedCategorySlug: null,
   })
   const toggleAdjustItemsForm = () => updateAdjustItemsForm({ isRendered: !adjustItemsForm.isRendered })
   const discretionary = discretionaryModel(budget.interval.discretionary)
 
-  const items = budget.interval.items.map(item => itemModel(item, daysRemaining, totalDays))
+  const activeFilter = (item) => !item.isDeleted
+  const items = budget.interval.items.filter(activeFilter).map(item => itemModel(item, daysRemaining, totalDays))
 
   const existingItemCategoryNames = items.map(item => item.name)
   const availableDayToDayCategories = budget
@@ -165,11 +169,11 @@ const App = ({ budget, ...props }) => {
       return isMatureAccrual(item, month, year)
     }
   }
-  const dayToDayExpenses = items.filter(dayToDayExpense).filter(accrualFilter).sort(sortByName)
-  const dayToDayRevenues = items.filter(dayToDayRevenue).filter(accrualFilter).sort(sortByName)
-  const monthlyExpenses = items.filter(pendingMonthly).filter(isExpense).filter(accrualFilter).sort(sortByName)
-  const monthlyRevenues = items.filter(pendingMonthly).filter(isRevenue).filter(accrualFilter).sort(sortByName)
-  const clearedMonthlyItems = items.filter(clearedMonthly).sort(sortByName)
+  const dayToDayExpenses = items.filter(activeFilter).filter(dayToDayExpense).filter(accrualFilter).sort(sortByName)
+  const dayToDayRevenues = items.filter(activeFilter).filter(dayToDayRevenue).filter(accrualFilter).sort(sortByName)
+  const monthlyExpenses = items.filter(activeFilter).filter(pendingMonthly).filter(isExpense).filter(accrualFilter).sort(sortByName)
+  const monthlyRevenues = items.filter(activeFilter).filter(pendingMonthly).filter(isRevenue).filter(accrualFilter).sort(sortByName)
+  const clearedMonthlyItems = items.filter(activeFilter).filter(clearedMonthly).sort(sortByName)
   const prevMonth = month === 1 ? { month: 12, year: (year - 1) } : { month: (month - 1), year }
   const nextMonth = month === 12 ? { month: 1, year: (year + 1) } : { month: (month + 1), year }
 
@@ -203,16 +207,17 @@ const App = ({ budget, ...props }) => {
                   </Cell>
                   <Cell styling={{width: "w-full md:w-6/12", wrap: "flex-wrap"}}>
                     <div className="w-6/12">
-                      <MenuItem copy={accrualLinkText} onClick={toggleAccruals} />
-                      <MenuItem onClick={toggleClearedMonthly} copy={clearedMonthlyLinkText} />
+                      <MenuItem copy={accrualLinkText} onClick={toggleAccruals} href="#" />
+                      <MenuItem copy={clearedMonthlyLinkText} onClick={toggleClearedMonthly} href="#" />
                       <MenuItem
-                        href={`/budget/${month}/${year}${props.includesDeleted ? "" : "?include_deleted=true"}`}
-                        copy={`${props.includesDeleted ? "Hide" : "Show"} Deleted Items`}
+                        copy={`${includesDeleted ? "Hide" : "Show"} Deleted Items`}
+                        onClick={toggleDeleted}
+                        href="#"
                       />
                     </div>
                     <div className="w-6/12">
-                      <MenuItem onClick={toggleAdjustItemsForm} copy={adjustItemsFormLinkText} />
-                      <MenuItem href="/budget/categories" copy={"Manage Categories"} />
+                      <MenuItem copy={adjustItemsFormLinkText} onClick={toggleAdjustItemsForm} href="#" />
+                      <MenuItem copy={"Manage Categories"} href="/budget/categories" />
                       {!isSetUp && <MenuItem
                         href={`/budget/set-up/${month}/${year}`}
                         copy={`Set Up ${DateFormatter({ month, year, day: 1, format: 'shortMonthYear' })}`}

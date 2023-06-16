@@ -13,9 +13,9 @@ const Form = props => {
   const targetIntervalCategorySlugs = targetIntervalItems.map(item => item.budgetCategorySlug)
 
   const newModel = category => {
-    const { isAccrual, isMonthly } = category
+    const { isAccrual, isMonthly, slug } = category
     const availableItems = targetIntervalItems
-      .filter(item => item.budgetCategorySlug === category.slug)
+      .filter(item => item.budgetCategorySlug === slug)
       .map(({ key, budgeted }) => ({
         name: `${key} - ${MoneyFormatter(budgeted, { decorate: true })}`,
         budgetItemKey: key,
@@ -29,6 +29,7 @@ const Form = props => {
         budgetItemKey: generateIdentifier(),
         budgeted: 0,
         isNew: true,
+        budgetCategorySlug: slug,
         eventType: 'rollover_item_create',
       }
     )
@@ -79,7 +80,7 @@ const Form = props => {
     data: [],
     discretionary: (discretionary.amount * -1),
     extraBalance: models.reduce((sum, model) => sum + extraFrom(model), 0),
-    budgetCategoryId: null,
+    budgetCategorySlug: null,
     name: '',
   }
 

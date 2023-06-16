@@ -17,6 +17,7 @@ module Budget
 
       def event
         @event ||= Budget::ItemEvent.new(item: budget_item,
+                                         user: current_user,
                                          type: budget_item_event_type,
                                          data: data,
                                          key: SecureRandom.hex(6),

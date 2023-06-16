@@ -22,9 +22,9 @@ const Show = ({ account, url, ...props }) => {
   const openForm = () => props.openForm(slug)
 
   const deleteAccount = () => {
+    if (window.confirm(`Are you sure you want to delete ${name}?`)) { return }
     router.delete(url({ slug }),
-      { },
-      { onBefore: window.confirm(`Are you sure you want to delete ${name}?`) }
+      { }
     )
   }
   const restoreAccount = () => {

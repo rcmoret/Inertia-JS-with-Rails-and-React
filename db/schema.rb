@@ -204,6 +204,8 @@ ActiveRecord::Schema.define(version: 2023_03_09_143306) do
     t.string "primary_email", limit: 200, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "key", limit: 12, null: false
+    t.index ["key"], name: "index_user_groups_on_key", unique: true
     t.index ["primary_email"], name: "index_user_groups_on_primary_email", unique: true
   end
 

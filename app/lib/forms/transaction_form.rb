@@ -43,15 +43,17 @@ module Forms
     end
 
     def handle_attribute(key, value)
-      return {} if value.blank?
-
-      case key
-      when :account_slug
+      case [key, value.blank?]
+      in [:account_slug, false]
         { account: Account.fetch(user: user, identifier: value) }
-      when :details_attributes
-        { details_attributes: value.values.map { |detail_attrs| handle_detail(detail_attrs) } }
-      else
+      in [:account_slug, *]
+        {}
+      in [:details_attributes, *]
+        { key => value.values.map { |detail_attrs| handle_detail(detail_attrs) } }
+      in [*, false]
         { key => value }
+      in [*, true]
+        { key => nil }
       end
     end
 

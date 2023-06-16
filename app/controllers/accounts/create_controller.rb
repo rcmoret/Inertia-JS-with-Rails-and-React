@@ -18,6 +18,7 @@ module Accounts
 
     def create_params
       params.require(:account).permit(
+        :key,
         :name,
         :is_cash_flow,
         :cash_flow,
