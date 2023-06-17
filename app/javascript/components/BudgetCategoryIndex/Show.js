@@ -34,6 +34,8 @@ const Show = ({ category, deleteOrRestoreCategory, maturityFns, openForm, ...pro
     show: () => maturityFns.showMaturityIntervals(slug),
   }
 
+  console.log({ archivedAt })
+  console.log({ fromDateString })
   return (
     <StripedRow styling={{flexAlign: "justify-start", overflow: "overflow-visible"}}>
       <div className="w-2/12">
