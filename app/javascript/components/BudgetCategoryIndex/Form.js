@@ -8,6 +8,7 @@ import Cell from "../shared/Cell";
 import Icon from "../shared/Icons";
 import Row, { StripedRow } from "../shared/Row";
 import TextInput from "../shared/TextInput";
+import { fromDateString } from "../../lib/DateFormatter";
 
 import { decimalToInt } from "../../lib/MoneyFormatter";
 
