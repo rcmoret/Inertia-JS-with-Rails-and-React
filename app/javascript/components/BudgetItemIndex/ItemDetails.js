@@ -38,7 +38,7 @@ const PerDiem = ({ item }) => {
   return (
     <Row styling={{rounded: null, wrap: "flex-wrap", border: "border-t border-gray-500 border-solid"}}>
       <BudgetedPerDiem item={item} />
-      {hasRemainingPerDiem && <RemainingPerDiem item={item} />}
+      <RemainingPerDiem item={item} />
     </Row>
   )
 };
@@ -69,13 +69,17 @@ const RemainingPerDiem = ({ item }) => {
         Remaining Per Day:
         <AmountSpan amount={remainingPerDay} absolute={true} />
       </Cell>
-      <Cell styling={{width: "w-6/12", padding: "px-2"}}>
-        Remaining Per Week:
-        <AmountSpan amount={remainingPerWeek} absolute={true} />
-      </Cell>
+      {remainingPerWeek && <RemainingPerWeek amount={remainingPerWeek} />}
     </>
   )
 };
+
+const RemainingPerWeek = ({ amount }) => (
+  <Cell styling={{width: "w-6/12", padding: "px-2"}}>
+    Remaining Per Week:
+    <AmountSpan amount={amount} absolute={true} />
+  </Cell>
+)
 
 const BudgetItemDetail = ({ model }) => {
   if (model.isTransactionDetail) {

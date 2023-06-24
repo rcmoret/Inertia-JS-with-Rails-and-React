@@ -39,17 +39,21 @@ export const itemModel = (item, daysRemaining, totalDays)  => {
 
 const perDiemAttributes = (item, daysRemaining, totalDays) => {
   const budgetedPerDay = Math.round(item.amount / totalDays)
+  const remainingPerDay = Math.round(item.remaining / daysRemaining)
 
-  const budgeted = {
+  const baseAttributes = {
     budgetedPerDay,
     budgetedPerWeek: (budgetedPerDay * 7),
+    remainingPerDay
   }
 
   if (daysRemaining < 7) {
-    return budgeted
+    return baseAttributes
   } else {
-    const remainingPerDay = Math.round(item.remaining / daysRemaining)
-    return { ...budgeted, remainingPerDay, remainingPerWeek: (remainingPerDay * 7), }
+    return {
+      ...baseAttributes,
+      remainingPerWeek: (remainingPerDay * 7),
+    }
   }
 };
 
