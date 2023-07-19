@@ -53,9 +53,10 @@ module Budget
       end
 
       def current(user:)
-        user_scope = belonging_to_user
-        belonging_to_user.where(start_date: ..today, end_date: today..).ordered.take.presence ||
-          determine_current(user_scope)
+        belonging_to(user).then do |user_scope|
+          user_scope.where(start_date: ..today, end_date: today..).ordered.take.presence ||
+            determine_current(user_scope)
+        end
       end
 
       private
