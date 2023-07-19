@@ -47,14 +47,30 @@ module Budget
       end
     }
 
-    def self.for(date_hash)
-      find_or_create_by(date_hash)
-    end
+    class << self
+      def for(date_hash)
+        find_or_create_by(date_hash)
+      end
 
-    def self.current(user:)
-      today = Date.current
-      belonging_to(user).where(end_date: today..).desc_ordered.take.presence ||
-        belonging_to(user).for(month: today.month, year: today.year)
+      def current(user:)
+        user_scope = belonging_to_user
+        belonging_to_user.where(start_date: ..today, end_date: today..).ordered.take.presence ||
+          determine_current(user_scope)
+      end
+
+      private
+
+      def determine_current(user_scope)
+        potential_interval = user_scope.for(month: today.month, year: today.year)
+        return potential_interval.next if potential_interval.last_date < today
+        return potential_interval.prev if potential_interval.first_date > today
+
+        potential_interval
+      end
+
+      def today
+        Date.current.to_date
+      end
     end
 
     def set_up?
